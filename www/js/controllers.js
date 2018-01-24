@@ -37,7 +37,8 @@
                 }
 
                 //从手机号获得 UserId
-                UserService.GetUserInfo(login.phoneno).then(function(data) {
+                var loginInfo ={"PhoneNo":login.phoneno}
+                UserService.GetUserByPhoneNo(loginInfo).then(function(data) {
 
                     data = data.toJSON();
                     t = [];
@@ -46,13 +47,20 @@
                     }
                     data = t;
 
-                    if (data != "") { //获得UserId
+                    if (t != "") { //获得UserId
 
                         // console.log(data.result);
-                        Storage.set("UID", data);
-                        UserService.SetUID(data);
+                        Storage.set("UID", t);
+                        // UserService.SetUID(data);
                         //本地暂存
-                        UserService.Login(data, login.password).then(function(data2) { //登陆
+                        var loginInfo2 = {
+                            "UserId": t, 
+                            "InPassword": login.password,
+                            "TerminalIP": null,
+                            "TerminalName": null,
+                            "revUserId": null
+                        }
+                        UserService.Login(loginInfo2).then(function(data2) { //登陆
                             if (data2.result == "登录成功") {
 
                                 $scope.logStatus = " 登录成功";
@@ -173,7 +181,7 @@
 
         var ResetPassword = function(tel) {
             //判断手机号是否存在
-            UserService.GetUserInfo(tel).then(function(data) {
+            UserService.GetUserByPhoneNo(tel).then(function(data) {
                 // 转换成 json
 
                 data = data.toJSON();
@@ -439,7 +447,9 @@
                 "Role": 1,
                 "Password": 0,
                 "LastLoginTime": 1,
-                "RevisionInfo": 0
+                "RevisionInfo": 0,
+                "Token": 1,
+                "LastLogoutTime":  1,
             };
             var promise = UserService.GetUserInfo(userInfoQuery);
             promise.then(function(data) {
@@ -702,6 +712,22 @@
                 }
             }
 
+           //主界面--rzx
+            var realInfo  = {
+                "GetObjectNo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1
+            }
+            var promise1 = Result.GetTestResultInfo(realInfo);
+                promise1.then(function(data) {
+                $scope.samplingTable = new NgTableParams({
+                    count: 50
+                }, {
+                    counts: [],
+                    dataset: data
+                })
+            }, function(err) {});
 
 
             //实时监控 
@@ -1473,48 +1499,41 @@
     .controller('operationorderCtrl', ['$scope', 'Storage', 'Data', 'Operation', 'NgTableParams',
         function($scope, Storage, Data, Operation, NgTableParams) {
 
-            // 设置可供选择的流程类型
-            var tempSampleTypes = new Array()
             Operation.GetAllOpTypes({}).then(function(data) {
-                
+                var finaldata = new Array()
                 for (i = 0; i < data.length; i++) {
-                    tempSampleTypes[i] = {}
-                    tempSampleTypes[i].SampleType = data[i];
+                    Operation.GetOperationOrder({
+                        "SampleType": data[i],
+                    }).then(function(_data) {
+                        console.log(_data)
+                        for (j = 0; j < _data.length; j++) {
+                            finaldata[j] = {}
+                            $.extend(finaldata[j], _data[j])
+                            finaldata[j].SampleType = data[i]
+                        }
+                        console.log(finaldata)
+
+                    }, function(err) {});
                 }
-
-                // 页面初始化
-                $scope.userlist=tempSampleTypes[0]
-                getLists(tempSampleTypes[0]);
-
+                console.log(finaldata)
+                $scope.tableParams = new NgTableParams({
+                    count: 10
+                }, {
+                    counts: [],
+                    dataset: finaldata
+                });
             }, function(err) {});
-            $scope.search_SampleTypes = tempSampleTypes
 
 
-            var getLists = function(_userlist) {
-                Operation.GetOperationOrder(_userlist).then(function(_data) {
-                    var finaldata = new Array()
-                    for (j = 0; j < _data.length; j++) {
-                        finaldata.push(_data[j])
-                    }
-                    $scope.tableParams = new NgTableParams({
-                        count: 10
-                    }, {
-                        counts: [],
-                        dataset: finaldata
-                    });
-                }, function(err) {});
-            }
 
-            // 搜索
-            $scope.searchList = function() {
-                getLists($scope.userlist)
-            }
+
+
         }
     ])
 
     // 字典管理--基本操作维护
-    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
-        function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
+    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', 'NgTableParams',
+        function($scope, Storage, Data, Operation, NgTableParams) {
             var input = {
                 "OperationId": null,
                 "OperationName": null,
@@ -1522,74 +1541,28 @@
                 "GetOperationName": 1,
                 "GetOutputCode": 1
             }
+            Operation.GetOperationInfo(input).then(function(data) {
+                console.log(data)
+                $scope.tableParams = new NgTableParams({
+                    count: 10
+                }, {
+                    counts: [],
+                    dataset: data
+                });
+            }, function(err) {});
 
-            var getLists = function() {
-                Operation.GetOperationInfo(input).then(function(data) {
-                    console.log(data)
-                    $scope.tableParams = new NgTableParams({
-                        count: 10
-                    }, {
-                        counts: [],
-                        dataset: data
-                    });
-                }, function(err) {});
-            }
-
-            $scope.register = function() {
-                Operation.SetOperationInfo($scope.registerInfo).then(function(data) {
-                        console.log(data)
-                        if (data.result == "插入成功") {
-                            // 关闭新建modal
-                            $('#new_operation').modal('hide')
-                            // 提示新建成功
-                            $('#setSuccess').modal('show')
-                            $timeout(function() {
-                                $('#setSuccess').modal('hide')
-                            }, 1000)
-                            getLists();
-                        }
-                    },
-                    function(err) {});
-            }
-
-            // 监听事件(表单清空)
-            $('#new_operation').on('hidden.bs.modal', function() {
-                $scope.registerInfo = {}
-            })
-
-            getLists();
-
-            var tempOperationId
-            $scope.todelete = function(_OperationId) {
-                tempOperationId = _OperationId
+            $scope.todelete = function() {
                 $('#DeleteOrNot').modal('show')
             }
 
-            $scope.delete = function() {
-                Operation.DeleteOperation({ OperationId: tempOperationId }).then(function(data) {
-                    if (data.result == "数据删除成功") {
-                        // 关闭是否删除modal
-                        $('#DeleteOrNot').modal('hide')
-                        // 提示新建成功
-                        $('#deleteSuccess').modal('show')
-                        $timeout(function() {
-                            $('#deleteSuccess').modal('hide')
-                        }, 1000)
-                        getLists();
-                    }
-                }, function(err) {});
-            }
-
-
             $scope.toedit = function(type) {
-                $scope.editInfo = type
+                $scope.editInfo=type
 
                 $('#edit_operation').modal('show')
             }
 
             $scope.tonew = function() {
                 $('#new_operation').modal('show')
-
             }
 
             // 关闭modal控制
@@ -1619,7 +1592,7 @@
             }
 
             $scope.toedit = function(type) {
-                $scope.editInfo = type
+                $scope.editInfo=type
                 $('#edit_samplingtype').modal('show')
             }
 

@@ -19,17 +19,19 @@
                 </ul>
             </div>
             <!-- 样本录入列表-阮卓欣 -->
-            <table ng-table="tableParams" class="table table-condensed table-bordered table-striped">
-                <tr ng-repeat="user in $data" style="text-align: center;">
-                    <td title="'仪器号'" sortable="'userId'">
+            <table ng-table="samplingTable" class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="s in $data" style="text-align: center;">
+                    <td title="'样品'" sortable="'ObjectNo'">{{s.ObjectNo}}
                     </td>
-                    <td title="'样品'" sortable="'name'">
+                    <td title="'正在执行的步骤'">{{s.NowStep}}
                     </td>
-                    <td title="'正在执行的步骤'" sortable="'gender'">
+                    <td title="'正在进行的任务'">
                     </td>
-                    <td title="'上一步骤'" sortable="'phoneNo'">
+                    <td title="'上一步骤'">{{s.FormerStep}}
                     </td>
-                    <td title="'下一步骤'" sortable="'role'">
+                    <td title="'下一步骤'">{{s.LaterStep}}
+                    </td>
+                    <td title="'紧急停止'"> <img ng-src="image/warning.ico" style="width:34px;height: 34px;">
                     </td>
                 </tr>
             </table>
