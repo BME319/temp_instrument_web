@@ -15,7 +15,7 @@
             <td title="'输出代码'" filter="{ OutputCode: 'text'}">
                 {{type.OutputCode}}</td>
             <td title="'详情'">
-                <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="toedit(type)">编辑</button>
+                <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="toedit(type.OperationId)">编辑</button>
                 <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todelete(type.OperationId)">删除</button>
             </td>
         </tr>
@@ -35,10 +35,17 @@
                 <form id="new_operationForm" name="cultureForm" class="form-horizontal">
                     <div class="form-group">
                         <label>
+                            <br>操作ID：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.OperationId" placeholder="请输入操作ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>
                             <br>操作名：</label>
                     </div>
                     <div class="input-group">
-                        <input type="text" class="form-control" ng-model="registerInfo.OperationId" placeholder="请输入操作名称" />
+                        <input type="text" class="form-control" ng-model="registerInfo.OperationName" placeholder="请输入操作名称" />
                     </div>
                     <div class="form-group">
                         <label>
@@ -106,6 +113,22 @@
                 <button class="btn btn-primary" type="button" ng-click="delete()">确定</button>
                 <button class="btn btn-warning" type="button" ng-click="modal_close('#DeleteOrNot')">取消</button>
             </div>
+        </div>
+    </div>
+</div>
+<!-- 提示新增成功modal -->
+<div class="modal fade" id="setSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="text-align: center; font-size: 20px">
+            新增成功！
+        </div>
+    </div>
+</div>
+<!-- 提示删除成功modal -->
+<div class="modal fade" id="deleteSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="text-align: center; font-size: 20px">
+            删除成功！
         </div>
     </div>
 </div>

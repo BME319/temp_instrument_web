@@ -1,21 +1,33 @@
 <div class="tab-pane fade in active" id="operationorder">
     <h3>操作流程维护</h3>
-    <ul id="mypills2" class="nav nav-pills nav-stacked" style="text-align: right;font-size: 25px;margin-top: -38px">
-        <button type="button" class="btn btn-primary" style="margin-right:20px;width: 100px" ng-click="tonew()">新增</button>
-    </ul>
-    <!-- <table ng-table="tableParams" style="margin-top: 20px" class="table" show-filter="true">
+    <!-- 流程搜索 -->
+    <form class="form-inline">
+    <button type="submit" class="btn btn-primary" ng-click="tonew()">新增</button>
+    <div class="form-group">
+        <label class="sr-only">操作流程类型</label>
+        <select class="form-control" ng-model="userlist.SampleType" ng-options="SampleType.SampleType as SampleType.SampleType for SampleType in search_SampleTypes">
+            <option value=''>操作流程类型</option>
+        </select>
+    </div>
+    <button type="submit" class="btn btn-default" ng-click="searchList()">搜索</button>
+</form>
+    <table ng-table="tableParams" style="margin-top: 20px" class="table">
         <tr ng-repeat="type in $data" style="text-align: center;">
-            <td title="'操作流程ID'" filter="{ UserId: 'text'}" sortable="'OrderId'">
+            <td title="'操作流程ID'" sortable="'OrderId'">
                 {{type.OrderId}}</td>
-            <td title="'操作ID'" filter="{ UserId: 'text'}" sortable="'Type'">
+            <td title="'操作ID'" sortable="'OperationId'">
                 {{type.OperationId}}</td>
-            <td title="'操作参数'" filter="{ UserId: 'text'}" sortable="'Type'">
+            <td title="'操作参数'" sortable="'OperationValue'">
                 {{type.OperationValue}}</td>
-            <td title="'操作说明'" filter="{ UserId: 'text'}" sortable="'Type'">
+            <td title="'操作说明'" sortable="'OpDescription'">
                 {{type.OpDescription}}</td>
+            <td title="'详情'">
+                <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="toedit(type)">编辑</button>
+                <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todelete(OrderId)">删除</button>
+            </td>
         </tr>
-    </table> -->
-    <table ng-table="tableParams" style="margin-top: 20px" class="table" show-filter="true">
+    </table>
+    <!-- <table ng-table="tableParams" style="margin-top: 20px" class="table" show-filter="true">
         <tr ng-repeat="type in $data" style="text-align: center;">
             <td title="'操作流程种类'" filter="{ UserId: 'text'}" sortable="'type'">
                 {{type}}</td>
@@ -24,5 +36,165 @@
                 <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todelete(type)">删除</button>
             </td>
         </tr>
-    </table>
+    </table> -->
+</div>
+<!-- 新建操作modal -->
+<div class="modal fade" id="new_operationorder" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="modal_close('#new_operationorder')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">新建操作</h3>
+            </div>
+            <div class="modal-body" style="margin-left: 15%;margin-right: 15%">
+                <form id="new_operationorderForm" name="cultureForm" class="form-horizontal">
+                    <div class="form-group">
+                        <label>
+                            <br>流程ID：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.OrderId" placeholder="请输入流程ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>供试品类型：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.SampleType" placeholder="请输入供试品类型" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作ID：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.OperationId" placeholder="请输入操作ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作参数：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.OperationValue" placeholder="请输入操作参数" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作描述：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.OpDescription" placeholder="请输入操作描述" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>上一步：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.PreviousStep" placeholder="请输入上一步" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>下一步：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="registerInfo.LaterStep" placeholder="请输入下一步" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="register()">确认新建</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#new_operationorder')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 编辑操作modal -->
+<div class="modal fade" id="edit_operationorder" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="modal_close('#edit_operationorder')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">修改操作</h3>
+            </div>
+            <div class="modal-body" style="margin-left: 15%;margin-right: 15%">
+                <form id="edit_operationForm" name="cultureForm" class="form-horizontal">
+                    <div class="form-group">
+                        <label>
+                            <br>流程ID：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="editInfo.OrderId" placeholder="请输入流程ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>供试品类型：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="editInfo.SampleType" placeholder="请输入供试品类型" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作ID：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="editInfo.OperationId" placeholder="请输入操作ID" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作参数：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="editInfo.OperationValue" placeholder="请输入操作参数" />
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <br>操作描述：</label>
+                    </div>
+                    <div class="input-group">
+                        <input type="text" class="form-control" ng-model="editInfo.OpDescription" placeholder="请输入操作描述" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="edit()">确认修改</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#edit_operationorder')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 是否删除modal -->
+<div class="modal fade" id="DeleteOrNot" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="modal_close('#DeleteOrNot')">&times;</button>
+                <h3 class="modal-title" id="modal-title">警告</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <span>确定删除该操作流程？</span>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" type="button" ng-click="delete()">确定</button>
+                <button class="btn btn-warning" type="button" ng-click="modal_close('#DeleteOrNot')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 提示新增成功modal -->
+<div class="modal fade" id="setSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="text-align: center; font-size: 20px">
+            新增成功！
+        </div>
+    </div>
+</div>
+<!-- 提示删除成功modal -->
+<div class="modal fade" id="deleteSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="text-align: center; font-size: 20px">
+            删除成功！
+        </div>
+    </div>
 </div>

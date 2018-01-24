@@ -18,7 +18,8 @@
     }])
 
     .constant('CONFIG', {
-        baseUrl: 'http://10.12.43.34:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
+        // baseUrl: 'http://10.12.43.34:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
+        baseUrl: 'http://10.13.22.221:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
 
         // socketPort: 'http://127.0.0.1:8080/realTime', //Socket 端口
         ImageAddressIP: "http://121.43.107.106:8088",
@@ -152,7 +153,7 @@
                 GetUserInfo: { method: 'GET', params: { route: 'MstUserGetUserInfo' }, timeout: 10000 },
                 GetAllUserInfo: { method: 'POST', params: { route: 'MstUserGetUsersInfoByAnyProperty' }, timeout: 10000, isArray: true },
                 CreateNewUserId: { method: 'GET', params: { route: 'MstUserCreateNewUserId' }, timeout: 10000 },
-                GetUserByPhoneNo: { method: 'GET', params: { route: 'MstUserGetUserByPhoneNo' }, timeout: 10000 },
+                // GetUserByPhoneNo: { method: 'GET', params: { route: 'MstUserGetUserByPhoneNo' }, timeout: 10000 },
                 GetReagentType: { method: 'GET', params: { route: 'MstReagentTypeGetAll' }, timeout: 10000, isArray: true },
             })
         };
@@ -184,8 +185,11 @@
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'Operation' }, {
                 GetEquipmentOps: { method: 'POST', params: { route: 'OpEquipmentGetEquipmentOpsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                //无菌检测操作字典
                 SetOperationInfo: { method: 'POST', params: { route: 'MstOperationSetData' }, timeout: 10000 },
                 GetOperationInfo: { method: 'POST', params: { route: 'MstOperationGetInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                DeleteOperation: { method: 'POST', params: { route: 'MstOperationDeleteByPK' }, timeout: 10000},
+                //操作流程字典
                 SetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
                 GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
                 GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true }
@@ -524,6 +528,15 @@
         self.GetOperationInfo = function(obj) {
             var deferred = $q.defer();
             Data.Operation.GetOperationInfo(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.DeleteOperation = function(obj) {
+            var deferred = $q.defer();
+            Data.Operation.DeleteOperation(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
