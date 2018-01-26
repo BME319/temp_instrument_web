@@ -968,6 +968,106 @@
             //     $scope.text = name;
             // }
 
+
+            // 阳性菌加注-茹画
+            $scope.posibacInjection = function() {
+                $('#new_posibacInjection').modal('show');
+
+                // 菌液列表
+                ItemInfo.GetReagentsInfo({
+                    "ReagentId": null,
+                    "ReagentSource": null,
+                    "ReagentName": "菌",
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetReagentSource": 1,
+                    "GetReagentName": 1,
+                    "GetRevisionInfo": 1
+                }).then(
+                    function(data) {
+                        $scope.Reagent_search = data
+                    },
+                    function(e) {});
+
+
+                // 任务列表
+                Result.GetTestResultInfo({
+                    "TestId": null,
+                    "ObjectNo": null,
+                    "ObjCompany": null,
+                    "ObjIncuSeq": null,
+                    "TestType": null,
+                    "TestStand": null,
+                    "TestEquip": null,
+                    "TestEquip2": null,
+                    "Description": null,
+                    "ProcessStartS": null,
+                    "ProcessStartE": null,
+                    "ProcessEndS": null,
+                    "ProcessEndE": null,
+                    "CollectStartS": null,
+                    "CollectStartE": null,
+                    "CollectEndS": null,
+                    "CollectEndE": null,
+                    "TestTimeS": null,
+                    "TestTimeE": null,
+                    "TestResult": null,
+                    "TestPeople": null,
+                    "TestPeople2": null,
+                    "ReStatus": 1,
+                    "RePeople": null,
+                    "ReTimeS": null,
+                    "ReTimeE": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "FormerStep": null,
+                    "NowStep": null,
+                    "LaterStep": null,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        $scope.Result_search = data
+                    },
+                    function(e) {});
+            }
+$scope.setposibacInjection = function() {
+            console.log($scope.registerInfo.TestId1)
+            console.log($scope.registerInfo.TestId2)
+            console.log($scope.registerInfo.TestId3)
+            console.log($scope.registerInfo.ReagentId)
+
+        }
+
         }
     ])
 
@@ -1490,7 +1590,7 @@
 
     // 字典管理--操作流程维护
     .controller('operationorderCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
-        function($scope, Storage, Data, Operation,$timeout, NgTableParams) {
+        function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
 
             var getLists = function(_userlist) {
                 console.log(_userlist)
@@ -1536,14 +1636,14 @@
             $scope.tonew = function(_OrderId) {
                 console.log(_OrderId)
                 // 编号
-                console.log(Number(_OrderId.replace(/[^0-9]/ig,"")))
+                console.log(Number(_OrderId.replace(/[^0-9]/ig, "")))
                 // 类型
-                console.log(_OrderId.replace(/[^a-zA-Z]/ig,""))
+                console.log(_OrderId.replace(/[^a-zA-Z]/ig, ""))
 
-                $scope.newSampleType=_OrderId.replace(/[^a-zA-Z]/ig,"")                
+                $scope.newSampleType = _OrderId.replace(/[^a-zA-Z]/ig, "")
                 //  ID
-                $scope.newOperationOrderId=_OrderId.replace(/[^a-zA-Z]/ig,"")+(Array(3).join('0') + Number(_OrderId.replace(/[^0-9]/ig,""))).slice(-3)
-                
+                $scope.newOperationOrderId = _OrderId.replace(/[^a-zA-Z]/ig, "") + (Array(3).join('0') + Number(_OrderId.replace(/[^0-9]/ig, ""))).slice(-3)
+
                 $('#new_operationorder').modal('show')
             }
 
@@ -1556,7 +1656,7 @@
             $scope.flagsearch = false
             $scope.searchOperation = function(searchname) {
                 console.log(searchname);
-                if ((searchname == undefined)||(searchname == '')) {
+                if ((searchname == undefined) || (searchname == '')) {
                     $('#nameUndefined').modal('show')
                     $timeout(function() {
                         $('#nameUndefined').modal('hide')
