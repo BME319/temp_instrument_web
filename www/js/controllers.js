@@ -37,10 +37,9 @@
                 }
 
                 //从手机号获得 UserId
-                var loginInfo ={"PhoneNo":login.phoneno}
+                var loginInfo = { "PhoneNo": login.phoneno }
                 UserService.GetUserByPhoneNo(loginInfo).then(function(data) {
-
-                    data = data.toJSON();
+                    data = data.toJSON()
                     t = [];
                     for (i in data) {
                         t = t + data[i];
@@ -54,7 +53,7 @@
                         // UserService.SetUID(data);
                         //本地暂存
                         var loginInfo2 = {
-                            "UserId": t, 
+                            "UserId": t,
                             "InPassword": login.password,
                             "TerminalIP": null,
                             "TerminalName": null,
@@ -449,7 +448,7 @@
                 "LastLoginTime": 1,
                 "RevisionInfo": 0,
                 "Token": 1,
-                "LastLogoutTime":  1,
+                "LastLogoutTime": 1,
             };
             var promise = UserService.GetUserInfo(userInfoQuery);
             promise.then(function(data) {
@@ -607,50 +606,57 @@
                 }
             }
 
-            //选择样品
+
             $scope.queryflow1 = function() {
                 $scope.iflarge = false
-                if ($scope.task1.SampleType == "SoB") { $scope.iflarge = false } else {
+                if ($scope.task1.SampleType == "SoB") {
+                    $scope.iflarge = false
+                } else {
                     $scope.iflarge = true
                 }
-                // var promise = Operation.GetSampleFlow($scope.type)
-                // promise.then(function(data) {
-                //         console.log(data)
-                //         $scope.flowtableParams = new NgTableParams({
-                //             count: 100
-                //         }, {
-                //             counts: [],
-                //             dataset: data
-                //         })
-                //         if (data.length == 0) {
-                //             $('#nodata').modal('show')
-                //             $timeout(function() {
-                //                 $('#nodata').modal('hide')
-                //             }, 1000)
-                //         }
-                //     },
-                //     function(err) {
-                //         console.log(err)
-                //     }
-                // )  
-                // 
-                ItemInfo.GetReagentsInfo({
-                    "ReagentId": null,
-                    "ReagentSource": null,
-                    "ReagentName": null,
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "GetReagentSource": 1,
+                //选择样品
+                var sampleQuery_1 = {
+                    "ObjectType": $scope.task1.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_1);
+                promise.then(function(data) {
+                    $scope.Objects_1 = data
+                    console.log(data)
+                }, function(err) {});
+                //选择试剂
+                var ReagentsQuery_1 = {
+                    "GetReagentId": 1,
                     "GetReagentName": 1,
-                    "GetRevisionInfo": 1
-                }).then(function(data) {
+                };
+                var promise = ItemInfo.GetReagentsInfo(ReagentsQuery_1);
+                promise.then(function(data) {
                     $scope.Reagents = data
-                }, function(err) { console.log(err) })
+                    console.log($scope.Reagents)
+                }, function(err) {});
             }
+            $scope.queryflow2 = function() {
+                var sampleQuery_2 = {
+                    "ObjectType": $scope.task2.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_2);
+                promise.then(function(data) {
+                    $scope.Objects_2 = data
+                }, function(err) {});
+            }
+            $scope.queryflow3 = function() {
+                var sampleQuery_3 = {
+                    "ObjectType": $scope.task3.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
+                promise.then(function(data) {
+                    $scope.Objects_3 = data
+                }, function(err) {});
+            }
+
+
 
             // 是否复位确认
             $scope.instrumentreset = function() {
@@ -712,16 +718,54 @@
                 }
             }
 
-           //主界面--rzx
-            var realInfo  = {
+            //主界面--rzx
+            var realInfo_1 = {
+                "ReStatus": 0,
                 "GetObjectNo": 1,
                 "GetFormerStep": 1,
                 "GetNowStep": 1,
-                "GetLaterStep": 1
+                "GetLaterStep": 1,
+                "GetObjectName": 1,
+                "GetDescription": 1
             }
-            var promise1 = Result.GetTestResultInfo(realInfo);
-                promise1.then(function(data) {
-                $scope.samplingTable = new NgTableParams({
+            var promise1 = Result.GetTestResultInfo(realInfo_1);
+            promise1.then(function(data) {
+                console.log(data)
+                $scope.handlingTable = new NgTableParams({
+                    count: 50
+                }, {
+                    counts: [],
+                    dataset: data
+                })
+            }, function(err) {});
+            var realInfo_2 = {
+                "ReStatus": 1,
+                "GetObjectNo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1,
+                "GetObjectName": 1,
+                "GetDescription": 1
+            }
+            var promise2 = Result.GetTestResultInfo(realInfo_2);
+            promise2.then(function(data) {
+                console.log(data)
+                $scope.CollectTable = new NgTableParams({
+                    count: 50
+                }, {
+                    counts: [],
+                    dataset: data
+                })
+            }, function(err) {});
+            var realInfo_3 = {
+                "ReStatus": 2,
+                "GetObjectNo": 1,
+                "GetObjectName": 1,
+            }
+            var promise3 = Result.GetTestResultInfo(realInfo_3);
+            promise3.then(function(data) {
+                console.log(data)
+                $scope.IncuTable = new NgTableParams({
                     count: 50
                 }, {
                     counts: [],
@@ -729,67 +773,150 @@
                 })
             }, function(err) {});
 
-
             //实时监控 
             var instruments = new Array()
             $scope.instruments = instruments
             var IsolatorsQuery = {
-                "IsolatorId": null,
-                "ProductDayS": null,
-                "ProductDayE": null,
-                "EquipPro": null,
-                "InsDescription": null,
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
                 "GetProductDay": 0,
                 "GetEquipPro": 0,
                 "GetInsDescription": 0,
                 "GetRevisionInfo": 0
             };
-            var promise1 = ItemInfo.GetIsolatorsInfo(IsolatorsQuery);
-            promise1.then(function(data) {
+            var promise4 = ItemInfo.GetIsolatorsInfo(IsolatorsQuery);
+            promise4.then(function(data) {
                 for (i = 0; i < data.length; i++) {
                     $scope.instruments.push(data[i].IsolatorId)
                 }
             }, function(err) {});
             var IncubatorsQuery = {
-                "IncubatorId": null,
-                "ProductDayS": null,
-                "ProductDayE": null,
-                "EquipPro": null,
-                "InsDescription": null,
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
                 "GetProductDay": 0,
                 "GetEquipPro": 0,
                 "GetInsDescription": 0,
                 "GetRevisionInfo": 0
             };
-            var promise2 = ItemInfo.GetIncubatorsInfo(IncubatorsQuery);
-            promise2.then(function(data) {
+            var promise5 = ItemInfo.GetIncubatorsInfo(IncubatorsQuery);
+            promise5.then(function(data) {
                 for (i = 0; i < data.length; i++) {
                     $scope.instruments.push(data[i].IncubatorId)
                 }
             }, function(err) {});
-            // $scope.selectInstrument = function(){
+            var IncEnv = new Array()
+            var IsoColEnv = new Array()
+            var IsoProEnv_1 = new Array()
+            var IsoProEnv_2 = new Array()
+            var IsoProEnv_3 = new Array()
+            $scope.pro = false
+            $scope.pro2 = true
+            $scope.inc = false
+            $scope.col = false
+            //仪器选择
+            var ProcessEnv_2 = {
+                "IsolatorId": "Iso_Process",
+                "CabinId": 2
+            }
+            var promise6 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_2);
+            promise6.then(function(data) {
+                IsoProEnv_2 = data
+            }, function(err) {});
+            $timeout(function() {
+                newEnv()
+            }, 100)
+            $scope.selectInstrument = function() {
+                if ($scope.envins.indexOf("Iso_Collect") != -1) {
+                    var CollectEnv = {
+                        "IsolatorId": $scope.envins,
+                        "CabinId": 1
+                    }
+                    var promise = ItemInfo.GetNewIsolatorEnv(CollectEnv);
+                    promise.then(function(data) {
+                        IsoColEnv = data
+                        $scope.inc = false
+                        $scope.pro = false
+                        $scope.pro2 = false
+                        $scope.col = true
+                    }, function(err) {});
+                } else if ($scope.envins.indexOf("Iso_Process") != -1) {
+                    var ProcessEnv_1 = {
+                        "IsolatorId": $scope.envins,
+                        "CabinId": 1
+                    }
+                    var promise1 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_1);
+                    promise1.then(function(data) {
+                        IsoProEnv_1 = data
+                        $scope.pro = true
+                        $scope.pro2 = true
+                        $scope.inc = false
+                        $scope.col = false
+                        console.log(data)
+                    }, function(err) {});
+                    // var ProcessEnv_2 = {
+                    //     "IsolatorId": $scope.envins,
+                    //     "CabinId": 2
+                    // }
+                    var promise2 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_2);
+                    promise2.then(function(data) {
+                        IsoProEnv_2 = data
+                    }, function(err) {});
+                    var ProcessEnv_3 = {
+                        "IsolatorId": $scope.envins,
+                        "CabinId": 3
+                    }
+                    var promise3 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_3);
+                    promise3.then(function(data) {
+                        console.log(data)
+                        IsoProEnv_3 = data
+                    }, function(err) {});
+                } else {
+                    var IncubatorEnv = {
+                        "IncubatorId": $scope.envins,
+                    }
+                    var promise = ItemInfo.GetNewIncubatorEnv(IncubatorEnv);
+                    promise.then(function(data) {
+                        IncEnv = data
+                        $scope.pro = false
+                        $scope.pro2 = false
+                        $scope.inc = true
+                        $scope.col = false
+                    }, function(err) {});
+                }
+                $timeout(function() {
+                    newEnv()
+                }, 100)
+            }
+            var newEnv = function() {
+                $scope.isolator1 = {
+                    env_names: ["进料区温度/℃", "进料区湿度", "进料区压力", "进料区过氧化氢浓度高", "进料区过氧化氢浓度低"],
+                    env_codes: ["1", "2", "3", "4", "5"],
+                    env_status: IsoProEnv_1,
 
-            // }
+                }
+                $scope.isolator2 = {
+                    env_names: ["加工区温度/℃", "加工区湿度", "加工区压力", "加工区过氧化氢浓度高", "加工区过氧化氢浓度低"],
+                    env_codes: ["1", "2", "3", "4", "5"],
+                    env_status: IsoProEnv_2,
+                }
+                $scope.isolator3 = {
+                    env_names: ["出料区温度/℃", "出料区湿度", "出料区压力", "出料区过氧化氢浓度高", "出料区过氧化氢浓度低"],
+                    env_codes: ["1", "2", "3", "4", "5"],
+                    env_status: IsoProEnv_3,
+                }
+                $scope.isocollect = {
+                    env_names: ["温度/℃", "湿度", "压力", "过氧化氢浓度高", "过氧化氢浓度低"],
+                    env_codes: ["1", "2", "3", "4", "5"],
+                    env_status: IsoColEnv,
+                }
+                $scope.incubator = {
+                    env_names: ["培养箱温度1/℃", "培养箱温度2/℃", "培养箱温度3/℃"],
+                    env_codes: ["1"],
+                    env_status: IncEnv,
+                }
+            }
             $scope.connected = function() {
                 console.log($scope.instruments)
-
             }
 
             //实时监控
             $scope.status = "No Connection";
-
 
             SocketService.on('connect', function() {
                 // console.log('Connected');
@@ -800,181 +927,44 @@
                 $scope.status = "No Connection"
             });
 
-            SocketService.on('message', function(data) {
-                // console.log(data);
-                $scope.status = "Connected";
-                var myChart = echarts.init(document.getElementById('main'));
-                myChart.showLoading();
-                // 指定图表的配置项和数据
-                var option = {
-                    title: {
-                        text: $scope.text
-                    },
-                    tooltip: {},
-                    legend: {
-                        data: ['params']
-                    },
-                    xAxis: {
-                        data: []
-                    },
-                    yAxis: {},
-                    series: [{
-                        name: '销量',
-                        type: 'line',
-                        data: data.data
-                    }]
-                };
+            // SocketService.on('message', function(data) {
+            //     // console.log(data);
+            //     $scope.status = "Connected";
+            //     var myChart = echarts.init(document.getElementById('main'));
+            //     myChart.showLoading();
+            //     // 指定图表的配置项和数据
+            //     var option = {
+            //         title: {
+            //             text: $scope.text
+            //         },
+            //         tooltip: {},
+            //         legend: {
+            //             data: ['params']
+            //         },
+            //         xAxis: {
+            //             data: []
+            //         },
+            //         yAxis: {},
+            //         series: [{
+            //             name: '销量',
+            //             type: 'line',
+            //             data: data.data
+            //         }]
+            //     };
 
-                // 使用刚指定的配置项和数据显示图表。
-                myChart.setOption(option);
-                myChart.hideLoading();
-            });
-
-
-            $scope.isolator1 = {
-                name: "进料区",
-                env_names: ["进料区温度", "进料区湿度", "进料区压力", "进料区风速", "进料区过氧化氢浓度"],
-                env_codes: ["1", "2", "3", "4", "5"],
-                env_status: [1, 1, 1, 1, 1],
-                instr_names: [
-                    "进料区灭菌器",
-                    "进料区与进料待加工区之间的门",
-                    "进料区导轨"
-
-                ],
-                instr_codes: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ],
-                instr_status: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ]
+            //     // 使用刚指定的配置项和数据显示图表。
+            //     myChart.setOption(option);
+            //     myChart.hideLoading();
+            // });
 
 
-            };
 
-            // $scope.isolator2 = {
-            //     name: "进料待加工区",
-            //     env_names: ["进料待加工区温度", "进料待加工区湿度", "进料待加工区压力", "进料待加工区风速", "进料待加工区过氧化氢浓度"],
-            //     env_codes: ["1", "2", "3", "4", "5"],
-            //     env_status: [1, 1, 1, 1, 1],
-            //     instr_names: [
-            //         "进料待加工区灭菌器",
-            //         "加工区灭菌器",
-            //         "待出料区灭菌器",
-            //     ],
-            //     instr_codes: [
-            //         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-            //     ],
-            //     instr_status: [
-            //         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-            //     ]
-            // };
 
-            $scope.isolator3 = {
-                name: "加工区",
-                env_names: ["加工区温度", "加工区湿度", "加工区压力", "加工区风速", "加工区过氧化氢浓度"],
-                env_codes: ["1", "2", "3", "4", "5"],
-                env_status: [1, 1, 1, 1, 1],
-                instr_names: [
-                    "加工区灭菌器",
-                    "出料区导轨",
-                    "待出料区与出料区之间的门"
-                ],
-                instr_codes: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ],
-                instr_status: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ]
-            };
-
-            // $scope.isolator4 = {
-            //     name: "待出料区",
-            //     env_names: ["待出料区温度", "待出料区湿度", "待出料区压力", "待出料区风速", "待出料区过氧化氢浓度"],
-            //     env_codes: ["1", "2", "3", "4", "5"],
-            //     env_status: [1, 1, 1, 1, 1],
-            //     instr_names: [
-            //         "待出料区灭菌器",
-            //         "待出料区与出料区之间的门"
-            //     ],
-            //     instr_codes: [
-            //         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-            //     ],
-            //     instr_status: [
-            //         "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-            //     ]
-            // };
-            $scope.isolator5 = {
-                name: "出料区",
-                env_names: ["出料区温度", "出料区湿度", "出料区压力", "出料区风速", "出料区过氧化氢浓度"],
-                env_codes: ["1", "2", "3", "4", "5"],
-                env_status: [1, 1, 1, 1, 1],
-                instr_names: [
-                    "出料区灭菌器",
-                    "出料区导轨"
-                ],
-                instr_codes: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ],
-                instr_status: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ]
-            };
-
-            $scope.isolator = {
-                name: "出料区",
-                env_names: ["温度", "湿度", "压力", "风速", "过氧化氢浓度"],
-                env_codes: ["1", "2", "3", "4", "5"],
-                env_status: [1, 1, 1, 1, 1],
-                instr_names: [
-                    "进料区灭菌器",
-                    "进料待加工区灭菌器",
-                    "加工区灭菌器",
-                    "待出料区灭菌器",
-                    "出料区灭菌器",
-                    "进料区与进料待加工区之间的门",
-                    "进料区导轨",
-                    "加工区导轨",
-                    "出料区导轨",
-                    "待出料区与出料区之间的门",
-                    "机械臂"
-                ],
-                instr_codes: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ],
-                instr_status: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11"
-                ]
-            };
-            $scope.incubator = {
-                name: "培养箱",
-                env_names: ["培养箱温度"],
-                env_codes: ["1"],
-                env_status: ["35 ℃"],
-                instr_names: [
-                    "培养箱门",
-                    "上层外圈转盘",
-                    "上层内圈转盘",
-                    "下层外圈转盘",
-                    "下层内圈转盘",
-                    "顶空电源",
-                    "视觉光源",
-                    "工业相机",
-                    "顶空分析",
-                    "支架电机"
-                ],
-                instr_codes: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"],
-                instr_status: [
-                    "1", "2", "3", "4", "5", "6", "7", "8", "9", "10"
-                ]
-            };
-
-            $scope.printcode = function(code, name) {
-                // console.log(code);
-                SocketService.emit('get params', code);
-                $scope.text = name;
-
-            }
+            // $scope.printcode = function(code, name) {
+            //     // console.log(code);
+            //     SocketService.emit('get params', code);
+            //     $scope.text = name;
+            // }
 
         }
     ])
@@ -1556,7 +1546,7 @@
             }
 
             $scope.toedit = function(type) {
-                $scope.editInfo=type
+                $scope.editInfo = type
 
                 $('#edit_operation').modal('show')
             }
@@ -1592,7 +1582,7 @@
             }
 
             $scope.toedit = function(type) {
-                $scope.editInfo=type
+                $scope.editInfo = type
                 $('#edit_samplingtype').modal('show')
             }
 
