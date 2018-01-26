@@ -18,7 +18,8 @@
     }])
 
     .constant('CONFIG', {
-        baseUrl: 'http://10.13.22.221:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
+        // baseUrl: 'http://10.13.22.221:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
+        baseUrl: 'http://121.43.107.106:8063/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
 
         // socketPort: 'http://127.0.0.1:8080/realTime', //Socket 端口
         ImageAddressIP: "http://121.43.107.106:8088",
@@ -168,7 +169,10 @@
                 CreateReagentId: { method: 'GET', params: { route: 'ItemReagentCreateReagentId', ReagentType: '@ReagentType' }, timeout: 10000 },
                 SetReagentData: { method: 'POST', params: { route: 'ItemReagentSetData' }, timeout: 10000 },
                 GetIncubatorEnv: { method: 'POST', params: { route: 'EnvIncubatorGetIncubatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetIsolatorEnv: { method: 'POST', params: { route: 'EnvIsolatorGetIsolatorEnvsByAnyProperty' }, timeout: 10000, isArray: true }
+                GetIsolatorEnv: { method: 'POST', params: { route: 'EnvIsolatorGetIsolatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
+                SetReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeSetData' }, timeout: 10000 },
+                DeleteReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeDeleteByPK' }, timeout: 10000 },
+
             })
         }
         // 检测结果-张桠童
@@ -183,9 +187,12 @@
         var Operation = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'Operation' }, {
                 GetEquipmentOps: { method: 'POST', params: { route: 'OpEquipmentGetEquipmentOpsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                // GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                //无菌检测操作字典
                 SetOperationInfo: { method: 'POST', params: { route: 'MstOperationSetData' }, timeout: 10000 },
                 GetOperationInfo: { method: 'POST', params: { route: 'MstOperationGetInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                DeleteOperation: { method: 'POST', params: { route: 'MstOperationDeleteByPK' }, timeout: 10000},
+                //操作流程字典
                 SetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
                 GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
                 GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true }
@@ -451,7 +458,26 @@
             });
             return deferred.promise;
         }
-
+        // 样品类型插入数据
+        self.SetReagentTypeData = function(arr) {
+            var deferred = $q.defer();
+            Data.ItemInfo.SetReagentTypeData(arr, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
+        // 样品类型删除数据
+        self.DeleteReagentTypeData = function(arr) {
+            var deferred = $q.defer();
+            Data.ItemInfo.DeleteReagentTypeData(arr, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
         return self;
     }])
 
@@ -489,7 +515,7 @@
         return self;
     }])
 
-    // 获取仪器信息--张桠童
+     // 获取仪器信息--张桠童
     .factory('Operation', ['$http', '$q', 'Storage', 'Data', function($http, $q, Storage, Data) {
         var self = this;
         // 获取检测结果信息表
@@ -503,15 +529,15 @@
             return deferred.promise;
         };
 
-        self.GetSampleFlow = function(obj) {
-            var deferred = $q.defer();
-            Data.Operation.GetSampleFlow(obj, function(data, headers) {
-                deferred.resolve(data);
-            }, function(err) {
-                deferred.reject(err);
-            });
-            return deferred.promise;
-        };
+        // self.GetSampleFlow = function(obj) {
+        //     var deferred = $q.defer();
+        //     Data.Operation.GetSampleFlow(obj, function(data, headers) {
+        //         deferred.resolve(data);
+        //     }, function(err) {
+        //         deferred.reject(err);
+        //     });
+        //     return deferred.promise;
+        // };
         self.SetOperationInfo = function(obj) {
             var deferred = $q.defer();
             Data.Operation.SetOperationInfo(obj, function(data, headers) {
@@ -524,6 +550,15 @@
         self.GetOperationInfo = function(obj) {
             var deferred = $q.defer();
             Data.Operation.GetOperationInfo(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.DeleteOperation = function(obj) {
+            var deferred = $q.defer();
+            Data.Operation.DeleteOperation(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);

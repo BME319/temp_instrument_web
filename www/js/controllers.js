@@ -37,7 +37,7 @@
                 }
 
                 //从手机号获得 UserId
-                var loginInfo ={"PhoneNo":login.phoneno}
+                var loginInfo = { "PhoneNo": login.phoneno }
                 UserService.GetUserByPhoneNo(loginInfo).then(function(data) {
 
                     data = data.toJSON();
@@ -54,7 +54,7 @@
                         // UserService.SetUID(data);
                         //本地暂存
                         var loginInfo2 = {
-                            "UserId": t, 
+                            "UserId": t,
                             "InPassword": login.password,
                             "TerminalIP": null,
                             "TerminalName": null,
@@ -449,7 +449,7 @@
                 "LastLoginTime": 1,
                 "RevisionInfo": 0,
                 "Token": 1,
-                "LastLogoutTime":  1,
+                "LastLogoutTime": 1,
             };
             var promise = UserService.GetUserInfo(userInfoQuery);
             promise.then(function(data) {
@@ -668,6 +668,7 @@
                     "BacterId": null,
                     "OtherRea": null,
                     "IncubatorId": null,
+                    "Place": null,
                     "StartTimeS": null,
                     "StartTimeE": null,
                     "EndTimeS": null,
@@ -680,6 +681,7 @@
                     "GetStartTime": 1,
                     "GetEndTime": 1,
                     "GetAnalResult": 1
+
                 }).then(function(data) {
                     for (i = 0; i < data.length; i++) {
                         tubeslist.push({
@@ -712,15 +714,15 @@
                 }
             }
 
-           //主界面--rzx
-            var realInfo  = {
+            //主界面--rzx
+            var realInfo = {
                 "GetObjectNo": 1,
                 "GetFormerStep": 1,
                 "GetNowStep": 1,
                 "GetLaterStep": 1
             }
             var promise1 = Result.GetTestResultInfo(realInfo);
-                promise1.then(function(data) {
+            promise1.then(function(data) {
                 $scope.samplingTable = new NgTableParams({
                     count: 50
                 }, {
@@ -1495,45 +1497,102 @@
             $state.go('main.dictionaries.operationorder')
         }
     }])
+
     // 字典管理--操作流程维护
-    .controller('operationorderCtrl', ['$scope', 'Storage', 'Data', 'Operation', 'NgTableParams',
-        function($scope, Storage, Data, Operation, NgTableParams) {
+    .controller('operationorderCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
+        function($scope, Storage, Data, Operation,$timeout, NgTableParams) {
+
+            var getLists = function(_userlist) {
+                console.log(_userlist)
+                Operation.GetOperationOrder(_userlist).then(function(_data) {
+                    var finaldata = new Array()
+                    for (j = 0; j < _data.length; j++) {
+                        finaldata.push(_data[j])
+                    }
+                    $scope.tableParams = new NgTableParams({
+                        count: 10
+                    }, {
+                        counts: [],
+                        dataset: finaldata
+                    });
+                }, function(err) {});
+            }
+
+            // 设置可供选择的流程类型
+            var tempSampleTypes = new Array()
 
             Operation.GetAllOpTypes({}).then(function(data) {
-                var finaldata = new Array()
+
+                // ng-options改造
                 for (i = 0; i < data.length; i++) {
-                    Operation.GetOperationOrder({
-                        "SampleType": data[i],
-                    }).then(function(_data) {
-                        console.log(_data)
-                        for (j = 0; j < _data.length; j++) {
-                            finaldata[j] = {}
-                            $.extend(finaldata[j], _data[j])
-                            finaldata[j].SampleType = data[i]
-                        }
-                        console.log(finaldata)
-
-                    }, function(err) {});
+                    tempSampleTypes[i] = {}
+                    tempSampleTypes[i].SampleType = data[i];
                 }
-                console.log(finaldata)
-                $scope.tableParams = new NgTableParams({
-                    count: 10
-                }, {
-                    counts: [],
-                    dataset: finaldata
-                });
+
+                // 页面初始化
+                $scope.SampleTypenow = tempSampleTypes[0]
+                getLists($scope.SampleTypenow);
+
             }, function(err) {});
+            $scope.search_SampleTypes = tempSampleTypes
 
+            // 搜索
+            $scope.searchList = function() {
+                console.log($scope.SampleTypenow)
+                getLists($scope.SampleTypenow)
+            }
 
+            // 新增
+            $scope.tonew = function(_OrderId) {
+                console.log(_OrderId)
+                // 编号
+                console.log(Number(_OrderId.replace(/[^0-9]/ig,"")))
+                // 类型
+                console.log(_OrderId.replace(/[^a-zA-Z]/ig,""))
 
+                $scope.newSampleType=_OrderId.replace(/[^a-zA-Z]/ig,"")                
+                //  ID
+                $scope.newOperationOrderId=_OrderId.replace(/[^a-zA-Z]/ig,"")+(Array(3).join('0') + Number(_OrderId.replace(/[^0-9]/ig,""))).slice(-3)
+                
+                $('#new_operationorder').modal('show')
+            }
 
+            // 关闭modal控制
+            $scope.modal_close = function(target) {
+                $(target).modal('hide')
+            }
+
+            //新建-搜索操作
+            $scope.flagsearch = false
+            $scope.searchOperation = function(searchname) {
+                console.log(searchname);
+                if ((searchname == undefined)||(searchname == '')) {
+                    $('#nameUndefined').modal('show')
+                    $timeout(function() {
+                        $('#nameUndefined').modal('hide')
+                    }, 1000)
+                } else {
+                    $scope.flagsearch = true
+                    Operation.GetOperationInfo({
+                        "OperationId": null,
+                        "OperationName": searchname,
+                        "OutputCode": null,
+                        "GetOperationName": 1,
+                        "GetOutputCode": 1
+                    }).then(function(data) {
+                        $scope.Operation_search = data
+                    }, function(err) {});
+
+                }
+            }
 
         }
     ])
 
+
     // 字典管理--基本操作维护
-    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', 'NgTableParams',
-        function($scope, Storage, Data, Operation, NgTableParams) {
+    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
+        function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
             var input = {
                 "OperationId": null,
                 "OperationName": null,
@@ -1541,29 +1600,98 @@
                 "GetOperationName": 1,
                 "GetOutputCode": 1
             }
-            Operation.GetOperationInfo(input).then(function(data) {
-                console.log(data)
-                $scope.tableParams = new NgTableParams({
-                    count: 10
-                }, {
-                    counts: [],
-                    dataset: data
-                });
-            }, function(err) {});
 
-            $scope.todelete = function() {
+            var getLists = function() {
+                Operation.GetOperationInfo(input).then(function(data) {
+                    console.log(data)
+                    $scope.tableParams = new NgTableParams({
+                        count: 10
+                    }, {
+                        counts: [],
+                        dataset: data
+                    });
+                }, function(err) {});
+            }
+            getLists();
+            $scope.tonew = function() {
+                $('#new_operation').modal('show')
+
+            }
+
+            $scope.register = function() {
+                Operation.SetOperationInfo($scope.registerInfo).then(function(data) {
+                        if (data.result == "插入成功") {
+                            // 关闭新建modal
+                            $('#new_operation').modal('hide')
+                            // 提示新建成功
+                            $('#setSuccess').modal('show')
+                            $timeout(function() {
+                                $('#setSuccess').modal('hide')
+                            }, 1000)
+                            getLists();
+                        }
+                    },
+                    function(err) {});
+            }
+
+            // 监听事件(表单清空)
+            $('#new_operation').on('hidden.bs.modal', function() {
+                $scope.registerInfo = {}
+            })
+
+
+            var tempOperationId
+            $scope.todelete = function(_OperationId) {
+                tempOperationId = _OperationId
                 $('#DeleteOrNot').modal('show')
             }
 
-            $scope.toedit = function(type) {
-                $scope.editInfo=type
+            $scope.delete = function() {
+                Operation.DeleteOperation({ OperationId: tempOperationId }).then(function(data) {
+                    if (data.result == "数据删除成功") {
+                        // 关闭是否删除modal
+                        $('#DeleteOrNot').modal('hide')
+                        // 提示新建成功
+                        $('#deleteSuccess').modal('show')
+                        $timeout(function() {
+                            $('#deleteSuccess').modal('hide')
+                        }, 1000)
+                        getLists();
+                    }
+                }, function(err) {});
+            }
 
+
+            var tempeditType
+            $scope.toedit = function(type) {
+                tempeditType = type
+                $scope.editInfo = type
                 $('#edit_operation').modal('show')
             }
 
-            $scope.tonew = function() {
-                $('#new_operation').modal('show')
+            $scope.edit = function() {
+                Operation.DeleteOperation({ OperationId: tempeditType.OperationId }).then(function(data) {
+                    if (data.result == "数据删除成功") {
+                        Operation.SetOperationInfo($scope.finaleditInfo).then(function(data) {
+                                if (data.result == "插入成功") {
+                                    // 关闭修改modal
+                                    $('#edit_operation').modal('hide')
+                                    // 提示修改成功
+                                    $('#editSuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#editSuccess').modal('hide')
+                                    }, 1000)
+                                    getLists();
+                                }
+                            },
+                            function(err) {});
+                    }
+                }, function(err) {});
             }
+            $('#edit_operation').on('hidden.bs.modal', function() {
+                $scope.editInfo = tempeditType
+                $scope.finaleditInfo = {}
+            })
 
             // 关闭modal控制
             $scope.modal_close = function(target) {
@@ -1575,30 +1703,100 @@
     ])
 
     // 字典管理--样品类型维护
-    .controller('samplingtypeCtrl', ['$scope', 'Storage', 'Data', 'UserService', 'NgTableParams',
-        function($scope, Storage, Data, UserService, NgTableParams) {
+    .controller('samplingtypeCtrl', ['$scope', 'Storage', 'Data', 'UserService', 'NgTableParams', 'ItemInfo', '$timeout',
+        function($scope, Storage, Data, UserService, NgTableParams, ItemInfo, $timeout) {
 
-            UserService.GetReagentType().then(function(data) {
-                $scope.tableParams = new NgTableParams({
-                    count: 10
-                }, {
-                    counts: [],
-                    dataset: data
-                });
-            }, function(err) {});
+            var getLists = function() {
+                UserService.GetReagentType().then(function(data) {
+                    $scope.tableParams = new NgTableParams({
+                        count: 10
+                    }, {
+                        counts: [],
+                        dataset: data
+                    });
+                }, function(err) {});
+            }
 
-            $scope.todelete = function() {
+            getLists();
+
+            var tempTypeId
+            $scope.todelete = function(_TypeId) {
+                tempTypeId = _TypeId
                 $('#DeleteOrNot').modal('show')
             }
 
+            $scope.delete = function() {
+                ItemInfo.DeleteReagentTypeData({ TypeId: tempTypeId }).then(function(data) {
+                    if (data.result == "数据删除成功") {
+                        // 关闭是否删除modal
+                        $('#DeleteOrNot').modal('hide')
+                        // 提示新建成功
+                        $('#deleteSuccess').modal('show')
+                        $timeout(function() {
+                            $('#deleteSuccess').modal('hide')
+                        }, 1000)
+                        getLists();
+                    }
+                }, function(err) {});
+            }
+
+            var tempeditType
             $scope.toedit = function(type) {
-                $scope.editInfo=type
+                tempeditType = type
+                $scope.editInfo = type
                 $('#edit_samplingtype').modal('show')
+            }
+
+            $scope.edit = function() {
+                ItemInfo.DeleteReagentTypeData({ TypeId: tempeditType.Type }).then(function(data) {
+                    if (data.result == "数据删除成功") {
+                        ItemInfo.SetReagentTypeData($scope.finaleditInfo).then(function(data) {
+                                if (data.result == "插入成功") {
+                                    // 关闭修改modal
+                                    $('#edit_samplingtype').modal('hide')
+                                    // 提示修改成功
+                                    $('#editSuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#editSuccess').modal('hide')
+                                    }, 1000)
+                                    getLists();
+                                }
+                            },
+                            function(err) {});
+                    }
+                }, function(err) {});
             }
 
             $scope.tonew = function() {
                 $('#new_samplingtype').modal('show')
             }
+
+            $scope.register = function() {
+                ItemInfo.SetReagentTypeData($scope.registerInfo).then(function(data) {
+                        console.log(data)
+                        if (data.result == "插入成功") {
+                            // 关闭新建modal
+                            $('#new_samplingtype').modal('hide')
+                            // 提示新建成功
+                            $('#setSuccess').modal('show')
+                            $timeout(function() {
+                                $('#setSuccess').modal('hide')
+                            }, 1000)
+                            getLists();
+                        }
+                    },
+                    function(err) {});
+            }
+
+            // 监听事件(表单清空)
+            $('#new_samplingtype').on('hidden.bs.modal', function() {
+                $scope.registerInfo = {}
+            })
+            $('#edit_samplingtype').on('hidden.bs.modal', function() {
+                $scope.editInfo = tempeditType
+                $scope.finaleditInfo = {}
+
+            })
 
             // 关闭modal控制
             $scope.modal_close = function(target) {
