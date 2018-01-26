@@ -20,7 +20,6 @@
     .constant('CONFIG', {
         // baseUrl: 'http://10.13.22.221:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
         baseUrl: 'http://121.43.107.106:8063/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
-
         // socketPort: 'http://127.0.0.1:8080/realTime', //Socket 端口
         ImageAddressIP: "http://121.43.107.106:8088",
         ImageAddressFile: "/PersonalPhoto",
@@ -170,9 +169,10 @@
                 SetReagentData: { method: 'POST', params: { route: 'ItemReagentSetData' }, timeout: 10000 },
                 GetIncubatorEnv: { method: 'POST', params: { route: 'EnvIncubatorGetIncubatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetIsolatorEnv: { method: 'POST', params: { route: 'EnvIsolatorGetIsolatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
+                GetNewIncubatorEnv: { method: 'GET', params: { route: 'EnvIncubatorGetNewIncubatorEnv' }, timeout: 10000, isArray: true },
+                GetNewIsolatorEnv: { method: 'GET', params: { route: 'EnvIsolatorGetNewIsolatorEnv' }, timeout: 10000, isArray: true },
                 SetReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeSetData' }, timeout: 10000 },
                 DeleteReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeDeleteByPK' }, timeout: 10000 },
-
             })
         }
         // 检测结果-张桠童
@@ -452,6 +452,24 @@
         self.GetIsolatorEnv = function(arr) {
             var deferred = $q.defer();
             Data.ItemInfo.GetIsolatorEnv(arr, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
+        self.GetNewIncubatorEnv = function(arr) {
+            var deferred = $q.defer();
+            Data.ItemInfo.GetNewIncubatorEnv(arr, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.GetNewIsolatorEnv = function(arr) {
+            var deferred = $q.defer();
+            Data.ItemInfo.GetNewIsolatorEnv(arr, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);

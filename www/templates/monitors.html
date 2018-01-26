@@ -19,96 +19,105 @@
                 </ul>
             </div>
             <!-- 样本录入列表-阮卓欣 -->
-            <table ng-table="samplingTable" class="table table-condensed table-bordered table-striped">
-                <tr ng-repeat="s in $data" style="text-align: center;">
-                    <td title="'样品'" sortable="'ObjectNo'">{{s.ObjectNo}}
+            <h3>加工</h3>
+            <table ng-table="handlingTable" class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="g in $data" style="text-align: center;">
+                    <td title="'样品'" sortable="'ObjectName'">{{g.ObjectName}}
                     </td>
-                    <td title="'正在执行的步骤'">{{s.NowStep}}
+                    <td title="'正在执行的步骤'">{{g.NowStep}}
                     </td>
-                    <td title="'正在进行的任务'">
+                    <td title="'上一步骤'">{{g.FormerStep}}
                     </td>
-                    <td title="'上一步骤'">{{s.FormerStep}}
+                    <td title="'下一步骤'">{{g.LaterStep}}
                     </td>
-                    <td title="'下一步骤'">{{s.LaterStep}}
+                    <td title="'详情'">
                     </td>
-                    <td title="'紧急停止'"> <img ng-src="image/warning.ico" style="width:34px;height: 34px;">
+                    <td title="'故障情况'">
+                        <button class="btn btn-primary" style="margin-right:20px">紧急停止</button><img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-left:10px">
+                    </td>
+                </tr>
+            </table>
+            <h3>加注</h3>
+            <table ng-table="CollectTable" class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="z in $data" style="text-align: center;">
+                    <td title="'样品'" sortable="'ObjectName'">{{z.ObjectName}}
+                    </td>
+                    <td title="'正在执行的步骤'">{{z.NowStep}}
+                    </td>
+                    <td title="'上一步骤'">{{z.FormerStep}}
+                    </td>
+                    <td title="'下一步骤'">{{z.LaterStep}}
+                    </td>
+                    <td title="'详情'">
+                    </td>
+                    <td title="'故障情况'">
+                        <button class="btn btn-primary" style="margin-right:20px">紧急停止</button><img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-left:10px">
+                    </td>
+                </tr>
+            </table>
+            <h3>培养</h3>
+            <table ng-table="IncuTable" class="table table-condensed table-bordered table-striped">
+                <tr ng-repeat="i in $data" style="text-align: center;">
+                    <td title="'检测编号'">
+                    </td>
+                    <td title="'样品'" sortable="'ObjectName'">{{i.ObjectName}}
+                    </td>
+                    <td title="'已培养时间'">
+                    </td>
+                    <td title="'剩余培养时间'">
                     </td>
                 </tr>
             </table>
         </div>
         <div style="margin-right: 30px;text-align: right">
-            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-option="item.id for item in items" ng-change="selectInstrument()" ng-model="item">
+            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-change="selectInstrument()" ng-model="envins">
                 <option selected value="">选择仪器</option>
                 <option ng-repeat="instrument in instruments">{{instrument}}</option>
             </select>
             <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="connected()">是否连上</button>
         </div>
-        <div class="col-lg-15 col-lg-offset-1">
-            <!--<h2>实时监控 {{status}}</h2>-->
-            <div class="row ">
-                <p>{{status}}</p>
-                <div class="col-md-3 env-panel">
-                    <h4> {{isolator1.name}} </h4>
+        <div class="col-md-12 col-md-offset-1">
+            <!--             <!--<h2>实时监控 {{status}}</h2>-->
+            <div class="row " style="font-size: 16px">
+                <!--                 <p>{{status}}</p>
+ -->
+                <div class="col-md-3 env-panel" ng-if="pro">
+                    <h4>进料区</h4>
+                    </br>
                     <div ng-repeat="n in isolator1.env_names">
-                        <p ng-click="printcode(isolator.env_codes[$index],n)">{{n}} <code>{{isolator1.env_status[$index]}}</code></p>
-                    </div>
-                    <div ng-repeat="n in isolator1.instr_names">
-                        <p>{{n}} <code>{{isolator1.instr_status[$index]}}</code></p>
+                        <p ng-click="printcode(isolator1.env_codes[$index],n)">{{n}} <code>{{isolator1.env_status[$index]}}</code></p>
                     </div>
                 </div>
-                <!--                 <div class="col-md-3 env-panel">
-                    <h4> {{isolator2.name}} </h4>
+                <div class="col-md-3 env-panel" ng-if="pro2">
+                    <h4>加工区</h4>
+                    </br>
                     <div ng-repeat="n in isolator2.env_names">
                         <p ng-click="printcode(isolator2.env_codes[$index],n)">{{n}} <code>{{isolator2.env_status[$index]}}</code></p>
                     </div>
-                    <div ng-repeat="n in isolator2.instr_names">
-                        <p>{{n}} <code>{{isolator2.instr_status[$index]}}</code></p>
-                    </div>
-                </div> -->
-                <div class="col-md-3 env-panel">
-                    <h4> {{isolator3.name}} </h4>
+                </div>
+                <div class="col-md-3 env-panel" ng-if="pro">
+                    <h4>出料区</h4>
+                    </br>
                     <div ng-repeat="n in isolator3.env_names">
                         <p ng-click="printcode(isolator3.env_codes[$index],n)">{{n}} <code>{{isolator3.env_status[$index]}}</code></p>
                     </div>
-                    <div ng-repeat="n in isolator3.instr_names">
-                        <p>{{n}} <code>{{isolator3.instr_status[$index]}}</code></p>
-                    </div>
                 </div>
             </div>
-            <div class="row">
-                <!--                 <div class="col-md-9 env-panel">
-                    <div id="main" style="height:500%;"></div>
-                </div> -->
-                <!--<div class="col-md-5 env-panel">-->
-                <!--<div id="main2" style="height:500%;"></div>-->
-                <!--</div>-->
-            </div>
-            <div class="row ">
-                <!--                 <div class="col-md-3 env-panel">
-                    <h4> {{isolator4.name}} </h4>
-                    <div ng-repeat="n in isolator4.env_names">
-                        <p ng-click="printcode(isolator4.env_codes[$index],n)">{{n}} <code>{{isolator4.env_status[$index]}}</code></p>
-                    </div>
-                    <div ng-repeat="n in isolator4.instr_names">
-                        <p>{{n}} <code>{{isolator4.instr_status[$index]}}</code></p>
-                    </div>
-                </div> -->
+            <div class="row" ng-if="inc" style="font-size: 16px">
                 <div class="col-md-3 env-panel">
-                    <h4> {{isolator5.name}} </h4>
-                    <div ng-repeat="n in isolator5.env_names">
-                        <p ng-click="printcode(isolator5.env_codes[$index],n)">{{n}} <code>{{isolator5.env_status[$index]}}</code></p>
-                    </div>
-                    <div ng-repeat="n in isolator5.instr_names">
-                        <p>{{n}} <code>{{isolator5.instr_status[$index]}}</code></p>
-                    </div>
-                </div>
-                <div class="col-md-3 env-panel">
-                    <h4> {{incubator.name}} </h4>
+                    <h4>{{envins}}培养箱</h4>
+                    </br>
                     <div ng-repeat="n in incubator.env_names">
                         <p ng-click="printcode(incubator.env_codes[$index],n)">{{n}} <code>{{incubator.env_status[$index]}}</code></p>
                     </div>
-                    <div ng-repeat="n in incubator.instr_names">
-                        <p>{{n}} <code>{{incubator.instr_status[$index]}}</code></p>
+                </div>
+            </div>
+            <div class="row" ng-if="col" style="font-size: 16px">
+                <div class="col-md-3 env-panel">
+                    <h4>加注隔离器</h4>
+                    </br>
+                    <div ng-repeat="n in isocollect.env_names">
+                        <p ng-click="printcode(isocollect.env_codes[$index],n)">{{n}} <code>{{isocollect.env_status[$index]}}</code></p>
                     </div>
                 </div>
             </div>
@@ -239,61 +248,107 @@
 <!-- 添加任务modal -->
 <div class="modal fade" id="add_task" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
-        <div class="modal-content" style="height: 400px">
+        <div class="modal-content" style="height: 550px">
             <div class="modal-header">
                 <button type="button" class="close" ng-click="modal_close('#add_task')" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h3 class="modal-title" style="padding-bottom: 10px">添加任务</h3>
-                <b>当前加工培养器隔离器：</b>ISO001
+                <b>当前加工培养器隔离器：</b>Iso_Process
             </div>
-            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px;height: 220px">
+            <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 350px">
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label>选择样品：</label>
+                            <label>选择样品类型：</label>
                         </div>
                         <div class="form-group">
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task1.SampleType" ng-change="queryflow1()">
-                                <option selected value="">选择样品</option>
+                                <option selected value="">选择样品类型</option>
                                 <option selected value="SoB">SoB</option>
                                 <option selected value="SoS">SoS</option>
                                 <option selected value="Wsp">Wsp</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task2.SampleType" ng-change="queryflow2()" ng-show="iflarge">
-                                <option selected value="">选择样品</option>
+                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task2.SampleType" ng-change="queryflow2()" ng-show="iflarge">
+                                <option selected value="">选择样品类型</option>
                                 <option selected value="SoS">SoS</option>
                                 <option selected value="Wsp">Wsp</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task3.SampleType" ng-change="queryflow3()" ng-show="iflarge">
-                                <option selected value="">选择样品</option>
+                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task3.SampleType" ng-change="queryflow3()" ng-show="iflarge">
+                                <option selected value="">选择样品类型</option>
                                 <option selected value="SoS">SoS</option>
                                 <option selected value="Wsp">Wsp</option>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-6">
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <label>垛盘试剂：</label>
+                            <label>选择样品：</label>
                         </div>
                         <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent" style="width:40%">
-                                <option selected value="">选择试剂</option>
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O1.ObjectName for O1 in Objects_1" ng-model="task1.Sample" style="width:40%">
+                                <option selected value="">选择样品</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择试剂</option>
+                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O2.ObjectName for O2 in Objects_2" ng-model="task2.Sample" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择样品</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent" style="width:40%" ng-show="iflarge">
+                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O3.ObjectName for Object in Objects_3" ng-model="task3.Sample" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择样品</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>垛盘试剂1：</label>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent1" style="width:40%" ng-change="queryReagent1()">
                                 <option selected value="">选择试剂</option>
                             </select>
+                            <p>编号：{{Reagent.ReagentId}}</p>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent1" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择试剂</option>
+                            </select>
+                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent1" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择试剂</option>
+                            </select>
+                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>垛盘试剂2：</label>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent2" style="width:40%">
+                                <option selected value="">选择试剂</option>
+                            </select>
+                            <p>编号：{{Reagent.ReagentId}}</p>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent2" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择试剂</option>
+                            </select>
+                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                        </div>
+                        <div class="form-group">
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent2" style="width:40%" ng-show="iflarge">
+                                <option selected value="">选择试剂</option>
+                            </select>
+                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
                         </div>
                     </div>
                 </div>
