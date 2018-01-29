@@ -7,7 +7,7 @@
           <li><a href="#reagentsEntry" data-toggle="pill">试剂录入</a></li>
           <li><a href="#reagentsEntry" data-toggle="pill">添加任务</a></li> -->
                     </br>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">仪器复位</button>
+                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">隔离器复位</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="culture()">培养</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="sampleEntry()">样品录入</button>
@@ -447,11 +447,21 @@
                 <button type="button" class="close" ng-click="modal_close('#ResetOrNot')">&times;</button>
                 <h3 class="modal-title" id="modal-title">警告</h3>
             </div>
-            <div class="modal-body" id="modal-body">
-                <span>确定复位该仪器？</span>
+            <div class="modal-body" id="modal-body" >
+                <div class="form-group">
+                    <label style="margin-left: 15%;">选择复位隔离器：</label>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
+                        <option value="">请选择复位隔离器</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="margin-left: 15%;">确定复位该仪器？</label>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="reset()">确定</button>
+                <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.IsolatorId)">确定</button>
                 <button class="btn btn-warning" type="button" ng-click="modal_close('#ResetOrNot')">取消</button>
             </div>
         </div>
@@ -508,6 +518,7 @@
                         <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
                             <option selected value="">选择培养器</option>
                         </select>
+
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">培养器参数</label>
@@ -530,6 +541,13 @@
                 <button type="button " class="btn btn-primary " ng-click="toculture()">确认</button>
                 <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#culturemodal')">取消</button>
             </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="resetsuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            复位成功！
         </div>
     </div>
 </div>

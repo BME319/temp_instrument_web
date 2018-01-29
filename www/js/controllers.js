@@ -127,6 +127,8 @@
             $state.go('phoneValid');
 
         }
+
+
     }])
 
     .controller('phoneValidCtrl', ['$scope', '$timeout', '$interval', 'Storage', '$state', 'UserService', function($scope, $timeout, $interval, Storage, $state, UserService) {
@@ -660,6 +662,28 @@
 
             // 是否复位确认
             $scope.instrumentreset = function() {
+                var promise4 = ItemInfo.GetIsolatorsInfo({
+                    "IsolatorId": null,
+                    "ProductDayS": null,
+                    "ProductDayE": null,
+                    "EquipPro": null,
+                    "InsDescription": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetProductDay": 1,
+                    "GetEquipPro": 1,
+                    "GetInsDescription": 1,
+                    "GetRevisionInfo": 1
+                });
+                promise4.then(function(data) {
+                    console.log(data)
+                    $scope.Isolator_search = data
+                }, function(err) {});
+
                 $('#ResetOrNot').modal('show');
             }
 
@@ -1060,13 +1084,43 @@
                     },
                     function(e) {});
             }
-$scope.setposibacInjection = function() {
-            console.log($scope.registerInfo.TestId1)
-            console.log($scope.registerInfo.TestId2)
-            console.log($scope.registerInfo.TestId3)
-            console.log($scope.registerInfo.ReagentId)
+            $scope.setposibacInjection = function() {
+                console.log($scope.registerInfo.TestId1)
+                console.log($scope.registerInfo.TestId2)
+                console.log($scope.registerInfo.TestId3)
+                console.log($scope.registerInfo.ReagentId)
 
-        }
+            }
+
+            // 隔离器复位 - 茹画
+            $scope.reset = function(_IsolatorId) {
+                   // 获取当前日期
+                var myDate = new Date();
+
+                Operation.OpEquipmentSetData({
+                    "EquipmentId": _IsolatorId,
+                    "OperationTime": myDate,
+                    "OperationCode": "R0",
+                    "OperationValue": "R0",
+                    "OperationResult": "R0",
+                    "TerminalIP": null,
+                    "TerminalName": null,
+                    "revUserId": null
+                }).then(
+                    function(data) {
+                         if (data.result == "插入成功") {
+                                                         $('#ResetOrNot').modal('hide')
+
+                            // 提示成功
+                            $('#resetsuccess').modal('show')
+                            $timeout(function() {
+                                $('#resetsuccess').modal('hide')
+                            }, 1000)
+                        }
+                       
+                    },
+                    function(e) {});
+            }
 
         }
     ])
