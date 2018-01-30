@@ -622,8 +622,8 @@
     </div>
 </div>
 <!-- 培养详情 -->
-<div class="modal fade" id="detail_Inc" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
+<div class="modal fade" id="detail_Inc" tabindex="-1" role="dialog" aria-hidden="true" >
+    <div class="modal-dialog" style="width: 900px;">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title" id="modal-title">任务</h3>
@@ -640,8 +640,8 @@
                         <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
                         </td>
                         <td title="'机器视觉'">
-<!--                             <img src="{{pic.ImageAddress}}" alt="">
- -->                        </td>
+                            <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
+                        </td>
                         <td title="'分析结果'">{{pic.AnalResult}}
                         </td>
                         <td title="'顶空分析结果'">{{pic.TopResult}}
