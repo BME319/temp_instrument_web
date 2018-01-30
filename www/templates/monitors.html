@@ -18,8 +18,10 @@
                     </br>
                 </ul>
             </div>
-            <!-- 样本录入列表-阮卓欣 -->
-            <h3>加工</h3>
+            <div>
+                <h3>加工 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px">
+                <button class="btn btn-primary" style="margin-top:-10px">紧急停止</button></h3>
+            </div>
             <table ng-table="handlingTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="g in $data" style="text-align: center;">
                     <td title="'样品'" sortable="'ObjectName'">{{g.ObjectName}}
@@ -31,13 +33,20 @@
                     <td title="'下一步骤'">{{g.LaterStep}}
                     </td>
                     <td title="'详情'">
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_pro(g.TestType)">详情</button>
                     </td>
-                    <td title="'故障情况'">
-                        <button class="btn btn-primary" style="margin-right:20px">紧急停止</button><img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-left:10px">
+                    <td title="'进度'">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: '{{g.JinDu}}'%">
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>
-            <h3>加注</h3>
+            <div>
+                <h3>加注 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px">
+                <button class="btn btn-primary" style="margin-top:-10px">紧急停止</button></h3>
+            </div>
             <table ng-table="CollectTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="z in $data" style="text-align: center;">
                     <td title="'样品'" sortable="'ObjectName'">{{z.ObjectName}}
@@ -49,9 +58,14 @@
                     <td title="'下一步骤'">{{z.LaterStep}}
                     </td>
                     <td title="'详情'">
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_col(z.TestType,z.TestEquip2)">详情</button>
                     </td>
-                    <td title="'故障情况'">
-                        <button class="btn btn-primary" style="margin-right:20px">紧急停止</button><img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-left:10px">
+                    <td title="'进度'">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 90%;">
+                                <span class="sr-only">40% 完成</span>
+                            </div>
+                        </div>
                     </td>
                 </tr>
             </table>
@@ -66,6 +80,9 @@
                     </td>
                     <td title="'剩余培养时间'">
                     </td>
+                    <td title="'培养阶段任务'">
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)">详情</button>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -78,24 +95,24 @@
         </div>
         <div class="col-md-12 col-md-offset-1">
             <!--             <!--<h2>实时监控 {{status}}</h2>-->
-            <div class="row " style="font-size: 16px">
+            <div class="row " style="font-size: 16px" ng-if="pro">
                 <!--                 <p>{{status}}</p>
  -->
-                <div class="col-md-3 env-panel" ng-if="pro">
+                <div class="col-md-3 env-panel">
                     <h4>进料区</h4>
                     </br>
                     <div ng-repeat="n in isolator1.env_names">
                         <p ng-click="printcode(isolator1.env_codes[$index],n)">{{n}} <code>{{isolator1.env_status[$index]}}</code></p>
                     </div>
                 </div>
-                <div class="col-md-3 env-panel" ng-if="pro2">
+                <div class="col-md-3 env-panel">
                     <h4>加工区</h4>
                     </br>
                     <div ng-repeat="n in isolator2.env_names">
                         <p ng-click="printcode(isolator2.env_codes[$index],n)">{{n}} <code>{{isolator2.env_status[$index]}}</code></p>
                     </div>
                 </div>
-                <div class="col-md-3 env-panel" ng-if="pro">
+                <div class="col-md-3 env-panel">
                     <h4>出料区</h4>
                     </br>
                     <div ng-repeat="n in isolator3.env_names">
@@ -300,7 +317,7 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O3.ObjectName for Object in Objects_3" ng-model="task3.Sample" style="width:40%" ng-show="iflarge">
+                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O3.ObjectName for O3 in Objects_3" ng-model="task3.Sample" style="width:40%" ng-show="iflarge">
                                 <option selected value="">选择样品</option>
                             </select>
                         </div>
@@ -313,19 +330,19 @@
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent1" style="width:40%" ng-change="queryReagent1()">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p>编号：{{Reagent.ReagentId}}</p>
+                            <p>编号：{{task1.Reagent1.ReagentId}}</p>
                         </div>
                         <div class="form-group">
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent1" style="width:40%" ng-show="iflarge">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                            <p ng-show="iflarge">编号：{{task2.Reagent1.ReagentId}}</p>
                         </div>
                         <div class="form-group">
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent1" style="width:40%" ng-show="iflarge">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                            <p ng-show="iflarge">编号：{{task3.Reagent1.ReagentId}}</p>
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -336,19 +353,19 @@
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent2" style="width:40%">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p>编号：{{Reagent.ReagentId}}</p>
+                            <p>编号：{{task1.Reagent2.ReagentId}}</p>
                         </div>
                         <div class="form-group">
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent2" style="width:40%" ng-show="iflarge">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                            <p ng-show="iflarge">编号：{{task2.Reagent2.ReagentId}}</p>
                         </div>
                         <div class="form-group">
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent2" style="width:40%" ng-show="iflarge">
                                 <option selected value="">选择试剂</option>
                             </select>
-                            <p ng-show="iflarge">编号：{{Reagent.ReagentId}}</p>
+                            <p ng-show="iflarge">编号：{{task3.Reagent2.ReagentId}}</p>
                         </div>
                     </div>
                 </div>
@@ -364,7 +381,7 @@
                     </table>
                 </div> -->
             <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="tablechange()">确认</button>
+                <button type="button " class="btn btn-primary " ng-click="creattask()">确认</button>
                 <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#add_task')">取消</button>
             </div>
         </div>
@@ -486,4 +503,95 @@
             </div>
         </div>
     </div>
+</div>
+<!-- 加工详情 -->
+<div class="modal fade" id="detail_Pro" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">流程详情</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <table ng-table="tabledetail_pro" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
+                    <tr ng-repeat="dpro in $data" style="text-align: center;">
+                        <td title="'步骤'" sortable="'OrderId'">{{dpro.OrderId}}
+                        </td>
+                        <td title="'操作ID'" sortable="'OperationId'">{{dpro.OperationId}}
+                        </td>
+                        <td title="'操作说明'">{{dpro.OpDescription}}
+                        </td>
+                        <td title="'操作参数'">{{dpro.OperationValue}}
+                        </td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    <div class="col-xs-offset-3">
+                        <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Pro')">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 加注详情 -->
+<div class="modal fade" id="detail_Col" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">流程详情</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <table ng-table="tabledetail_col" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
+                    <tr ng-repeat="dpro in $data" style="text-align: center;">
+                        <td title="'步骤'" sortable="'OrderId'">{{dpro.OrderId}}
+                        </td>
+                        <td title="'操作ID'" sortable="'OperationId'">{{dpro.OperationId}}
+                        </td>
+                        <td title="'操作说明'">{{dpro.OpDescription}}
+                        </td>
+                        <td title="'操作参数'">{{dpro.OperationValue}}
+                        </td>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    <div class="col-xs-offset-3">
+                        <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Col')">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 培养详情 -->
+<div class="modal fade" id="detail_Inc" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">任务</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div>
+                    <p>样品编号：{{Number}}</p>
+                    <p>样品名：{{Name}}</p>
+                </div>
+                <table ng-table="pictureTable" class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="pic in $data" style="text-align: center;">
+                        <td title="'样品管号'" sortable="'TubeNo'">{{pic.TubeNo}}
+                        </td>
+                        <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
+                        </td>
+                        <td title="'机器视觉'"><img src="{{pic.ImageAddress}}" alt="">
+                        </td>
+                        <td title="'分析结果'">{{pic.AnalResult}}
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="toculture()">确认</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#detail_Inc')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 </div>

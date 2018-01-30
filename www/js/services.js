@@ -181,13 +181,15 @@
                 GetTestResultInfo: { method: 'POST', params: { route: 'ResTestResultGetResultInfosByAnyProperty' }, timeout: 10000, isArray: true },
                 GetBreakDowns: { method: 'POST', params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetResultTubes: { method: 'POST', params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
+                CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
+                GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true }
             })
         }
         // 仪器信息-张桠童
         var Operation = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'Operation' }, {
                 GetEquipmentOps: { method: 'POST', params: { route: 'OpEquipmentGetEquipmentOpsByAnyProperty' }, timeout: 10000, isArray: true },
-                // GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
                 //无菌检测操作字典
                 SetOperationInfo: { method: 'POST', params: { route: 'MstOperationSetData' }, timeout: 10000 },
                 GetOperationInfo: { method: 'POST', params: { route: 'MstOperationGetInfoByAnyProperty' }, timeout: 10000, isArray: true },
@@ -530,6 +532,24 @@
             });
             return deferred.promise;
         };
+        self.CreateResult = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.CreateResult(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.GetTestPictures = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.GetTestPictures(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
         return self;
     }])
 
@@ -547,15 +567,15 @@
             return deferred.promise;
         };
 
-        // self.GetSampleFlow = function(obj) {
-        //     var deferred = $q.defer();
-        //     Data.Operation.GetSampleFlow(obj, function(data, headers) {
-        //         deferred.resolve(data);
-        //     }, function(err) {
-        //         deferred.reject(err);
-        //     });
-        //     return deferred.promise;
-        // };
+        self.GetSampleFlow = function(obj) {
+            var deferred = $q.defer();
+            Data.Operation.GetSampleFlow(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
         self.SetOperationInfo = function(obj) {
             var deferred = $q.defer();
             Data.Operation.SetOperationInfo(obj, function(data, headers) {
