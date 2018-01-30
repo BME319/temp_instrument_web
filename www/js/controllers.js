@@ -530,7 +530,6 @@
             }
             $scope.addtask = function() {
                 $('#add_task').modal('show')
-
             }
             // 监听事件(表单清空)
             $('#new_sample').on('hidden.bs.modal', function() {
@@ -655,6 +654,7 @@
                 var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
                 promise.then(function(data) {
                     $scope.Objects_3 = data
+                    console.log(data)
                 }, function(err) {});
             }
 
@@ -745,6 +745,21 @@
             }
 
             //主界面--rzx
+            // 获取当前日期
+            var myDate = new Date();
+            var formatDate = function(date) {
+                var y = date.getFullYear();
+                var m = date.getMonth() + 1;
+                m = m < 10 ? '0' + m : m;
+                var d = date.getDate();
+                d = d < 10 ? ('0' + d) : d;
+                var h = date.getHours();
+                var mm = date.getMinutes();
+                var s = date.getSeconds()
+                return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
+            };
+            var now = formatDate(myDate);            
+            //加工表
             var realInfo_1 = {
                 "ReStatus": 0,
                 "GetObjectNo": 1,
@@ -752,7 +767,10 @@
                 "GetNowStep": 1,
                 "GetLaterStep": 1,
                 "GetObjectName": 1,
-                "GetDescription": 1
+                "GetDescription": 1,
+                "GetTestType": 1,
+                "GetTestEquip": 1,
+                "GetTestId": 1
             }
             var promise1 = Result.GetTestResultInfo(realInfo_1);
             promise1.then(function(data) {
@@ -764,6 +782,11 @@
                     dataset: data
                 })
             }, function(err) {});
+            // Result.GetBreakDowns(TestEquip).then(
+            //     function(data) {
+            //         console.log(data)
+            //     },function(e) {});
+            //加注表
             var realInfo_2 = {
                 "ReStatus": 1,
                 "GetObjectNo": 1,
@@ -771,7 +794,10 @@
                 "GetNowStep": 1,
                 "GetLaterStep": 1,
                 "GetObjectName": 1,
-                "GetDescription": 1
+                "GetDescription": 1,
+                "GetTestType": 1,
+                "GetTestEquip2": 1,
+                "GetTestId": 1
             }
             var promise2 = Result.GetTestResultInfo(realInfo_2);
             promise2.then(function(data) {
@@ -783,6 +809,7 @@
                     dataset: data
                 })
             }, function(err) {});
+            //培养表            
             var realInfo_3 = {
                 "ReStatus": 2,
                 "GetObjectNo": 1,
@@ -831,8 +858,7 @@
             var IsoProEnv_1 = new Array()
             var IsoProEnv_2 = new Array()
             var IsoProEnv_3 = new Array()
-            $scope.pro = false
-            $scope.pro2 = true
+            $scope.pro = true
             $scope.inc = false
             $scope.col = false
             //仪器选择
@@ -858,7 +884,6 @@
                         IsoColEnv = data
                         $scope.inc = false
                         $scope.pro = false
-                        $scope.pro2 = false
                         $scope.col = true
                     }, function(err) {});
                 } else if ($scope.envins.indexOf("Iso_Process") != -1) {
@@ -870,7 +895,6 @@
                     promise1.then(function(data) {
                         IsoProEnv_1 = data
                         $scope.pro = true
-                        $scope.pro2 = true
                         $scope.inc = false
                         $scope.col = false
                         console.log(data)
@@ -900,7 +924,6 @@
                     promise.then(function(data) {
                         IncEnv = data
                         $scope.pro = false
-                        $scope.pro2 = false
                         $scope.inc = true
                         $scope.col = false
                     }, function(err) {});
@@ -936,6 +959,112 @@
                     env_codes: ["1"],
                     env_status: IncEnv,
                 }
+            }
+            //添加任务
+            $scope.creattask = function() {
+                var taskInfo_1 = {
+                    "ObjectNo": $scope.task1.Sample.ObjectNo,
+                    "ObjCompany": $scope.task1.Sample.ObjCompany,
+                    "ObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
+                    "Reagent1": $scope.task1.Reagent1.ReagentId,
+                    "Reagent2": $scope.task1.Reagent2.ReagentId,
+                    "ProcessStart": now,
+                    "TestPeople": Storage.get('UID'),
+                    "TerminalIP": extraInfo.postInformation().TerminalIP,
+                    "TerminalName": extraInfo.postInformation().TerminalName,
+                    "revUserId": extraInfo.postInformation().revUserId
+                }
+                console.log(taskInfo_1)
+                var promise = Result.CreateResult(taskInfo_1)
+                promise.then(function(data) {
+                    console.log(data)
+                }, function(err) {});
+                if ($scope.iflarge == true) {
+                    var taskInfo_2 = {
+                        "ObjectNo": $scope.task2.Sample.ObjectNo,
+                        "ObjCompany": $scope.task2.Sample.ObjCompany,
+                        "ObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
+                        "Reagent1": $scope.task2.Reagent1.ReagentId,
+                        "Reagent2": $scope.task2.Reagent2.ReagentId,
+                        "ProcessStart": now,
+                        "TestPeople": Storage.get('UID'),
+                        "TerminalIP": extraInfo.postInformation().TerminalIP,
+                        "TerminalName": extraInfo.postInformation().TerminalName,
+                        "revUserId": extraInfo.postInformation().revUserId
+                    }
+                    var promise = Result.CreateResult(taskInfo_2)
+                    promise.then(function(data) {
+                        console.log(data)
+                    }, function(err) {});
+                    var taskInfo_3 = {
+                        "ObjectNo": $scope.task3.Sample.ObjectNo,
+                        "ObjCompany": $scope.task3.Sample.ObjCompany,
+                        "ObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
+                        "Reagent1": $scope.task3.Reagent1.ReagentId,
+                        "Reagent2": $scope.task3.Reagent2.ReagentId,
+                        "ProcessStart": now,
+                        "TestPeople": Storage.get('UID'),
+                        "TerminalIP": extraInfo.postInformation().TerminalIP,
+                        "TerminalName": extraInfo.postInformation().TerminalName,
+                        "revUserId": extraInfo.postInformation().revUserId
+                    }
+                    var promise = Result.CreateResult(taskInfo_3)
+                    promise.then(function(data) {
+                        console.log(data)
+                    }, function(err) {});
+                }
+            }
+
+            $scope.detail_pro = function(SampleType, TestEquip) {
+                console.log(TestEquip)
+                var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
+                promise.then(function(data) {
+                    console.log(data)
+                    $scope.tabledetail_pro = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {});
+                $('#detail_Pro').modal('show')
+            }
+            $scope.detail_col = function(SampleType) {
+                console.log(SampleType)
+                var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
+                promise.then(function(data) {
+                    console.log(data)
+                    $scope.tabledetail_col = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {});
+                $('#detail_Col').modal('show')
+            }
+            $scope.detail_inc = function(ObjectNo, ObjectName,TestId) {
+                $scope.Number = ObjectNo
+                $scope.Name = ObjectName
+                $scope.Id = TestId
+                console.log(TestId)
+                var incInfo = {
+                    "GetCameraTime": 1,
+                    "GetImageAddress": 1,
+                    "GetAnalResult": 1,
+                    "TestId": $scope.Id
+                }
+                var promise = Result.GetTestPictures(incInfo)
+                promise.then(function(data) {
+                    console.log(data)
+                    $scope.pictureTable = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {});
+                $('#detail_Inc').modal('show')
             }
             $scope.connected = function() {
                 console.log($scope.instruments)
