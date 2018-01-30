@@ -514,13 +514,11 @@
                 <h3 class="modal-title">放入培养器</h3>
             </div>
             <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
-                <form id="cultureForm" name="cultureForm" class="form-horizontal">
+                <form id="putincultureForm" name="putincultureForm" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="cultureinfo.incubator" ng-change="tubeselect(cultureinfo.incubator)">
+                         <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinIncubator.IncubatorId for putinIncubator in putinIncubators" ng-model="putincultureinfo.IncubatorId" ng-change="putintubeselect(putincultureinfo.IncubatorId)">
                             <option selected value="">选择培养箱</option>
-                            <option selected value="Incu001">Incu001</option>
-                            <option selected value="sample string 1">sample string 1</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -532,7 +530,7 @@
                                         <input name="putinPlace" type="radio" value="Upper_" /> 上轮 </label>
                                     <label>
                                         <input name="putinPlace" type="radio" value="Lower_" /> 下轮 </label>
-                                    <input ng-model=“”></input>
+                                    <input ng-model="putinPlaceNo"></input>
                                 </div>
                                 <div class="row-xs-6">
                                     上轮请输入1~19，下轮请输入1~31。
@@ -542,7 +540,7 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube.TubeNo for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail($index)">
                             <option selected value="">选择培养器</option>
                         </select>
                     </div>
@@ -550,21 +548,21 @@
                         <label class="col-xs-3 control-label">培养器参数</label>
                         <div class="col-xs-9" style="margin-top: 7px">
                             <div class="gridTex">
-                                <b>培养器ID： </b>{{tempTube.TestId}}
-                                <div style="margin-top: 10px;"><b>培养液ID： </b>{{tempTube.CultureId}}</div>
-                                <div style="margin-top: 10px;"><b>菌液ID： </b>{{tempTube.BacterId}}</div>
-                                <div style="margin-top: 10px;"><b>其他试剂： </b>{{tempTube.OtherRea}}</div>
-                                <div style="margin-top: 10px;"><b>培养箱ID： </b>{{tempTube.IncubatorId}}</div>
-                                <div style="margin-top: 10px;"><b>开始时间： </b>{{tempTube.StartTime}}</div>
-                                <div style="margin-top: 10px;"><b>结束时间： </b>{{tempTube.EndTime}}</div>
-                                <div style="margin-top: 10px;"><b>分析结果： </b>{{tempTube.AnalResult}}</div>
+                                <b>培养器ID： </b>{{putintempTube.TestId}}
+                                <div style="margin-top: 10px;"><b>培养液ID： </b>{{putintempTube.CultureId}}</div>
+                                <div style="margin-top: 10px;"><b>菌液ID： </b>{{putintempTube.BacterId}}</div>
+                                <div style="margin-top: 10px;"><b>其他试剂： </b>{{putintempTube.OtherRea}}</div>
+                                <div style="margin-top: 10px;"><b>培养箱ID： </b>{{putintempTube.IncubatorId}}</div>
+                                <div style="margin-top: 10px;"><b>开始时间： </b>{{putintempTube.StartTime}}</div>
+                                <div style="margin-top: 10px;"><b>结束时间： </b>{{putintempTube.EndTime}}</div>
+                                <div style="margin-top: 10px;"><b>分析结果： </b>{{putintempTube.AnalResult}}</div>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="toputin()">确认放入</button>
+                <button type="button " class="btn btn-primary " ng-click="toputin(putintempTube)">确认放入</button>
                 <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#putin')">取消</button>
             </div>
         </div>
@@ -584,10 +582,8 @@
                 <form id="cultureForm" name="cultureForm" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="cultureinfo.incubator" ng-change="tubeselect(cultureinfo.incubator)">
+                         <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="takeoutIncubator.IncubatorId for takeoutIncubator in takeoutIncubators" ng-model="cultureinfo.IncubatorId" ng-change="tubeselect(cultureinfo.IncubatorId)">
                             <option selected value="">选择培养箱</option>
-                            <option selected value="Incu001">Incu001</option>
-                            <option selected value="sample string 1">sample string 1</option>
                         </select>
                     </div>
                     <div class="form-group">
