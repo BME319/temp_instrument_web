@@ -181,6 +181,7 @@
                 GetTestResultInfo: { method: 'POST', params: { route: 'ResTestResultGetResultInfosByAnyProperty' }, timeout: 10000, isArray: true },
                 GetBreakDowns: { method: 'POST', params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetResultTubes: { method: 'POST', params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
+                SetResIncubator: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000},
                 CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
                 GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
                 GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true }                
@@ -530,6 +531,15 @@
         self.GetResultTubes = function(obj) {
             var deferred = $q.defer();
             Data.Result.GetResultTubes(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.SetResIncubator = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.SetResIncubator(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);

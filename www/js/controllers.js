@@ -518,227 +518,10 @@
                 minuteStep: 1,
                 initialDate: new Date()
             })
+
             $scope.modal_close = function(target) {
                 $scope.reagent = {}
                 $(target).modal('hide')
-            }
-            $scope.sampleEntry = function() {
-                $('#new_sample').modal('show')
-            }
-            $scope.reagentEntry = function() {
-                $('#new_reagent').modal('show')
-            }
-            $scope.addtask = function() {
-                $('#add_task').modal('show')
-                document.getElementById('confirm').setAttribute("disabled", false)
-            }
-            // 监听事件(表单清空)
-            $('#new_sample').on('hidden.bs.modal', function() {
-                $scope.sample = null
-            })
-            $('#new_reagent').on('hidden.bs.modal', function() {
-                $scope.reagent = null
-            })
-            $('#add_task').on('hidden.bs.modal', function() {
-                $scope.task1 = null
-                $scope.task2 = null
-                $scope.task3 = null
-            })
-            $scope.sample = {};
-            var getJsonLength = function(jsonData) {
-                var jsonLength = 0;
-                for (var item in jsonData) {
-                    jsonLength++;
-                }
-                return jsonLength;
-            }
-            $scope.newsample = function() {
-                var formLength = getJsonLength($scope.sample);
-                if (formLength == 7) {
-                    $scope.sample.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.sample.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.sample.revUserId = extraInfo.postInformation().revUserId;
-                    // console.log($scope.sample);
-                    // console.log(formLength);
-                    var promise = ItemInfo.SetSampleData($scope.sample);
-                    promise.then(function(data) {
-                        console.log(data[0]);
-                        if (data[0] == "插入成功") {
-                            $('#new_sample').modal('hide')
-                        }
-                    }, function(err) {});
-                } else {
-                    $('#signupFail').modal('show')
-                    $timeout(function() {
-                        $('#signupFail').modal('hide')
-                    }, 1000)
-                }
-            }
-
-
-            // var promise = UserService.GetReagentType();
-            // promise.then(function(data){
-            //     // console.log(data);
-            //     $scope.reagenttypes = data;
-            // },function(err){});
-
-            $scope.newreagent = function() {
-                var formLength = getJsonLength($scope.reagent);
-                if (formLength == 3) {
-                    $scope.reagent.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.reagent.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.reagent.revUserId = extraInfo.postInformation().revUserId;
-                    console.log($scope.reagent)
-                    var promise = ItemInfo.SetReagentData($scope.reagent);
-                    promise.then(function(data) {
-                        console.log(data);
-                        if (data.result == 1) {
-                            $('#new_reagent').modal('hide')
-                        }
-                    }, function(err) {})
-                } else {
-                    $('#signupFail').modal('show')
-                    $timeout(function() {
-                        $('#signupFail').modal('hide')
-                    }, 1000)
-                }
-            }
-
-
-            $scope.queryflow1 = function() {
-                $scope.iflarge = false
-                if ($scope.task1.SampleType == "SoB") {
-                    $scope.iflarge = false
-                } else {
-                    $scope.iflarge = true
-                }
-                //选择样品
-                var sampleQuery_1 = {
-                    "ObjectType": $scope.task1.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_1);
-                promise.then(function(data) {
-                    $scope.Objects_1 = data
-                    console.log(data)
-                }, function(err) {});
-                //选择试剂
-                var ReagentsQuery_1 = {
-                    "GetReagentId": 1,
-                    "GetReagentName": 1,
-                };
-                var promise = ItemInfo.GetReagentsInfo(ReagentsQuery_1);
-                promise.then(function(data) {
-                    $scope.Reagents = data
-                    console.log($scope.Reagents)
-                }, function(err) {});
-            }
-            $scope.queryflow2 = function() {
-                var sampleQuery_2 = {
-                    "ObjectType": $scope.task2.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_2);
-                promise.then(function(data) {
-                    $scope.Objects_2 = data
-                }, function(err) {});
-            }
-            $scope.queryflow3 = function() {
-                var sampleQuery_3 = {
-                    "ObjectType": $scope.task3.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
-                promise.then(function(data) {
-                    $scope.Objects_3 = data
-                    console.log(data)
-                }, function(err) {});
-            }
-
-
-
-            // 是否复位确认
-            $scope.instrumentreset = function() {
-                var promise4 = ItemInfo.GetIsolatorsInfo({
-                    "IsolatorId": null,
-                    "ProductDayS": null,
-                    "ProductDayE": null,
-                    "EquipPro": null,
-                    "InsDescription": null,
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "GetProductDay": 1,
-                    "GetEquipPro": 1,
-                    "GetInsDescription": 1,
-                    "GetRevisionInfo": 1
-                });
-                promise4.then(function(data) {
-                    console.log(data)
-                    $scope.Isolator_search = data
-                }, function(err) {});
-
-                $('#ResetOrNot').modal('show');
-            }
-
-            var tubeslist = new Array()
-            // 培养modal
-            $scope.culture = function() {
-                $('#culturemodal').modal('show');
-                Result.GetResultTubes({
-                    "TestId": null,
-                    "TubeNo": null,
-                    "CultureId": null,
-                    "BacterId": null,
-                    "OtherRea": null,
-                    "IncubatorId": null,
-                    "Place": null,
-                    "StartTimeS": null,
-                    "StartTimeE": null,
-                    "EndTimeS": null,
-                    "EndTimeE": null,
-                    "AnalResult": null,
-                    "GetCultureId": 1,
-                    "GetBacterId": 1,
-                    "GetOtherRea": 1,
-                    "GetIncubatorId": 1,
-                    "GetStartTime": 1,
-                    "GetEndTime": 1,
-                    "GetAnalResult": 1
-
-                }).then(function(data) {
-                    for (i = 0; i < data.length; i++) {
-                        tubeslist.push({
-                            "TubeNo": data[i].TestId + data[i].TubeNo,
-                            "TestId": data[i].TestId,
-                            "CultureId": data[i].CultureId,
-                            "BacterId": data[i].BacterId,
-                            "OtherRea": data[i].OtherRea,
-                            "IncubatorId": data[i].IncubatorId,
-                            "StartTime": data[i].StartTime,
-                            "EndTime": data[i].EndTime,
-                            "AnalResult": data[i].AnalResult
-                        })
-                    }
-                    $scope.tubes = tubeslist
-                }, function(err) { console.log(err) })
-            }
-
-            $scope.showtubedetail = function(index) {
-                console.log($scope.tube.TubeNo)
-                console.log(tubeslist)
-                console.log(tubeslist[0].TubeNo == $scope.tube.TubeNo)
-
-
-
-                for (i = 0; i < tubeslist.length; i++) {
-                    if (tubeslist[i].TubeNo == $scope.tube.TubeNo) {
-                        $scope.tempTube = tubeslist[i]
-                    }
-                }
             }
 
             //主界面--rzx
@@ -1201,6 +984,287 @@
             //     SocketService.emit('get params', code);
             //     $scope.text = name;
             // }
+
+
+            $scope.sampleEntry = function() {
+                $('#new_sample').modal('show')
+            }
+            $scope.reagentEntry = function() {
+                $('#new_reagent').modal('show')
+            }
+            $scope.addtask = function() {
+                $('#add_task').modal('show')
+                document.getElementById('confirm').setAttribute("disabled", false)
+            }
+            // 监听事件(表单清空)
+            $('#new_sample').on('hidden.bs.modal', function() {
+                $scope.sample = null
+            })
+            $('#new_reagent').on('hidden.bs.modal', function() {
+                $scope.reagent = null
+            })
+            $('#add_task').on('hidden.bs.modal', function() {
+                $scope.task1 = null
+                $scope.task2 = null
+                $scope.task3 = null
+            })
+            $scope.sample = {};
+            var getJsonLength = function(jsonData) {
+                var jsonLength = 0;
+                for (var item in jsonData) {
+                    jsonLength++;
+                }
+                return jsonLength;
+            }
+            $scope.newsample = function() {
+                var formLength = getJsonLength($scope.sample);
+                if (formLength == 7) {
+                    $scope.sample.TerminalIP = extraInfo.postInformation().TerminalIP;
+                    $scope.sample.TerminalName = extraInfo.postInformation().TerminalName;
+                    $scope.sample.revUserId = extraInfo.postInformation().revUserId;
+                    // console.log($scope.sample);
+                    // console.log(formLength);
+                    var promise = ItemInfo.SetSampleData($scope.sample);
+                    promise.then(function(data) {
+                        console.log(data[0]);
+                        if (data[0] == "插入成功") {
+                            $('#new_sample').modal('hide')
+                        }
+                    }, function(err) {});
+                } else {
+                    $('#signupFail').modal('show')
+                    $timeout(function() {
+                        $('#signupFail').modal('hide')
+                    }, 1000)
+                }
+            }
+
+
+            // var promise = UserService.GetReagentType();
+            // promise.then(function(data){
+            //     // console.log(data);
+            //     $scope.reagenttypes = data;
+            // },function(err){});
+
+            $scope.newreagent = function() {
+                var formLength = getJsonLength($scope.reagent);
+                if (formLength == 3) {
+                    $scope.reagent.TerminalIP = extraInfo.postInformation().TerminalIP;
+                    $scope.reagent.TerminalName = extraInfo.postInformation().TerminalName;
+                    $scope.reagent.revUserId = extraInfo.postInformation().revUserId;
+                    console.log($scope.reagent)
+                    var promise = ItemInfo.SetReagentData($scope.reagent);
+                    promise.then(function(data) {
+                        console.log(data);
+                        if (data.result == 1) {
+                            $('#new_reagent').modal('hide')
+                        }
+                    }, function(err) {})
+                } else {
+                    $('#signupFail').modal('show')
+                    $timeout(function() {
+                        $('#signupFail').modal('hide')
+                    }, 1000)
+                }
+            }
+
+
+            $scope.queryflow1 = function() {
+                $scope.iflarge = false
+                if ($scope.task1.SampleType == "SoB") {
+                    $scope.iflarge = false
+                } else {
+                    $scope.iflarge = true
+                }
+                //选择样品
+                var sampleQuery_1 = {
+                    "ObjectType": $scope.task1.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_1);
+                promise.then(function(data) {
+                    $scope.Objects_1 = data
+                    console.log(data)
+                }, function(err) {});
+                //选择试剂
+                var ReagentsQuery_1 = {
+                    "GetReagentId": 1,
+                    "GetReagentName": 1,
+                };
+                var promise = ItemInfo.GetReagentsInfo(ReagentsQuery_1);
+                promise.then(function(data) {
+                    $scope.Reagents = data
+                    console.log($scope.Reagents)
+                }, function(err) {});
+            }
+            $scope.queryflow2 = function() {
+                var sampleQuery_2 = {
+                    "ObjectType": $scope.task2.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_2);
+                promise.then(function(data) {
+                    $scope.Objects_2 = data
+                }, function(err) {});
+            }
+            $scope.queryflow3 = function() {
+                var sampleQuery_3 = {
+                    "ObjectType": $scope.task3.SampleType,
+                    "GetObjectName": 1,
+                }
+                var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
+                promise.then(function(data) {
+                    $scope.Objects_3 = data
+                    console.log(data)
+                }, function(err) {});
+            }
+
+
+
+            // 是否复位确认
+            $scope.instrumentreset = function() {
+                var promise4 = ItemInfo.GetIsolatorsInfo({
+                    "IsolatorId": null,
+                    "ProductDayS": null,
+                    "ProductDayE": null,
+                    "EquipPro": null,
+                    "InsDescription": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetProductDay": 1,
+                    "GetEquipPro": 1,
+                    "GetInsDescription": 1,
+                    "GetRevisionInfo": 1
+                });
+                promise4.then(function(data) {
+                    console.log(data)
+                    $scope.Isolator_search = data
+                }, function(err) {});
+
+                $('#ResetOrNot').modal('show');
+            }
+
+
+            // 选择培养箱的培养器列表change-rh
+            var tubeslist = new Array()
+            $scope.tubeselect = function(_incubator) {
+                var temptubeslist = new Array()
+                if ((_incubator == '') || (_incubator == undefined)) { _incubator = null }
+                Result.GetResultTubes({
+                    "TestId": null,
+                    "TubeNo": null,
+                    "CultureId": null,
+                    "BacterId": null,
+                    "OtherRea": null,
+                    "IncubatorId": _incubator,
+                    "Place": null,
+                    "StartTimeS": null,
+                    "StartTimeE": null,
+                    "EndTimeS": null,
+                    "EndTimeE": null,
+                    "AnalResult": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].Place != 0) {
+                            temptubeslist.push({
+                                "TubeNo": data[i].TestId + data[i].TubeNo,
+                                "TestId": data[i].TestId + data[i].TubeNo,
+                                "CultureId": data[i].CultureId,
+                                "BacterId": data[i].BacterId,
+                                "OtherRea": data[i].OtherRea,
+                                "IncubatorId": data[i].IncubatorId,
+                                "Place": data[i].Place,
+                                "StartTime": data[i].StartTime,
+                                "EndTime": data[i].EndTime,
+                                "AnalResult": data[i].AnalResult
+                            })
+                        }
+                    }
+                    $scope.tubes = temptubeslist
+                    tubeslist = temptubeslist
+                }, function(err) { console.log(err) })
+            }
+
+            // 显示培养器具体信息-rh
+            $scope.showtubedetail = function(index) {
+                if (index == null) { $scope.tempTube = {} }
+                for (i = 0; i < tubeslist.length; i++) {
+                    if (tubeslist[i].TubeNo == $scope.tube.TubeNo) {
+                        $scope.tempTube = tubeslist[i]
+                    }
+                }
+            }
+
+            // 取出培养-rh
+            $scope.totakeout = function(index) {
+                Result.SetResIncubator({
+                    "TestId": index.TestId.replace(/[^a-zA-Z]/ig, ""),
+                    "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                    "CultureId": index.CultureId,
+                    "BacterId": index.BacterId,
+                    "OtherRea": index.OtherRea,
+                    "IncubatorId": "",
+                    "Place": index.Place + index.IncubatorId,
+                    "StartTime": index.StartTime,
+                    "EndTime": index.EndTime,
+                    "AnalResult": index.AnalResult,
+                }).then(function(data) {
+                    if (data.result == "插入成功") {
+                        $('#takeout').modal('hide')
+                        // 提示成功
+                        $('#takeoutsuccess').modal('show')
+                        $timeout(function() {
+                            $('#takeoutsuccess').modal('hide')
+                        }, 1000)
+                    }
+                }, function(err) {})
+            }
+
+            // 放入培养-rh
+            $scope.toputin = function(index) {
+                var value = '';
+                var radio = document.getElementsByName("putinPlace");
+                for (var i = 0; i < radio.length; i++) {
+                    if (radio[i].checked == true) {
+                        value = radio[i].value;
+                        break;
+                    }
+                }
+                alert(value);
+                // Result.SetResIncubator({
+                //     "TestId": index.TestId.replace(/[^a-zA-Z]/ig, ""),
+                //     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                //     "CultureId": index.CultureId,
+                //     "BacterId": index.BacterId,
+                //     "OtherRea": index.OtherRea,
+                //     "IncubatorId": "",
+                //     "Place": index.Place + index.IncubatorId,
+                //     "StartTime": index.StartTime,
+                //     "EndTime": index.EndTime,
+                //     "AnalResult": index.AnalResult,
+                // }).then(function(data) {
+                //     if (data.result == "插入成功") {
+                //         $('#takeout').modal('hide')
+                //         // 提示成功
+                //         $('#takeoutsuccess').modal('show')
+                //         $timeout(function() {
+                //             $('#takeoutsuccess').modal('hide')
+                //         }, 1000)
+                //     }
+                // }, function(err) {})
+            }
 
 
             // 阳性菌加注-茹画

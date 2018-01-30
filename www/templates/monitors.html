@@ -7,13 +7,33 @@
           <li><a href="#reagentsEntry" data-toggle="pill">试剂录入</a></li>
           <li><a href="#reagentsEntry" data-toggle="pill">添加任务</a></li> -->
                     </br>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">隔离器复位</button>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="culture()">培养</button>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="sampleEntry()">样品录入</button>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="reagentEntry()">试剂录入</button>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="addtask()">
-                        <span class="glyphicon glyphicon-plus" aria-hidden="true"> 添加任务</span></button>
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">隔离器复位</button>
+                            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button>
+                        </div>
+                        <div class="form-group">
+                            <div class="dropdown" style="margin-right:20px">
+                                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="background:#347ab6;">培养<b class="caret"></b>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li role="presentation">
+                                        <a role="menuitem" data-toggle="modal" data-target="#takeout">取出培养器</a>
+                                    </li>
+                                    <li role="presentation">
+                                        <a role="menuitem" data-toggle="modal" data-target="#putin">放入培养器</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <!-- <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="culture()">培养</button> -->
+                            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="sampleEntry()">样品录入</button>
+                            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="reagentEntry()">试剂录入</button>
+                            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="addtask()">
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"> 添加任务</span></button>
+                        </div>
+                    </form>
                     </br>
                     </br>
                 </ul>
@@ -402,7 +422,7 @@
                     <label style="margin-left: 15%;">选择两个加注样品：</label>
                 </div>
                 <div class="form-group" style="text-align: center;">
-                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
+                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
                         <option value="">请选择加注样品一</option>
                     </select>
                 </div>
@@ -463,12 +483,12 @@
                 <button type="button" class="close" ng-click="modal_close('#ResetOrNot')">&times;</button>
                 <h3 class="modal-title" id="modal-title">警告</h3>
             </div>
-            <div class="modal-body" id="modal-body" >
+            <div class="modal-body" id="modal-body">
                 <div class="form-group">
                     <label style="margin-left: 15%;">选择复位隔离器：</label>
                 </div>
                 <div class="form-group" style="text-align: center;">
-                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
+                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
                         <option value="">请选择复位隔离器</option>
                     </select>
                 </div>
@@ -483,21 +503,21 @@
         </div>
     </div>
 </div>
-<!-- 培养modal -->
-<div class="modal fade" id="culturemodal" tabindex="-1" role="dialog" aria-hidden="true">
+<!-- 培养-putin-modal -->
+<div class="modal fade" id="putin" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#culturemodal')" aria-label="Close">
+                <button type="button" class="close" ng-click="modal_close('#putin')" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h3 class="modal-title">培养</h3>
+                <h3 class="modal-title">放入培养器</h3>
             </div>
             <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
                 <form id="cultureForm" name="cultureForm" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="cultureinfo.incubator">
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="cultureinfo.incubator" ng-change="tubeselect(cultureinfo.incubator)">
                             <option selected value="">选择培养箱</option>
                             <option selected value="Incu001">Incu001</option>
                             <option selected value="sample string 1">sample string 1</option>
@@ -509,10 +529,10 @@
                             <div class="col">
                                 <div class="row-xs-6">
                                     <label>
-                                        <input name="set" type="radio" value="" /> 上轮 </label>
+                                        <input name="putinPlace" type="radio" value="Upper_" /> 上轮 </label>
                                     <label>
-                                        <input name="set" type="radio" value="" /> 下轮 </label>
-                                    <input type="" name="">
+                                        <input name="putinPlace" type="radio" value="Lower_" /> 下轮 </label>
+                                    <input ng-model=“”></input>
                                 </div>
                                 <div class="row-xs-6">
                                     上轮请输入1~19，下轮请输入1~31。
@@ -521,20 +541,10 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-3 control-label">选择处置方式</label>
-                        <div class="col-xs-9" style="margin-top: 7px">
-                            <label>
-                                <input name="set" type="radio" value="" /> 放入 </label>
-                            <label>
-                                <input name="set" type="radio" value="" /> 取出 </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
                         <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
                             <option selected value="">选择培养器</option>
                         </select>
-
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">培养器参数</label>
@@ -554,13 +564,63 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="toculture()">确认</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#culturemodal')">取消</button>
+                <button type="button " class="btn btn-primary " ng-click="toputin()">确认放入</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#putin')">取消</button>
             </div>
         </div>
     </div>
 </div>
-
+<!-- 培养-takeout-modal -->
+<div class="modal fade" id="takeout" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="modal_close('#takeout')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title">取出培养器</h3>
+            </div>
+            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
+                <form id="cultureForm" name="cultureForm" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">选择培养箱</label>
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="cultureinfo.incubator" ng-change="tubeselect(cultureinfo.incubator)">
+                            <option selected value="">选择培养箱</option>
+                            <option selected value="Incu001">Incu001</option>
+                            <option selected value="sample string 1">sample string 1</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">选择培养器</label>
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
+                            <option selected value="">选择培养器</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">培养器参数</label>
+                        <div class="col-xs-9" style="margin-top: 7px">
+                            <div class="gridTex">
+                                <b>培养器ID： </b>{{tempTube.TestId}}
+                                <div style="margin-top: 10px;"><b>培养液ID： </b>{{tempTube.CultureId}}</div>
+                                <div style="margin-top: 10px;"><b>菌液ID： </b>{{tempTube.BacterId}}</div>
+                                <div style="margin-top: 10px;"><b>其他试剂： </b>{{tempTube.OtherRea}}</div>
+                                <div style="margin-top: 10px;"><b>培养箱ID： </b>{{tempTube.IncubatorId}}</div>
+                                <div style="margin-top: 10px;"><b>培养箱位置： </b>{{tempTube.Place}}</div>
+                                <div style="margin-top: 10px;"><b>开始时间： </b>{{tempTube.StartTime}}</div>
+                                <div style="margin-top: 10px;"><b>结束时间： </b>{{tempTube.EndTime}}</div>
+                                <div style="margin-top: 10px;"><b>分析结果： </b>{{tempTube.AnalResult}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="totakeout(tempTube)">确认取出</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#takeout')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 加工详情 -->
 <div class="modal fade" id="detail_Pro" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -607,7 +667,7 @@
                         <td title="'操作说明'">{{dpro.OpDescription}}
                         </td>
                         <td title="'操作状态'">
-    <!--                         <div>✅</div>
+                            <!--                         <div>✅</div>
                             <div>❌</div> -->
                         </td>
                     </tr>
@@ -640,8 +700,8 @@
                         <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
                         </td>
                         <td title="'机器视觉'">
-<!--                             <img src="{{pic.ImageAddress}}" alt="">
- -->                        </td>
+                            <!--                             <img src="{{pic.ImageAddress}}" alt="">
+ --></td>
                         <td title="'分析结果'">{{pic.AnalResult}}
                         </td>
                         <td title="'顶空分析结果'">{{pic.TopResult}}
@@ -656,7 +716,6 @@
         </div>
     </div>
 </div>
-
 <div class="modal fade" id="resetsuccess">
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
@@ -668,6 +727,20 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
             添加成功！
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="takeoutsuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            取出成功！
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="putinsuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            放入成功！
         </div>
     </div>
 </div>
