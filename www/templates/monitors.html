@@ -380,7 +380,7 @@
                     </table>
                 </div> -->
             <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="creattask()">确认</button>
+                <button type="button " class="btn btn-primary " ng-click="creattask()" id='confirm'>确认</button>
                 <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#add_task')">取消</button>
             </div>
         </div>
@@ -663,5 +663,11 @@
             复位成功！
         </div>
     </div>
-
+</div>
+<div class="modal fade" id="tasksuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            添加成功！
+        </div>
+    </div>
 </div>

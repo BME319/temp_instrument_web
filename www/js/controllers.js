@@ -530,6 +530,7 @@
             }
             $scope.addtask = function() {
                 $('#add_task').modal('show')
+                document.getElementById('confirm').setAttribute("disabled", false)
             }
             // 监听事件(表单清空)
             $('#new_sample').on('hidden.bs.modal', function() {
@@ -539,13 +540,9 @@
                 $scope.reagent = null
             })
             $('#add_task').on('hidden.bs.modal', function() {
-                $scope.flowtableParams = new NgTableParams({
-                    count: 100
-                }, {
-                    counts: [],
-                    dataset: []
-                })
-                $scope.type.SampleType = null
+                $scope.task1 = null
+                $scope.task2 = null
+                $scope.task3 = null
             })
             $scope.sample = {};
             var getJsonLength = function(jsonData) {
@@ -1029,6 +1026,14 @@
                 var promise = Result.CreateResult(taskInfo_1)
                 promise.then(function(data) {
                     console.log(data)
+                    if (data.result == "插入成功") {
+                        $('#add_task').modal('hide')
+                        // 提示成功
+                        $('#tasksuccess').modal('show')
+                        $timeout(function() {
+                            $('#tasksuccess').modal('hide')
+                        }, 1000)
+                    }
                 }, function(err) {});
                 if ($scope.iflarge == true) {
                     var taskInfo_2 = {
@@ -1132,14 +1137,13 @@
                     for (i = 0; i < data.length; i++) {
                         data[i].TopResult = topanalysis[i]
                     }
-                        $scope.pictureTable = new NgTableParams({
-                            count: 50
-                        }, {
-                            counts: [],
-                            dataset: data
-                        })
+                    $scope.pictureTable = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
                 }, function(err) {});
-
 
                 $('#detail_Inc').modal('show')
             }
