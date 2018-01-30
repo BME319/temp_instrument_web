@@ -96,7 +96,7 @@
                     <tr ng-repeat="user in $data" style="text-align: center;">
                         <td title="'仪器编号'">{{user.EquipmentId}}
                         </td>
-                        <td title="'操作编号'">{{user.OperationNo}}
+                        <td title="'操作编号'">{{user.OperationCode}}
                         </td>
                         <td title="'操作记录'" sortable="'OperationTime'">
                             <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none" popover id="popover1" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="操作记录" data-content="操作时间：{{user.OperationTime|timeFormat:'YYYY-MM-DD h:m'}}<br>操作编码：{{user.OperationCode}}<br>操作参数：{{user.OperationValue}}<br>操作结果：{{user.OperationResult}}">{{user.OperationTime|timeFormat:'YYYY-MM-DD h:m'}}</button>

@@ -7,8 +7,8 @@
           <li><a href="#reagentsEntry" data-toggle="pill">试剂录入</a></li>
           <li><a href="#reagentsEntry" data-toggle="pill">添加任务</a></li> -->
                     </br>
-                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">仪器复位</button>
-                    <!--                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button> -->
+                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">隔离器复位</button>
+                    <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="culture()">培养</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="sampleEntry()">样品录入</button>
                     <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="reagentEntry()">试剂录入</button>
@@ -387,6 +387,52 @@
         </div>
     </div>
 </div>
+<!-- 阳性菌加注modal -->
+<div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" style="height: 500px">
+            <div class="modal-header">
+                <button type="button" class="close" ng-click="modal_close('#new_posibacInjection')" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h3 class="modal-title" style="padding-bottom: 10px">阳性菌加注</h3>
+                <b>当前加注隔离器：Iso_Collect</b>
+            </div>
+            <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 300px;">
+                <div class="form-group">
+                    <label style="margin-left: 15%;">选择两个加注样品：</label>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
+                        <option value="">请选择加注样品一</option>
+                    </select>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId2" ng-options="Result2.TestId as ('样品名：'+Result2.ObjectName) for Result2 in Result_search">
+                        <option value="">请选择加注样品二</option>
+                    </select>
+                </div>
+                <!-- <div class="form-group" style="text-align: center;">
+                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId3" ng-options="Result3.TestId as ('样品名：'+Result3.ObjectName) for Result3 in Result_search">
+                        <option value="">请选择任务三</option>
+                    </select>
+                </div> -->
+                <div class="form-group">
+                    <label style="margin-left: 15%;">选择加注菌液：</label>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.ReagentId" ng-options="Reagent.ReagentId as ('菌液名：'+Reagent.ReagentName+'，'+'菌液Id：'+Reagent.ReagentId) for Reagent in Reagent_search">
+                        <option value="">请选择菌液</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="setposibacInjection()">确认</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#new_posibacInjection')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- 录入成功modal -->
 <!-- <div class="modal fade " id="signupSuccess ">
     <div class="modal-dialog modal-sm " role="document ">
@@ -418,11 +464,21 @@
                 <button type="button" class="close" ng-click="modal_close('#ResetOrNot')">&times;</button>
                 <h3 class="modal-title" id="modal-title">警告</h3>
             </div>
-            <div class="modal-body" id="modal-body">
-                <span>确定复位该仪器？</span>
+            <div class="modal-body" id="modal-body" >
+                <div class="form-group">
+                    <label style="margin-left: 15%;">选择复位隔离器：</label>
+                </div>
+                <div class="form-group" style="text-align: center;">
+                   <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
+                        <option value="">请选择复位隔离器</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="margin-left: 15%;">确定复位该仪器？</label>
+                </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="reset()">确定</button>
+                <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.IsolatorId)">确定</button>
                 <button class="btn btn-warning" type="button" ng-click="modal_close('#ResetOrNot')">取消</button>
             </div>
         </div>
@@ -479,6 +535,7 @@
                         <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
                             <option selected value="">选择培养器</option>
                         </select>
+
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">培养器参数</label>
@@ -504,6 +561,7 @@
         </div>
     </div>
 </div>
+
 <!-- 加工详情 -->
 <div class="modal fade" id="detail_Pro" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
@@ -594,4 +652,12 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="resetsuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            复位成功！
+        </div>
+    </div>
+
 </div>

@@ -197,7 +197,10 @@
                 //操作流程字典
                 SetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
                 GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
-                GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true }
+                GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true },
+                // 无菌检测仪器操作记录表-插数据
+                OpEquipmentSetData: { method: 'POST', params: { route: 'OpEquipmentSetData' }, timeout: 10000 },
+
 
             })
         }
@@ -624,6 +627,15 @@
         self.GetAllOpTypes = function(obj) {
             var deferred = $q.defer();
             Data.Operation.GetAllOpTypes(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.OpEquipmentSetData = function(obj) {
+            var deferred = $q.defer();
+            Data.Operation.OpEquipmentSetData(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
