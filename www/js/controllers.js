@@ -1211,7 +1211,7 @@
                 }
                 $scope.tubes = _temptubeslist
             }, function(err) {})
-        
+
             // 选择培养箱的培养器列表change-rh
             var tubeslist = new Array()
             $scope.tubeselect = function(_incubator) {
@@ -1302,7 +1302,7 @@
 
 
             // 放入培养
-            var putintubeslist=new Array()
+            var putintubeslist = new Array()
             var _putintemptubeslist = new Array()
             Result.GetResultTubes({
                 "TestId": null,
@@ -1343,7 +1343,7 @@
 
                 }
                 $scope.putintubes = _putintemptubeslist
-                putintubeslist=_putintemptubeslist
+                putintubeslist = _putintemptubeslist
             }, function(err) {})
             // 显示培养器具体信息-rh
             $scope.putinshowtubedetail = function(index) {
@@ -1378,7 +1378,7 @@
                     "BacterId": index.BacterId,
                     "OtherRea": index.OtherRea,
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": value+$scope.putinPlaceNo,
+                    "Place": value + $scope.putinPlaceNo,
                     "StartTime": index.StartTime,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
@@ -1390,7 +1390,7 @@
                         $timeout(function() {
                             $('#putinsuccess').modal('hide')
                         }, 1000)
-                    } 
+                    }
                 }, function(err) {})
             }
 
@@ -2048,6 +2048,7 @@
     .controller('operationorderCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
         function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
 
+            var nowdata = new Array()
             var getLists = function(_userlist) {
                 console.log(_userlist)
                 Operation.GetOperationOrder(_userlist).then(function(_data) {
@@ -2061,6 +2062,7 @@
                         counts: [],
                         dataset: finaldata
                     });
+                    nowdata = finaldata
                 }, function(err) {});
             }
 
@@ -2088,56 +2090,168 @@
                 getLists($scope.SampleTypenow)
             }
 
-            // 新增
-            $scope.tonew = function(_OrderId) {
-                console.log(_OrderId)
+            // 删除跳转
+            var tempOrderId = ''
+            $scope.todelete = function(_OrderId) {
+                tempOrderId = _OrderId
+                $('#DeleteOrNot').modal('show')
+            }
+
+            // 删除
+            $scope.delete = function() {
+                Operation.DeleteOperationOrder({ OrderId: tempOrderId }).then(function(data) {
+                    if (data.result == "数据删除成功") {
+                        // 关闭是否删除modal
+                        $('#DeleteOrNot').modal('hide')
+                        // 提示新建成功
+                        $('#deleteSuccess').modal('show')
+                        $timeout(function() {
+                            $('#deleteSuccess').modal('hide')
+                        }, 1000)
+                        // 刷新页面
+                        $scope.SampleTypenow = tempSampleTypes[0]
+                        getLists($scope.SampleTypenow);
+                    }
+                }, function(err) {});
+            }
+
+            // 新增显示
+            $scope.tonew = function(_type) {
+                $scope.registerInfo = {}
+                console.log(_type)
                 // 编号
-                console.log(Number(_OrderId.replace(/[^0-9]/ig, "")))
+                console.log(Number(_type.OrderId.replace(/[^0-9]/ig, "")))
                 // 类型
-                console.log(_OrderId.replace(/[^a-zA-Z]/ig, ""))
+                console.log(_type.OrderId.replace(/[^a-zA-Z]/ig, ""))
 
-                $scope.newSampleType = _OrderId.replace(/[^a-zA-Z]/ig, "")
+                $scope.registerInfo.SampleType = _type.OrderId.replace(/[^a-zA-Z]/ig, "")
                 //  ID
-                $scope.newOperationOrderId = _OrderId.replace(/[^a-zA-Z]/ig, "") + (Array(3).join('0') + Number(_OrderId.replace(/[^0-9]/ig, ""))).slice(-3)
+                $scope.registerInfo.OrderId = _type.OrderId.replace(/[^a-zA-Z]/ig, "") + (Array(3).join('0') + Number(_type.OrderId.replace(/[^0-9]/ig, ""))).slice(-3)
 
+                if (Number(_type.OrderId.replace(/[^0-9]/ig, "")) == 1) {
+                    $scope.registerInfo.PreviousStep = '无'
+                    $scope.registerInfo.LaterStep = _type.OperationId + '，' + _type.OpDescription
+                } else {
+                    for (i = 0; i <= nowdata.length; i++) {
+
+                        if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) == (Number(_type.OrderId.replace(/[^0-9]/ig, "")) - 1)) {
+                            $scope.registerInfo.PreviousStep = nowdata[i].OperationId + '，' + nowdata[i].OpDescription
+                            break;
+                        }
+                    }
+                    $scope.registerInfo.LaterStep = _type.OperationId + '，' + _type.OpDescription
+                }
                 $('#new_operationorder').modal('show')
             }
 
-            // 关闭modal控制
-            $scope.modal_close = function(target) {
-                $(target).modal('hide')
-            }
-
-            //新建-搜索操作
-            $scope.flagsearch = false
-            $scope.searchOperation = function(searchname) {
-                console.log(searchname);
-                if ((searchname == undefined) || (searchname == '')) {
-                    $('#nameUndefined').modal('show')
-                    $timeout(function() {
-                        $('#nameUndefined').modal('hide')
-                    }, 1000)
-                } else {
-                    $scope.flagsearch = true
-                    Operation.GetOperationInfo({
-                        "OperationId": null,
-                        "OperationName": searchname,
-                        "OutputCode": null,
-                        "GetOperationName": 1,
-                        "GetOutputCode": 1
-                    }).then(function(data) {
-                        $scope.Operation_search = data
-                    }, function(err) {});
-
+            // 新增
+            $scope.register = function(_registerInfo) {
+                // console.log(_registerInfo)
+                // 该条编号：_registerInfo.OrderId.replace(/[^a-zA-Z]/ig, "")
+                // 删除该条以后的全部信息
+                for (i = 0; i < nowdata.length; i++) {
+                    // 如果编号大于等于该条编号
+                    if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
+                        Operation.DeleteOperationOrder({ OrderId: nowdata[i].OrderId }).then(function(data) {
+                                    // if (data.result == "数据删除成功") {
+                                    //     // 关闭是否删除modal
+                                    //     $('#DeleteOrNot').modal('hide')
+                                    //     // 提示新建成功
+                                    //     $('#deleteSuccess').modal('show')
+                                    //     $timeout(function() {
+                                    //         $('#deleteSuccess').modal('hide')
+                                    //     }, 1000)
+                                    //     // 刷新页面
+                                    //     $scope.SampleTypenow = tempSampleTypes[0]
+                                    //     getLists($scope.SampleTypenow);
+                                    // }
+                            },
+                            function(err) {});
                 }
             }
 
+            // 新建该条后的全部信息
+            for (i = 0; i < nowdata.length; i++) {
+                // 如果编号大于等于该条编号
+                if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
+                    // 修改该条编号（+1）,并新建
+                    // console.log(nowdata[i].OrderId)
+                    // console.log(_registerInfo.SampleType+ (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, ""))+1)).slice(-3))
+                    nowdata[i].OrderId = _registerInfo.SampleType + (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) + 1)).slice(-3)
+                    console.log(nowdata[i])
+                    Operation.SetOperationOrder(nowdata[i]).then(function(data) {
+                        // NOTHING
+                        // 
+                        // if (data.result == "插入成功") {
+                        //     // 提示新建成功
+                        //     $('#setSuccess').modal('show')
+                        //     $timeout(function() {
+                        //         $('#setSuccess').modal('hide')
+                        //     }, 1000) 
+                        //     // 刷新页面
+                        //     $scope.SampleTypenow = tempSampleTypes[0]
+                        //     getLists($scope.SampleTypenow);
+                        // }
+                    }, function(err) {})
+                }
+            }
+
+            // 新建该条
+            Operation.SetOperationOrder(_registerInfo).then(function(data) {
+                if (data.result == "插入成功") {
+                    $('#new_operationorder').modal('hide')
+                    
+                    // 提示新建成功
+                    $('#setSuccess').modal('show')
+                    $timeout(function() {
+                        $('#setSuccess').modal('hide')
+                    }, 1000)
+
+                    // 刷新页面
+                    $scope.SampleTypenow = tempSampleTypes[0]
+                    getLists($scope.SampleTypenow);
+                }
+            }, function(err) {})
+
+
         }
-    ])
 
 
-    // 字典管理--基本操作维护
-    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
+
+        // 关闭modal控制
+        $scope.modal_close = function(target) {
+            $(target).modal('hide')
+        }
+
+        //新建-搜索操作
+        $scope.flagsearch = false
+        $scope.searchOperation = function(searchname) {
+            console.log(searchname);
+            if ((searchname == undefined) || (searchname == '')) {
+                $('#nameUndefined').modal('show')
+                $timeout(function() {
+                    $('#nameUndefined').modal('hide')
+                }, 1000)
+            } else {
+                $scope.flagsearch = true
+                Operation.GetOperationInfo({
+                    "OperationId": null,
+                    "OperationName": searchname,
+                    "OutputCode": null,
+                    "GetOperationName": 1,
+                    "GetOutputCode": 1
+                }).then(function(data) {
+                    $scope.Operation_search = data
+                }, function(err) {});
+
+            }
+        }
+
+    }])
+
+
+// 字典管理--基本操作维护
+.controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
         function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
             var input = {
                 "OperationId": null,
@@ -2159,6 +2273,7 @@
                 }, function(err) {});
             }
             getLists();
+
             $scope.tonew = function() {
                 $('#new_operation').modal('show')
 
@@ -2186,7 +2301,7 @@
             })
 
 
-            var tempOperationId
+            var tempOperationId = ''
             $scope.todelete = function(_OperationId) {
                 tempOperationId = _OperationId
                 $('#DeleteOrNot').modal('show')
@@ -2208,7 +2323,7 @@
                 }, function(err) {});
             }
 
-            var tempeditType
+            var tempeditType = ''
             $scope.toedit = function(type) {
                 tempeditType = type
                 $scope.editInfo = type
@@ -2276,7 +2391,7 @@
                     if (data.result == "数据删除成功") {
                         // 关闭是否删除modal
                         $('#DeleteOrNot').modal('hide')
-                        // 提示新建成功
+                        // 提示删除成功
                         $('#deleteSuccess').modal('show')
                         $timeout(function() {
                             $('#deleteSuccess').modal('hide')
