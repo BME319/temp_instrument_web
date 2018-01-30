@@ -758,7 +758,7 @@
                 var s = date.getSeconds()
                 return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
             };
-            var now = formatDate(myDate);            
+            var now = formatDate(myDate);
             //加工表
             var realInfo_1 = {
                 "ReStatus": 0,
@@ -825,8 +825,33 @@
                     dataset: data
                 })
             }, function(err) {});
-
-            //实时监控 
+            //紧急停止
+            $scope.breakpro = false
+            $scope.breakcol = false
+            document.getElementById("pro").setAttribute("disabled", true)
+            document.getElementById("col").setAttribute("disabled", true)
+            var breakInfo = {
+                "GetBreakTime": 1,
+                "GetBreakEquip": 1,
+                "GetBreakPara": 1,
+                "GetBreakValue": 1,
+                "GetBreakReason": 1,
+                "GetResponseTime": 1
+            }
+            var promise9 = Result.GetBreakDowns(breakInfo);
+            promise9.then(function(data) {
+                console.log(data)
+                for (i = 0; i < data.length; i++) {
+                    if (data[i].BreakId == 'Iso_Process') {
+                        $scope.breakpro == true
+                        document.getElementById("pro").setAttribute("disabled", false)
+                    } else if (data[i].BreakId == 'Iso_Collect') {
+                        $scope.breakcol == true
+                        document.getElementById("col").setAttribute("disabled", false)
+                    }
+                }
+            }, function(err) {});
+            //实时监控--下拉选择 
             var instruments = new Array()
             $scope.instruments = instruments
             var IsolatorsQuery = {
@@ -861,7 +886,19 @@
             $scope.pro = true
             $scope.inc = false
             $scope.col = false
-            //仪器选择
+            //默认环境显示
+            var ProcessEnv_1 = {
+                "IsolatorId": "Iso_Process",
+                "CabinId": 1
+            }
+            var promise7 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_1);
+            promise7.then(function(data) {
+                IsoProEnv_1 = data
+            }, function(err) {});
+            $timeout(function() {
+                newEnv()
+            }, 100)
+
             var ProcessEnv_2 = {
                 "IsolatorId": "Iso_Process",
                 "CabinId": 2
@@ -873,6 +910,20 @@
             $timeout(function() {
                 newEnv()
             }, 100)
+
+            var ProcessEnv_3 = {
+                "IsolatorId": "Iso_Process",
+                "CabinId": 3
+            }
+            var promise8 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_3);
+            promise6.then(function(data) {
+                IsoProEnv_3 = data
+            }, function(err) {});
+            $timeout(function() {
+                newEnv()
+            }, 100)
+
+            //仪器选择           
             $scope.selectInstrument = function() {
                 if ($scope.envins.indexOf("Iso_Collect") != -1) {
                     var CollectEnv = {
@@ -1029,8 +1080,8 @@
                 }, function(err) {});
                 $('#detail_Pro').modal('show')
             }
-            $scope.detail_col = function(SampleType) {
-                console.log(SampleType)
+            $scope.detail_col = function(SampleType, NowStep) {
+                var status_col = new Array()
                 var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
                 promise.then(function(data) {
                     console.log(data)
@@ -1040,14 +1091,36 @@
                         counts: [],
                         dataset: data
                     })
+                    // for (i = 0; i < data.length; i++) {
+                    //     if(data[i].OrderId == NowStep){
+                    //         status[i] = 
+                    //     }
+                    // }
+
                 }, function(err) {});
                 $('#detail_Col').modal('show')
             }
-            $scope.detail_inc = function(ObjectNo, ObjectName,TestId) {
+            $scope.detail_inc = function(ObjectNo, ObjectName, TestId) {
                 $scope.Number = ObjectNo
                 $scope.Name = ObjectName
                 $scope.Id = TestId
-                console.log(TestId)
+                var topanalysis = new Array()
+                var topInfo = {
+                    "TestId": $scope.Id,
+                    "TubeNo": null,
+                    "PictureId": null,
+                    "CameraTimeS": null,
+                    "CameraTimeE": null,
+                    "AnalResult": null,
+                    "GetCameraTime": 1,
+                    "GetAnalResult": 1
+                }
+                var promise2 = Result.GetTopAnalysis(topInfo)
+                promise2.then(function(data) {
+                    for (i = 0; i < data.length; i++) {
+                        topanalysis[i] = data[i].AnalResult
+                    }
+                }, function(err) {});
                 var incInfo = {
                     "GetCameraTime": 1,
                     "GetImageAddress": 1,
@@ -1056,14 +1129,18 @@
                 }
                 var promise = Result.GetTestPictures(incInfo)
                 promise.then(function(data) {
-                    console.log(data)
-                    $scope.pictureTable = new NgTableParams({
-                        count: 50
-                    }, {
-                        counts: [],
-                        dataset: data
-                    })
+                    for (i = 0; i < data.length; i++) {
+                        data[i].TopResult = topanalysis[i]
+                    }
+                        $scope.pictureTable = new NgTableParams({
+                            count: 50
+                        }, {
+                            counts: [],
+                            dataset: data
+                        })
                 }, function(err) {});
+
+
                 $('#detail_Inc').modal('show')
             }
             $scope.connected = function() {
@@ -1223,7 +1300,7 @@
 
             // 隔离器复位 - 茹画
             $scope.reset = function(_IsolatorId) {
-                   // 获取当前日期
+                // 获取当前日期
                 var myDate = new Date();
 
                 Operation.OpEquipmentSetData({
@@ -1237,8 +1314,8 @@
                     "revUserId": null
                 }).then(
                     function(data) {
-                         if (data.result == "插入成功") {
-                                                         $('#ResetOrNot').modal('hide')
+                        if (data.result == "插入成功") {
+                            $('#ResetOrNot').modal('hide')
 
                             // 提示成功
                             $('#resetsuccess').modal('show')
@@ -1246,7 +1323,7 @@
                                 $('#resetsuccess').modal('hide')
                             }, 1000)
                         }
-                       
+
                     },
                     function(e) {});
             }

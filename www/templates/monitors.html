@@ -19,8 +19,8 @@
                 </ul>
             </div>
             <div>
-                <h3>加工 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px">
-                <button class="btn btn-primary" style="margin-top:-10px">紧急停止</button></h3>
+                <h3>加工 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px" ng-if=breakpro>
+                <button class="btn btn-primary" style="margin-top:-10px" id='pro'>紧急停止</button></h3>
             </div>
             <table ng-table="handlingTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="g in $data" style="text-align: center;">
@@ -33,19 +33,19 @@
                     <td title="'下一步骤'">{{g.LaterStep}}
                     </td>
                     <td title="'详情'">
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_pro(g.TestType)">详情</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_pro(g.TestType,g.NowStep)">详情</button>
                     </td>
                     <td title="'进度'">
                         <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: '{{g.JinDu}}'%">
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: {{g.JinDu}}%">{{g.JinDu}}%完成
                             </div>
                         </div>
                     </td>
                 </tr>
             </table>
             <div>
-                <h3>加注 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px">
-                <button class="btn btn-primary" style="margin-top:-10px">紧急停止</button></h3>
+                <h3>加注 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px" ng-if=breakcol>
+                <button class="btn btn-primary" style="margin-top:-10px" id='col'>紧急停止</button></h3>
             </div>
             <table ng-table="CollectTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="z in $data" style="text-align: center;">
@@ -58,12 +58,11 @@
                     <td title="'下一步骤'">{{z.LaterStep}}
                     </td>
                     <td title="'详情'">
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_col(z.TestType,z.TestEquip2)">详情</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_col(z.TestType,z.NowStep)">详情</button>
                     </td>
                     <td title="'进度'">
                         <div class="progress">
-                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width: 90%;">
-                                <span class="sr-only">40% 完成</span>
+                            <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:{{z.JinDu}}%">{{z.JinDu}}%完成
                             </div>
                         </div>
                     </td>
@@ -578,7 +577,7 @@
                         </td>
                         <td title="'操作说明'">{{dpro.OpDescription}}
                         </td>
-                        <td title="'操作参数'">{{dpro.OperationValue}}
+                        <td title="'操作状态'">
                         </td>
                     </tr>
                 </table>
@@ -607,7 +606,9 @@
                         </td>
                         <td title="'操作说明'">{{dpro.OpDescription}}
                         </td>
-                        <td title="'操作参数'">{{dpro.OperationValue}}
+                        <td title="'操作状态'">
+    <!--                         <div>✅</div>
+                            <div>❌</div> -->
                         </td>
                     </tr>
                 </table>
@@ -638,9 +639,12 @@
                         </td>
                         <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
                         </td>
-                        <td title="'机器视觉'"><img src="{{pic.ImageAddress}}" alt="">
-                        </td>
+                        <td title="'机器视觉'">
+<!--                             <img src="{{pic.ImageAddress}}" alt="">
+ -->                        </td>
                         <td title="'分析结果'">{{pic.AnalResult}}
+                        </td>
+                        <td title="'顶空分析结果'">{{pic.TopResult}}
                         </td>
                     </tr>
                 </table>

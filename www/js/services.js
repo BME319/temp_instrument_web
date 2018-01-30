@@ -182,7 +182,8 @@
                 GetBreakDowns: { method: 'POST', params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetResultTubes: { method: 'POST', params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
                 CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
-                GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true }
+                GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
+                GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true }                
             })
         }
         // 仪器信息-张桠童
@@ -547,6 +548,15 @@
         self.GetTestPictures = function(obj) {
             var deferred = $q.defer();
             Data.Result.GetTestPictures(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.GetTopAnalysis = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.GetTopAnalysis(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
