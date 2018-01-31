@@ -48,9 +48,9 @@
 
                     if (t != "") { //获得UserId
 
-                        // console.log(data.result);
+                        console.log(t);
                         Storage.set("UID", t);
-                        // UserService.SetUID(data);
+                        // UserService.SetUID(t);
                         //本地暂存
                         var loginInfo2 = {
                             "UserId": t,
@@ -162,7 +162,7 @@
                 }
                 data = t;
 
-                // console.log(data);
+                console.log(data);
                 if (data == "该手机号已经注册") {
                     $scope.validStatus = "该手机号已经注册";
                     return;
@@ -246,13 +246,12 @@
         };
 
         $scope.validNext = function(number) {
-
             var phonev = /^1(3|4|5|7|8)\d{9}$/;
             if (!phonev.test(number)) {
                 $scope.check = '请输入正确手机号';
                 return
             }
-
+            Storage.set('PhenoNo', number)
             var validNumberReg = /^\d{6}$/;
             if (!validNumberReg.test($scope.validnumber)) {
                 $scope.check = '请输入正确验证码';
@@ -279,38 +278,62 @@
     }])
 
     .controller('RegisterCtrl', ['UserService', '$scope', '$state', 'Storage', '$timeout', function(UserService, $scope, $state, Storage, $timeout) {
-
-        $scope.registerInfo = {
-            uid: UserService.GetUID(),
-            username: '',
-            id: '',
-            password: '',
-            password_rep: '',
-            role: ""
-        };
-
+        //从手机号获得 UserId
+        var t = []
+        var uidInfo = { "PhoneNo": Storage.get('PhenoNo') }
+        UserService.CreateNewUserId(uidInfo).then(function(data) {
+            // console.log(data)
+            data = data.toJSON()
+            for (i in data) {
+                t = t + data[i];
+            }
+            $scope.registerInfo = {
+                "PhoneNo": Storage.get('PhenoNo'),
+                "UserId": t,
+                "UserName": '',
+                "Identify": '',
+                "Password": '',
+                "Role": "",
+                "TerminalIP": "sample string 7",
+                "TerminalName": "sample string 8",
+                "revUserId": "sample string 9"
+            }
+        })
         $scope.status = "";
 
 
         $scope.onClickReg = function(registerInfo) {
 
 
-            if (registerInfo.role == "") {
+            if (registerInfo.Role == "") {
                 $scope.status = "请选角色";
+                $('#error').modal('show')
+                $timeout(function() {
+                    $('#error').modal('hide')
+                }, 1000)
             }
 
-            if (registerInfo.password != registerInfo.password) {
+            if (registerInfo.Password != $scope.password_rep) {
                 $scope.status = "两次密码不同";
+                $('#pass_error').modal('show')
+                $timeout(function() {
+                    $('#pass_error').modal('hide')
+                }, 1000)
             }
 
-            registerInfo.role = registerInfo.role[0];
-            console.log(registerInfo.role);
+            registerInfo.Role = registerInfo.Role[0];
+            console.log(registerInfo.Role);
             console.log(registerInfo);
 
-            UserService.RegisterUser(registerInfo).then(function(data) {
+            UserService.Register(registerInfo).then(function(data) {
                 console.log(data);
                 if (data.result == "注册成功") {
-                    $timeout(function() { $state.go('main.data.sampling'); }, 500);
+                    $scope.status = "两次密码不同";
+                    $('#register_success').modal('show')
+                    $timeout(function() {
+                        $('#register_success').modal('hide')
+                    }, 1000)
+                    $timeout(function() { $state.go('main.data.sampling'); }, 2000);
                     $scope.status = "注册成功";
                 } else {
                     $scope.status = "注册失败";
@@ -530,7 +553,7 @@
             }
             $scope.addtask = function() {
                 $('#add_task').modal('show')
-                document.getElementById('confirm').setAttribute("disabled", false)
+                // document.getElementById('confirm').setAttribute("disabled", false)
             }
             // 监听事件(表单清空)
             $('#new_sample').on('hidden.bs.modal', function() {
@@ -558,13 +581,17 @@
                     $scope.sample.TerminalIP = extraInfo.postInformation().TerminalIP;
                     $scope.sample.TerminalName = extraInfo.postInformation().TerminalName;
                     $scope.sample.revUserId = extraInfo.postInformation().revUserId;
-                    // console.log($scope.sample);
+                    console.log($scope.sample);
                     // console.log(formLength);
                     var promise = ItemInfo.SetSampleData($scope.sample);
                     promise.then(function(data) {
                         console.log(data[0]);
                         if (data[0] == "插入成功") {
                             $('#new_sample').modal('hide')
+                            $('#tasksuccess').modal('show')
+                            $timeout(function() {
+                                $('#tasksuccess').modal('hide')
+                            }, 1000)
                         }
                     }, function(err) {});
                 } else {
@@ -591,9 +618,13 @@
                     console.log($scope.reagent)
                     var promise = ItemInfo.SetReagentData($scope.reagent);
                     promise.then(function(data) {
-                        console.log(data);
-                        if (data.result == 1) {
+                        console.log(data)
+                        if (data.result == "插入成功") {
                             $('#new_reagent').modal('hide')
+                            $('#tasksuccess').modal('show')
+                            $timeout(function() {
+                                $('#tasksuccess').modal('hide')
+                            }, 1000)
                         }
                     }, function(err) {})
                 } else {
@@ -607,7 +638,7 @@
 
             $scope.queryflow1 = function() {
                 $scope.iflarge = false
-                if ($scope.task1.SampleType == "SoB") {
+                if ($scope.task1.SampleType == "SOB") {
                     $scope.iflarge = false
                 } else {
                     $scope.iflarge = true
@@ -1295,12 +1326,157 @@
                     function(e) {});
             }
             $scope.setposibacInjection = function() {
-                console.log($scope.registerInfo.TestId1)
-                console.log($scope.registerInfo.TestId2)
-                console.log($scope.registerInfo.TestId3)
+                var result1 = new Array()
+                var result2 = new Array()
+                var tube1 = new Array()
+                var tube2 = new Array()
+                // console.log($scope.registerInfo.TestId1)
+                // console.log($scope.registerInfo.TestId2)
+                // console.log($scope.registerInfo.TestId3)
                 console.log($scope.registerInfo.ReagentId)
-
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId1,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        // console.log(data)
+                        result1 = data
+                        result1[0].NowStep = "正在加注中"
+                        result1[0].CollectStart = now
+                        result1[0].TestEquip2 = "Iso_Collect"
+                        result1[0].TestPeople2 = Storage.get('UID')
+                        console.log(result1)
+                        Result.ResultSetData(result1[0]).then(
+                            function(data) {
+                                console.log(data)
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId2,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        result2 = data
+                        result2[0].NowStep = "正在加注中"
+                        result2[0].CollectStart = now
+                        result2[0].TestEquip2 = "Iso_Collect"
+                        result2[0].TestPeople2 = Storage.get('UID')
+                        Result.ResultSetData(result2[0]).then(
+                            function(data) {
+                                console.log(data)
+                                if (data.result == "插入成功") {
+                                    $('#new_posibacInjection').modal('hide')
+                                    $('#tasksuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#tasksuccess').modal('hide')
+                                    }, 1000)
+                                }
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId1,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube1 = data
+                    tube1[4].BacterId = $scope.registerInfo.ReagentId
+                    tube1[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube1[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube1[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId2,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube2 = data
+                    tube2[4].BacterId = $scope.registerInfo.ReagentId
+                    tube2[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube2[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube2[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
             }
+
 
             // 隔离器复位 - 茹画
             $scope.reset = function(_IsolatorId) {
