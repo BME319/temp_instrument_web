@@ -1244,7 +1244,7 @@
             }
             $scope.addtask = function() {
                 $('#add_task').modal('show')
-                document.getElementById('confirm').setAttribute("disabled", false)
+                // document.getElementById('confirm').setAttribute("disabled", false)
             }
             // 监听事件(表单清空)
             $('#new_sample').on('hidden.bs.modal', function() {
@@ -1321,7 +1321,7 @@
 
             $scope.queryflow1 = function() {
                 $scope.iflarge = false
-                if ($scope.task1.SampleType == "SoB") {
+                if ($scope.task1.SampleType == "SOB") {
                     $scope.iflarge = false
                 } else {
                     $scope.iflarge = true
@@ -1739,8 +1739,12 @@
             $scope.setposibacInjection = function() {
                 var result1 = new Array()
                 var result2 = new Array()
+                var result3 = new Array()
+
                 var tube1 = new Array()
                 var tube2 = new Array()
+                var tube3 = new Array()
+
                 // console.log($scope.registerInfo.TestId1)
                 // console.log($scope.registerInfo.TestId2)
                 // console.log($scope.registerInfo.TestId3)
@@ -1832,6 +1836,52 @@
                             function(e) {});
                     },
                     function(e) {});
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId3,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        result3 = data
+                        result3[0].NowStep = "正在加注中"
+                        result3[0].CollectStart = now
+                        result3[0].TestEquip3 = "Iso_Collect"
+                        result3[0].TestPeople3 = Storage.get('UID')
+                        Result.ResultSetData(result2[0]).then(
+                            function(data) {
+                                console.log(data)
+                                if (data.result == "插入成功") {
+                                    $('#new_posibacInjection').modal('hide')
+                                    $('#tasksuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#tasksuccess').modal('hide')
+                                    }, 1000)
+                                }
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
                 Result.GetResultTubes({
                     "TestId": $scope.registerInfo.TestId1,
                     "TubeNo": null,
@@ -1881,6 +1931,33 @@
                         },
                         function(e) {});
                     Result.IncubatorSetData(tube2[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId3,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube3 = data
+                    tube3[4].BacterId = $scope.registerInfo.ReagentId
+                    tube3[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube3[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube3[5]).then(
                         function(data) {
                             console.log(data)
                         },
@@ -2548,105 +2625,108 @@
                     // 如果编号大于等于该条编号
                     if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
                         Operation.DeleteOperationOrder({ OrderId: nowdata[i].OrderId }).then(function(data) {
-                                    // if (data.result == "数据删除成功") {
-                                    //     // 关闭是否删除modal
-                                    //     $('#DeleteOrNot').modal('hide')
-                                    //     // 提示新建成功
-                                    //     $('#deleteSuccess').modal('show')
-                                    //     $timeout(function() {
-                                    //         $('#deleteSuccess').modal('hide')
-                                    //     }, 1000)
-                                    //     // 刷新页面
-                                    //     $scope.SampleTypenow = tempSampleTypes[0]
-                                    //     getLists($scope.SampleTypenow);
-                                    // }
+                                // if (data.result == "数据删除成功") {
+                                //     // 关闭是否删除modal
+                                //     $('#DeleteOrNot').modal('hide')
+                                //     // 提示新建成功
+                                //     $('#deleteSuccess').modal('show')
+                                //     $timeout(function() {
+                                //         $('#deleteSuccess').modal('hide')
+                                //     }, 1000)
+                                //     // 刷新页面
+                                //     $scope.SampleTypenow = tempSampleTypes[0]
+                                //     getLists($scope.SampleTypenow);
+                                // }
                             },
                             function(err) {});
+                    }
                 }
+
+                // 新建该条后的全部信息
+                for (i = 0; i < nowdata.length; i++) {
+                    // 如果编号大于等于该条编号
+                    if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
+                        // 修改该条编号（+1）,并新建
+                        // console.log(nowdata[i].OrderId)
+                        // console.log(_registerInfo.SampleType+ (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, ""))+1)).slice(-3))
+                        nowdata[i].OrderId = _registerInfo.SampleType + (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) + 1)).slice(-3)
+                        if (nowdata[i].PreviousStep == undefined) { nowdata[i].PreviousStep = '' }
+                        if (nowdata[i].LaterStep == undefined) { nowdata[i].LaterStep = '' }
+                        if (nowdata[i].SampleType == undefined) { nowdata[i].SampleType = nowdata[i].OrderId.replace(/[^a-zA-Z]/ig, "") }
+                        Operation.SetOperationOrder(nowdata[i]).then(function(data) {
+                            // NOTHING
+                            // 
+                            // if (data.result == "插入成功") {
+                            //     // 提示新建成功
+                            //     $('#setSuccess').modal('show')
+                            //     $timeout(function() {
+                            //         $('#setSuccess').modal('hide')
+                            //     }, 1000) 
+                            //     // 刷新页面
+                            //     $scope.SampleTypenow = tempSampleTypes[0]
+                            //     getLists($scope.SampleTypenow);
+                            // }
+                        }, function(err) {})
+                    }
+                }
+
+                // 新建该条
+                Operation.SetOperationOrder(_registerInfo).then(function(data) {
+                    if (data.result == "插入成功") {
+                        $('#new_operationorder').modal('hide')
+
+                        // 提示新建成功
+                        $('#setSuccess').modal('show')
+                        $timeout(function() {
+                            $('#setSuccess').modal('hide')
+                        }, 1000)
+
+                        // 刷新页面
+                        $scope.SampleTypenow = tempSampleTypes[0]
+                        getLists($scope.SampleTypenow);
+                    }
+                }, function(err) {})
+
+
             }
 
-            // 新建该条后的全部信息
-            for (i = 0; i < nowdata.length; i++) {
-                // 如果编号大于等于该条编号
-                if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
-                    // 修改该条编号（+1）,并新建
-                    // console.log(nowdata[i].OrderId)
-                    // console.log(_registerInfo.SampleType+ (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, ""))+1)).slice(-3))
-                    nowdata[i].OrderId = _registerInfo.SampleType + (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) + 1)).slice(-3)
-                    console.log(nowdata[i])
-                    Operation.SetOperationOrder(nowdata[i]).then(function(data) {
-                        // NOTHING
-                        // 
-                        // if (data.result == "插入成功") {
-                        //     // 提示新建成功
-                        //     $('#setSuccess').modal('show')
-                        //     $timeout(function() {
-                        //         $('#setSuccess').modal('hide')
-                        //     }, 1000) 
-                        //     // 刷新页面
-                        //     $scope.SampleTypenow = tempSampleTypes[0]
-                        //     getLists($scope.SampleTypenow);
-                        // }
-                    }, function(err) {})
-                }
+
+
+            // 关闭modal控制
+            $scope.modal_close = function(target) {
+                $(target).modal('hide')
             }
 
-            // 新建该条
-            Operation.SetOperationOrder(_registerInfo).then(function(data) {
-                if (data.result == "插入成功") {
-                    $('#new_operationorder').modal('hide')
-                    
-                    // 提示新建成功
-                    $('#setSuccess').modal('show')
+            //新建-搜索操作
+            $scope.flagsearch = false
+            $scope.searchOperation = function(searchname) {
+                console.log(searchname);
+                if ((searchname == undefined) || (searchname == '')) {
+                    $('#nameUndefined').modal('show')
                     $timeout(function() {
-                        $('#setSuccess').modal('hide')
+                        $('#nameUndefined').modal('hide')
                     }, 1000)
+                } else {
+                    $scope.flagsearch = true
+                    Operation.GetOperationInfo({
+                        "OperationId": null,
+                        "OperationName": searchname,
+                        "OutputCode": null,
+                        "GetOperationName": 1,
+                        "GetOutputCode": 1
+                    }).then(function(data) {
+                        $scope.Operation_search = data
+                    }, function(err) {});
 
-                    // 刷新页面
-                    $scope.SampleTypenow = tempSampleTypes[0]
-                    getLists($scope.SampleTypenow);
                 }
-            }, function(err) {})
-
-
-        }
-
-
-
-        // 关闭modal控制
-        $scope.modal_close = function(target) {
-            $(target).modal('hide')
-        }
-
-        //新建-搜索操作
-        $scope.flagsearch = false
-        $scope.searchOperation = function(searchname) {
-            console.log(searchname);
-            if ((searchname == undefined) || (searchname == '')) {
-                $('#nameUndefined').modal('show')
-                $timeout(function() {
-                    $('#nameUndefined').modal('hide')
-                }, 1000)
-            } else {
-                $scope.flagsearch = true
-                Operation.GetOperationInfo({
-                    "OperationId": null,
-                    "OperationName": searchname,
-                    "OutputCode": null,
-                    "GetOperationName": 1,
-                    "GetOutputCode": 1
-                }).then(function(data) {
-                    $scope.Operation_search = data
-                }, function(err) {});
-
             }
+
         }
+    ])
 
-    }])
 
-
-// 字典管理--基本操作维护
-.controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
+    // 字典管理--基本操作维护
+    .controller('operationCtrl', ['$scope', 'Storage', 'Data', 'Operation', '$timeout', 'NgTableParams',
         function($scope, Storage, Data, Operation, $timeout, NgTableParams) {
             var input = {
                 "OperationId": null,
