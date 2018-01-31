@@ -21,7 +21,8 @@
         // baseUrl: 'http://10.13.22.221:8090/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
         baseUrl: 'http://121.43.107.106:8063/Api/v1/', //RESTful 服务器  10.12.43.34:8090/Api/v1
         // socketPort: 'http://127.0.0.1:8080/realTime', //Socket 端口
-        ImageAddressIP: "http://121.43.107.106:8088",
+        // ImageAddressIP: "http://121.43.107.106:8088",
+        ImageAddressIP: "http://121.43.107.106:8063",
         ImageAddressFile: "/PersonalPhoto",
         ImageAddressFile_Check: "/PersonalPhotoCheck", //lrz20151104
         wsServerIP: "ws://" + "121.43.107.106" + ":4141",
@@ -184,7 +185,9 @@
                 SetResIncubator: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000},
                 CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
                 GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
-                GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true }                
+                GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true },
+                ResultSetData: { method: 'POST', params: { route: 'ResTestResultSetData' }, timeout: 10000},
+                IncubatorSetData: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000}                                                                                
             })
         }
         // 仪器信息-张桠童
@@ -568,6 +571,24 @@
         self.GetTopAnalysis = function(obj) {
             var deferred = $q.defer();
             Data.Result.GetTopAnalysis(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.ResultSetData = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.ResultSetData(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.IncubatorSetData = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.IncubatorSetData(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
