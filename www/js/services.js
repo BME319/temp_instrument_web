@@ -182,6 +182,7 @@
                 GetTestResultInfo: { method: 'POST', params: { route: 'ResTestResultGetResultInfosByAnyProperty' }, timeout: 10000, isArray: true },
                 GetBreakDowns: { method: 'POST', params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
                 GetResultTubes: { method: 'POST', params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
+                SetResIncubator: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000},
                 CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
                 GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
                 GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true },
@@ -202,6 +203,7 @@
                 SetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
                 GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
                 GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true },
+                DeleteOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderDeleteByPK' }, timeout: 10000,  },
                 // 无菌检测仪器操作记录表-插数据
                 OpEquipmentSetData: { method: 'POST', params: { route: 'OpEquipmentSetData' }, timeout: 10000 },
 
@@ -539,6 +541,15 @@
             });
             return deferred.promise;
         };
+        self.SetResIncubator = function(obj) {
+            var deferred = $q.defer();
+            Data.Result.SetResIncubator(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
         self.CreateResult = function(obj) {
             var deferred = $q.defer();
             Data.Result.CreateResult(obj, function(data, headers) {
@@ -658,6 +669,15 @@
         self.GetAllOpTypes = function(obj) {
             var deferred = $q.defer();
             Data.Operation.GetAllOpTypes(obj, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        };
+        self.DeleteOperationOrder = function(obj) {
+            var deferred = $q.defer();
+            Data.Operation.DeleteOperationOrder(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
