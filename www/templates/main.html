@@ -21,7 +21,7 @@
                         <span style="margin-left:10px"><strong>上次登录时间：</strong></span>
                     </li>
                     <li role="presentation" style="line-height:30px">
-                        <span style="margin-left:10px">{{userInfo.LastLoginTime}}</span>
+                        <span style="margin-left:10px">{{userInfo.LastLoginTime|timeFormat:'YYYY-MM-DD h:m'}}</span>
                     </li>
                     <li role="presentation">
                         <button class="btn btn-primary pull-left" style="margin-left:20px" ng-click="toChangePW()">修改密码</button>
@@ -30,7 +30,7 @@
                 </ul>
             </li>
             <uib-tabset class="navbar-right" active="myIndex">
-                <uib-tab index="0" heading="汇总数据" select="todata()" ng-show="flagdata"></uib-tab>
+                <uib-tab index="0" heading="数据汇总" select="todata()" ng-show="flagdata"></uib-tab>
                 <uib-tab index="1" heading="监控" select="tomonitors()" ng-show="flagmonitors"></uib-tab>
                 <uib-tab index="2" heading="字典管理" select="todictionaries()" ng-show="flagdictionaries"></uib-tab>
                 <uib-tab index="3" heading="用户管理" select="tousers()" ng-show="flagusers"></uib-tab>

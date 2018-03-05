@@ -5,7 +5,7 @@
             {{user.TestId}}</td>
         <td title="'产品编号'" filter="{ ObjectNo: 'text'}" sortable="'ObjectNo'">
             {{user.ObjectNo}}</td>
-        <td title="'供应商'" filter="{ ObjCompany: 'text'}" sortable="'ObjCompany'">
+        <td title="'供应商'" filter="{ ObjCompany: 'text'}" >
             {{user.ObjCompany}}</td>
         <td title="'培养批次'" filter="{ ObjIncuSeq: 'text'}" sortable="'ObjIncuSeq'">
             {{user.ObjIncuSeq}}</td>
@@ -15,8 +15,8 @@
             {{user.TestStand}}</td>
         <td title="'使用仪器'" filter="{ TestEquip: 'text'}" sortable="'TestEquip'">
             {{user.TestEquip}}</td>
-        <td title="'检测过程'" filter="{ Description: 'text'}" sortable="'Description'">
-            {{user.Description}}</td>
+      <!--   <td title="'检测过程'" filter="{ Description: 'text'}" >
+            {{user.Description}}</td> -->
         <td title="'集菌开始'" filter="{ CollectStart: 'text'}" sortable="'CollectStart'">
             {{user.CollectStart|timeFormat:'YYYY-MM-DD h:m'}}</td>
         <td title="'集菌结束'" filter="{ CollectEnd: 'text'}" sortable="'CollectEnd'">
@@ -27,11 +27,11 @@
             {{user.TestResult}}</td>
         <td title="'检测人员'" filter="{ TestPeople: 'text'}" sortable="'TestPeople'">
             {{user.TestPeople}}</td>
-        <td title="'是否复核'" filter="{ ReStatus: 'text'}" sortable="'ReStatus'">
+        <td title="'是否复核'" filter="{ ReStatus: 'text'}" >
             {{user.ReStatus}}</td>
-        <td title="'复核人员'" filter="{ RePeople: 'text'}" sortable="'RePeople'">
+        <td title="'复核人员'" filter="{ RePeople: 'text'}" >
             {{user.RePeople}}</td>
-        <td title="'复核时间'" filter="{ ReTime: 'text'}" sortable="'ReTime'">
+        <td title="'复核时间'" filter="{ ReTime: 'text'}">
             {{user.ReTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
         <td title="'更新记录'" filter="{ revDateTime: 'text'}" sortable="'revDateTime'">
           <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none" popover id="popover1" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="更新记录" data-content="更新时间：{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}<br>终端IP：{{user.TerminalIP}}<br>终端名字：{{user.TerminalName}}<br>用户名：{{user.revUserId}}<br>身份证：{{user.revIdentify}}">{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}</button></td>

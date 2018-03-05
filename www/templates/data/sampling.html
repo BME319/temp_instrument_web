@@ -1,166 +1,29 @@
 <div class="tab-pane fade in active" id="sampling">
-  <!-- <div class="col-lg-10">
-    <label for="name"><b>请选择筛选条件</b></label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox1" value="option1" ng-model="Name"> 产品名称
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox2" value="option2" ng-model="Type"> 产品类型
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox3" value="option3" ng-model="Company"> 供应商
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox4" value="option4" ng-model="People"> 记录人员
-    </label>  
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox5" value="option5" ng-model="STime"> 样品记录时间
-    </label>
-    <label class="checkbox-inline">
-      <input type="checkbox" id="inlineCheckbox6" value="option6" ng-model="RTime"> 更新记录时间
-    </label> 
-
-    <form role="form">
-      <div class="form-group" ng-show="Name">
-        <label class="col-sm-2 control-label">产品名称：</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="sampleQuery.ObjectName" placeholder="请输入待筛选产品名称">
-        </div>
-      </div>
-      <div class="form-group" ng-show="Type">
-        <label class="col-sm-2 control-label">产品类型：</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="sampleQuery.ObjectType" placeholder="请输入待筛选产品类型">
-        </div>
-      </div>
-      <div class="form-group" ng-show="Company">
-        <label class="col-sm-2 control-label">供应商：</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="sampleQuery.ObjCompany" placeholder="请输入待筛选供应商">
-        </div>
-      </div>
-      <div class="form-group" ng-show="People">
-        <label class="col-sm-2 control-label">记录人员：</label>
-        <div class="col-sm-10">
-          <input type="text" class="form-control" ng-model="sampleQuery.SamplingPeople" placeholder="请输入待筛选记录人员">
-        </div>
-      </div>
-      <div class="form-group" ng-show="STime">
-        <label for="name">样品记录时间：</label>
-        <form  class="form-inline">
-          <div class="form-group col-md-6">
-              <label for="dtp_input1" class="col-md-3 control-label" style="height: 30px;">开始时间</label>
-              <div class="input-group date form_date col-md-6" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                  <input class="form-control" style="height: 30px;" type="text" value="2017-01-01" ng-model="sampleQuery.SamplingTimeS" readonly>
-                  <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-              </div>
-              <input type="hidden" id="dtp_input1" value="" /><br/>
-          </div>
-          <div class="form-group col-md-6">
-              <label for="dtp_input2" class="col-md-3 control-label">结束时间</label>
-              <div class="input-group date form_date col-md-6" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                  <input class="form-control" style="height: 30px;" type="text" value="2017-03-31" ng-model="sampleQuery.SamplingTimeE" readonly>
-                  <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-              </div>
-              <input type="hidden" id="dtp_input2" value="" /><br/>
-          </div>
-        </form>
-      </div>
-      <div class="form-group" ng-show="RTime">
-        <label for="name">更新记录时间：</label>
-        <form  class="form-inline">
-          <div class="form-group col-md-6">
-              <label for="dtp_input1" class="col-md-3 control-label" style="height: 30px;">开始时间</label>
-              <div class="input-group date form_date col-md-6" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input1" data-link-format="yyyy-mm-dd">
-                  <input class="form-control" style="height: 30px;" type="text" value="2017-01-01" ng-model="sampleQuery.ReDateTimeS" readonly>
-                  <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-              </div>
-              <input type="hidden" id="dtp_input1" value="" /><br/>
-          </div>
-          <div class="form-group col-md-6">
-              <label for="dtp_input2" class="col-md-3 control-label">结束时间</label>
-              <div class="input-group date form_date col-md-6" data-date="" data-date-format="yyyy-mm-dd" data-link-field="dtp_input2" data-link-format="yyyy-mm-dd">
-                  <input class="form-control" style="height: 30px;" type="text" value="2017-03-31" ng-model="sampleQuery.ReDateTimeE" readonly>
-                  <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-              </div>
-              <input type="hidden" id="dtp_input2" value="" /><br/>
-          </div>
-        </form>
-      </div>
-    </form>
-
-    <div>
-        <button type="button" class="btn btn-info">筛选</button>
-    </div>
-
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>产品编号</th>
-            <th>供应商</th>
-            <th>培养批次</th>
-            <th>产品名字</th>
-            <th>产品类型</th>
-            <th>样品记录人员</th>
-            <th>样品记录时间</th>
-            <th>取样方法</th>
-            <th>取样器具</th>
-            <th>取样量</th>
-            <th>分样方法</th>
-            <th>样品容器</th>
-            <th>注意事项</th>
-            <th>储存条件</th>
-            <th>更新时间</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr ng-repeat='info in sampleInfo'>
-            <td>{{info.ObjectNo}}</td>
-            <td>{{info.ObjCompany}}</td>
-            <td>{{info.ObjIncuSeq}}</td>
-            <td>{{info.ObjectName}}</td>
-            <td>{{info.ObjectType}}</td>
-            <td>{{info.SamplingPeople}}</td>
-            <td>{{info.SamplingTime}}</td>
-            <td>{{info.SamplingWay}}</td>
-            <td>{{info.SamplingTool}}</td>
-            <td>{{info.SamAmount}}</td>
-            <td>{{info.DevideWay}}</td>
-            <td>{{info.SamContain}}</td>
-            <td>{{info.Warning}}</td>
-            <td>{{info.SamSave}}</td>
-            <td>{{info.revDateTime}}</td>
-          </tr>          
-        </tbody>
-      </table>
-    </div>
-  </div> -->
   <table ng-table="tableParams" class="table table-condensed" show-filter="true">
     <tr ng-repeat="user in $data" style="text-align: center;">
       <td title="'产品编号'" filter="{ ObjectNo: 'text'}" sortable="'ObjectNo'">
           <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none" ng-click="toTestResult(user.ObjectNo,user.ObjCompany,user.ObjIncuSeq)">{{user.ObjectNo}}</button></td>
-      <td title="'样品来源'" filter="{ ObjCompany: 'text'}" sortable="'ObjCompany'">
+      <td title="'样品来源'" filter="{ ObjCompany: 'text'}" >
           {{user.ObjCompany}}</td>
-      <td title="'重检标识'" filter="{ ObjIncuSeq: 'text'}" sortable="'ObjIncuSeq'">
+      <td title="'重检标识'" filter="{ ObjIncuSeq: 'text'}" >
           {{user.ObjIncuSeq}}</td>
-      <td title="'产品名字'" filter="{ ObjectName: 'text'}" sortable="'ObjectName'">
+      <td title="'产品名字'" filter="{ ObjectName: 'text'}" >
           {{user.ObjectName}}</td>
       <td title="'产品类型'" filter="{ ObjectType: 'text'}" sortable="'ObjectType'">
           {{user.ObjectType}}</td>
-      <td title="'录入人员'" filter="{ SamplingPeople: 'text'}" sortable="'SamplingPeople'">
+      <td title="'录入人员'" filter="{ SamplingPeople: 'text'}" >
           {{user.SamplingPeople}}</td>
       <td title="'样品记录时间'" filter="{ SamplingTime: 'text'}" sortable="'SamplingTime'">
           {{user.SamplingTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
-      <td title="'取样器具'" filter="{ SamplingTool: 'text'}" sortable="'SamplingTool'">
+      <td title="'取样器具'" filter="{ SamplingTool: 'text'}" >
           {{user.SamplingTool}}</td>
-      <td title="'取样量'" filter="{ SamAmount: 'text'}" sortable="'SamAmount'">
+      <td title="'取样量'" filter="{ SamAmount: 'text'}" >
           {{user.SamAmount}}</td>
-      <td title="'分样方法'" filter="{ DevideWay: 'text'}" sortable="'DevideWay'">
+      <td title="'分样方法'" filter="{ DevideWay: 'text'}" >
           {{user.DevideWay}}</td>
-      <td title="'样品容器'" filter="{ SamContain: 'text'}" sortable="'SamContain'">
+      <td title="'样品容器'" filter="{ SamContain: 'text'}" >
           {{user.SamContain}}</td>
-      <td title="'注意事项'" filter="{ Warning: 'text'}" sortable="'Warning'">
+      <td title="'注意事项'" filter="{ Warning: 'text'}" >
           {{user.Warning}}</td>
       <td title="'更新记录'" filter="{ revDateTime: 'text'}" sortable="'revDateTime'">
           <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none;" popover id="popover1" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="更新记录" data-content="更新时间：{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}<br>终端IP：{{user.TerminalIP}}<br>终端名字：{{user.TerminalName}}<br>用户名：{{user.revUserId}}<br>身份证：{{user.revIdentify}}">{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}</button></td>

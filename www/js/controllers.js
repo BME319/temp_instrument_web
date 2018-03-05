@@ -2291,7 +2291,7 @@
                 ItemInfo.GetIsolatorEnv($scope.envisolator).then(
                     function(data) {
                         $scope.envIsolatortableParams = new NgTableParams({
-                            count: 15
+                            count: 10
                         }, {
                             counts: [],
                             dataset: data
@@ -2327,7 +2327,7 @@
                 Operation.GetEquipmentOps($scope.opequipment).then(
                     function(data) {
                         $scope.opIsolatortableParams = new NgTableParams({
-                            count: 15
+                            count: 10
                         }, {
                             counts: [],
                             dataset: data
@@ -2366,7 +2366,7 @@
                             }, 1000);
                         } else {
                             $scope.breakdownIsolatortableParams = new NgTableParams({
-                                count: 15
+                                count: 10
                             }, {
                                 counts: [],
                                 dataset: data
@@ -2400,7 +2400,7 @@
                 ItemInfo.GetIncubatorEnv($scope.envincubator).then(
                     function(data) {
                         $scope.envIncubatortableParams = new NgTableParams({
-                            count: 15
+                            count: 10
                         }, {
                             counts: [],
                             dataset: data
@@ -2437,7 +2437,7 @@
                 Operation.GetEquipmentOps($scope.opequipment).then(
                     function(data) {
                         $scope.opIncubatortableParams = new NgTableParams({
-                            count: 15
+                            count: 10
                         }, {
                             counts: [],
                             dataset: data
