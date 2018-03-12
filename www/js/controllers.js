@@ -60,8 +60,10 @@
                             "revUserId": null
                         }
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
-                            if (data2.result == "登录成功") {
-
+                            if (data2.result.indexOf("登录成功")!=-1) {
+                                // console.log(data2.result)
+                                var token = data2.result.substring(5)
+                                Storage.set('TOKEN', token)
                                 $scope.logStatus = " 登录成功";
                                 //获得个人信息
                                 // UserService.GetUserInfo(login.phoneno).then(function(data){
@@ -2523,7 +2525,7 @@
             var nowdata = new Array()
             var getLists = function(_userlist) {
                 console.log(_userlist)
-                Operation.GetOperationOrder(_userlist).then(function(_data) {
+                Operation.GetSampleFlow(_userlist).then(function(_data) {
                     var finaldata = new Array()
                     for (j = 0; j < _data.length; j++) {
                         finaldata.push(_data[j])
