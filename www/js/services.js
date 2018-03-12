@@ -139,73 +139,73 @@
         var serve = {};
         var abort = $q.defer;
         var getToken = function() {
-            return Storage.get('token');
+            return Storage.get('TOKEN');
         }
 
         var UserService = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', {
                 path: 'UserInfo'
             }, {
-                Login: { method: 'POST', headers: { token: getToken() }, params: { route: 'MstUserLogin' }, timeout: 10000 },
+                Login: { method: 'POST',params: { route: 'MstUserLogin' }, timeout: 10000 },
                 Register: { method: 'POST', params: { route: 'MstUserRegister' }, timeout: 10000 },
-                ChangePassword: { method: 'POST', params: { route: 'MstUserChangePassword' }, timeout: 10000 },
-                UpdateUserInfo: { method: 'POST', params: { route: 'MstUserUpdateUserInfo' }, timeout: 10000 },
-                GetUserInfo: { method: 'GET', params: { route: 'MstUserGetUserInfo' }, timeout: 10000 },
-                GetAllUserInfo: { method: 'POST', params: { route: 'MstUserGetUsersInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                ChangePassword: { method: 'POST',headers: { Authorization: getToken() }, params: { route: 'MstUserChangePassword' }, timeout: 10000 },
+                UpdateUserInfo: { method: 'POST', headers: { Authorization: getToken() },params: { route: 'MstUserUpdateUserInfo' }, timeout: 10000 },
+                GetUserInfo: { method: 'GET', headers: { Authorization: getToken() },params: { route: 'MstUserGetUserInfo' }, timeout: 10000 },
+                GetAllUserInfo: { method: 'POST',headers: { Authorization: getToken() }, params: { route: 'MstUserGetUsersInfoByAnyProperty' }, timeout: 10000, isArray: true },
                 CreateNewUserId: { method: 'GET', params: { route: 'MstUserCreateNewUserId' }, timeout: 10000 },
                 GetUserByPhoneNo: { method: 'GET', params: { route: 'MstUserGetUserByPhoneNo' }, timeout: 10000 },
-                GetReagentType: { method: 'GET', params: { route: 'MstReagentTypeGetAll' }, timeout: 10000, isArray: true },
+                GetReagentType: { method: 'GET',headers: { Authorization: getToken() }, params: { route: 'MstReagentTypeGetAll' }, timeout: 10000, isArray: true },
             })
         };
 
         // 信息统计--张桠童
         var ItemInfo = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'ItemInfo' }, {
-                GetSamplesInfo: { method: 'POST', params: { route: 'ItemSampleGetSamplesInfoByAnyProperty' }, timeout: 10000, isArray: true },
-                GetReagentsInfo: { method: 'POST', params: { route: 'ItemReagentGetReagentsInfoByAnyProperty' }, timeout: 10000, isArray: true },
-                GetIsolatorsInfo: { method: 'POST', params: { route: 'ItemIsolatorGetIsolatorsInfoByAnyProperty' }, timeout: 10000, isArray: true },
-                GetIncubatorsInfo: { method: 'POST', params: { route: 'ItemIncubatorGetIncubatorsInfoByAnyProperty' }, timeout: 10000, isArray: true },
-                SetSampleData: { method: 'POST', params: { route: 'ItemSampleCreateNewSample' }, timeout: 10000, isArray: true },
-                CreateReagentId: { method: 'GET', params: { route: 'ItemReagentCreateReagentId', ReagentType: '@ReagentType' }, timeout: 10000 },
-                SetReagentData: { method: 'POST', params: { route: 'ItemReagentSetData' }, timeout: 10000 },
-                GetIncubatorEnv: { method: 'POST', params: { route: 'EnvIncubatorGetIncubatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetIsolatorEnv: { method: 'POST', params: { route: 'EnvIsolatorGetIsolatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetNewIncubatorEnv: { method: 'GET', params: { route: 'EnvIncubatorGetNewIncubatorEnv' }, timeout: 10000, isArray: true },
-                GetNewIsolatorEnv: { method: 'GET', params: { route: 'EnvIsolatorGetNewIsolatorEnv' }, timeout: 10000, isArray: true },
-                SetReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeSetData' }, timeout: 10000 },
-                DeleteReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeDeleteByPK' }, timeout: 10000 },
+                GetSamplesInfo: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ItemSampleGetSamplesInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                GetReagentsInfo: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ItemReagentGetReagentsInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                GetIsolatorsInfo: { method: 'POST',headers: { Authorization: getToken() },  params: { route: 'ItemIsolatorGetIsolatorsInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                GetIncubatorsInfo: { method: 'POST',headers: { Authorization: getToken() }, params: { route: 'ItemIncubatorGetIncubatorsInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                SetSampleData: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ItemSampleCreateNewSample' }, timeout: 10000, isArray: true },
+                CreateReagentId: { method: 'GET', headers: { Authorization: getToken() }, params: { route: 'ItemReagentCreateReagentId', ReagentType: '@ReagentType' }, timeout: 10000 },
+                SetReagentData: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ItemReagentSetData' }, timeout: 10000 },
+                GetIncubatorEnv: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'EnvIncubatorGetIncubatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
+                GetIsolatorEnv: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'EnvIsolatorGetIsolatorEnvsByAnyProperty' }, timeout: 10000, isArray: true },
+                GetNewIncubatorEnv: { method: 'GET',headers: { Authorization: getToken() },  params: { route: 'EnvIncubatorGetNewIncubatorEnv' }, timeout: 10000, isArray: true },
+                GetNewIsolatorEnv: { method: 'GET', headers: { Authorization: getToken() },params: { route: 'EnvIsolatorGetNewIsolatorEnv' }, timeout: 10000, isArray: true },
+                SetReagentTypeData: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstReagentTypeSetData' }, timeout: 10000 },
+                DeleteReagentTypeData: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstReagentTypeDeleteByPK' }, timeout: 10000 },
             })
         }
         // 检测结果-张桠童
         var Result = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'Result' }, {
-                GetTestResultInfo: { method: 'POST', params: { route: 'ResTestResultGetResultInfosByAnyProperty' }, timeout: 10000, isArray: true },
-                GetBreakDowns: { method: 'POST', params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetResultTubes: { method: 'POST', params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
-                SetResIncubator: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000},
-                CreateResult: { method: 'POST', params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
-                GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
-                GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true },
-                ResultSetData: { method: 'POST', params: { route: 'ResTestResultSetData' }, timeout: 10000},
-                IncubatorSetData: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000}                                                                                
+                GetTestResultInfo: { method: 'POST',headers: { Authorization: getToken() }, params: { route: 'ResTestResultGetResultInfosByAnyProperty' }, timeout: 10000, isArray: true },
+                GetBreakDowns: { method: 'POST', headers: { Authorization: getToken() },params: { route: 'BreakDownGetBreakDownsByAnyProperty' }, timeout: 10000, isArray: true },
+                GetResultTubes: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResIncubatorGetResultTubesByAnyProperty' }, timeout: 10000, isArray: true },
+                SetResIncubator: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResIncubatorSetData' }, timeout: 10000},
+                CreateResult: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResTestResultCreateResult' }, timeout: 10000},
+                GetTestPictures: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
+                GetTopAnalysis: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true },
+                ResultSetData: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'ResTestResultSetData' }, timeout: 10000},
+                IncubatorSetData: { method: 'POST',headers: { Authorization: getToken() },  params: { route: 'ResIncubatorSetData' }, timeout: 10000}                                                                                
             })
         }
         // 仪器信息-张桠童
         var Operation = function() {
             return $resource(CONFIG.baseUrl + ':path/:route', { path: 'Operation' }, {
-                GetEquipmentOps: { method: 'POST', params: { route: 'OpEquipmentGetEquipmentOpsByAnyProperty' }, timeout: 10000, isArray: true },
-                GetSampleFlow: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                GetEquipmentOps: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'OpEquipmentGetEquipmentOpsByAnyProperty' }, timeout: 10000, isArray: true },
+                GetSampleFlow: { method: 'POST',headers: { Authorization: getToken() }, params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
                 //无菌检测操作字典
-                SetOperationInfo: { method: 'POST', params: { route: 'MstOperationSetData' }, timeout: 10000 },
-                GetOperationInfo: { method: 'POST', params: { route: 'MstOperationGetInfoByAnyProperty' }, timeout: 10000, isArray: true },
-                DeleteOperation: { method: 'POST', params: { route: 'MstOperationDeleteByPK' }, timeout: 10000},
+                SetOperationInfo: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstOperationSetData' }, timeout: 10000 },
+                GetOperationInfo: { method: 'POST',headers: { Authorization: getToken() },  params: { route: 'MstOperationGetInfoByAnyProperty' }, timeout: 10000, isArray: true },
+                DeleteOperation: { method: 'POST',headers: { Authorization: getToken() },  params: { route: 'MstOperationDeleteByPK' }, timeout: 10000},
                 //操作流程字典
-                SetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
-                GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
-                GetAllOpTypes: { method: 'POST', params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true },
-                DeleteOperationOrder: { method: 'POST', params: { route: 'MstOperationOrderDeleteByPK' }, timeout: 10000,  },
+                SetOperationOrder: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstOperationOrderSetData' }, timeout: 10000 },
+                // GetOperationOrder: { method: 'POST', params: { route: 'MstOperationOrdersBySampleType' }, timeout: 10000, isArray: true },
+                GetAllOpTypes: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstAllOperationSampleTypes' }, timeout: 10000, isArray: true },
+                DeleteOperationOrder: { method: 'POST', headers: { Authorization: getToken() }, params: { route: 'MstOperationOrderDeleteByPK' }, timeout: 10000,  },
                 // 无菌检测仪器操作记录表-插数据
-                OpEquipmentSetData: { method: 'POST', params: { route: 'OpEquipmentSetData' }, timeout: 10000 },
+                OpEquipmentSetData: { method: 'POST',headers: { Authorization: getToken() },  params: { route: 'OpEquipmentSetData' }, timeout: 10000 },
 
 
             })
@@ -657,15 +657,15 @@
             });
             return deferred.promise;
         };
-        self.GetOperationOrder = function(obj) {
-            var deferred = $q.defer();
-            Data.Operation.GetOperationOrder(obj, function(data, headers) {
-                deferred.resolve(data);
-            }, function(err) {
-                deferred.reject(err);
-            });
-            return deferred.promise;
-        };
+        // self.GetOperationOrder = function(obj) {
+        //     var deferred = $q.defer();
+        //     Data.Operation.GetOperationOrder(obj, function(data, headers) {
+        //         deferred.resolve(data);
+        //     }, function(err) {
+        //         deferred.reject(err);
+        //     });
+        //     return deferred.promise;
+        // };
         self.GetAllOpTypes = function(obj) {
             var deferred = $q.defer();
             Data.Operation.GetAllOpTypes(obj, function(data, headers) {
