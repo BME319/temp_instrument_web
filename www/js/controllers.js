@@ -1112,7 +1112,7 @@
                 promise.then(function(data) {
                     console.log(data)
                     $scope.tabledetail_pro = new NgTableParams({
-                        count: 50
+                        count: 10
                     }, {
                         counts: [],
                         dataset: data
@@ -1173,7 +1173,7 @@
                         data[i].TopResult = topanalysis[i]
                     }
                     $scope.pictureTable = new NgTableParams({
-                        count: 50
+                        count: 3
                     }, {
                         counts: [],
                         dataset: data
@@ -2479,7 +2479,7 @@
                             }, 1000);
                         } else {
                             $scope.breakdownIncubatortableParams = new NgTableParams({
-                                count: 15
+                                count: 10
                             }, {
                                 counts: [],
                                 dataset: data
