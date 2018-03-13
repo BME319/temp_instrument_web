@@ -1178,8 +1178,7 @@
                     "GetCameraTime": 1,
                     "GetAnalResult": 1
                 }
-                var promise2 = Result.GetTopAnalysis(topInfo)
-                promise2.then(function(data) {
+                Result.GetTopAnalysis(topInfo).then(function(data) {
                     for (i = 0; i < data.length; i++) {
                         topanalysis[i] = data[i].AnalResult
                     }
