@@ -1178,30 +1178,28 @@
                     "GetCameraTime": 1,
                     "GetAnalResult": 1
                 }
-                Result.GetTopAnalysis(topInfo).then(function(data) {
-                    for (i = 0; i < data.length; i++) {
-                        topanalysis[i] = data[i].AnalResult
-                    }
-                }, function(err) {});
                 var incInfo = {
                     "GetCameraTime": 1,
                     "GetImageAddress": 1,
                     "GetAnalResult": 1,
                     "TestId": $scope.Id
                 }
-                var promise = Result.GetTestPictures(incInfo)
-                promise.then(function(data) {
+                Result.GetTopAnalysis(topInfo).then(function(data) {
                     for (i = 0; i < data.length; i++) {
-                        data[i].TopResult = topanalysis[i]
+                        topanalysis[i] = data[i].AnalResult
                     }
-                    $scope.pictureTable = new NgTableParams({
-                        count: 3
-                    }, {
-                        counts: [],
-                        dataset: data
-                    })
+                    Result.GetTestPictures(incInfo).then(function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            data[i].TopResult = topanalysis[i]
+                        }
+                        $scope.pictureTable = new NgTableParams({
+                            count: 3
+                        }, {
+                            counts: [],
+                            dataset: data
+                        })
+                    }, function(err) {});
                 }, function(err) {});
-
                 $('#detail_Inc').modal('show')
             }
             $scope.connected = function() {
