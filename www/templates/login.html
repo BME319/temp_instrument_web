@@ -15,13 +15,14 @@
                 <label> 密码 </label> <a ng-click="toReset()" class="label-link">忘记密码</a>
                 <input type="password" class="form-control"  placeholder="请输入密码" ng-model="login.password" ng-animate-children="">
             </div>
-            <p > {{logStatus}} </p>
         </form>
 
         <div>
             <button type="submit" class="btn btn-success" ng-click="LogIn(login)" ng-disabled="disable">登录</button>
             <button class="btn btn-default" ng-click="toRegister()">注册</button>
         </div>
+                    <p > {{logStatus}} </p>
+
 
     </div>
 

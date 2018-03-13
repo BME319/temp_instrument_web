@@ -60,7 +60,7 @@
                             "revUserId": null
                         }
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
-                            if (data2.result.indexOf("登录成功")!=-1) {
+                            if (data2.result.indexOf("登录成功") != -1) {
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
@@ -530,6 +530,8 @@
     // 监控部分--阮卓欣
     .controller('monitorsCtrl', ['Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
         function(Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
+
+
             $('.datetimepicker').datetimepicker({
                 language: 'zh-CN',
                 format: 'yyyy-mm-dd hh:ii',
@@ -1126,7 +1128,7 @@
                 promise.then(function(data) {
                     console.log(data)
                     $scope.tabledetail_col = new NgTableParams({
-                        count: 50
+                        count: 10
                     }, {
                         counts: [],
                         dataset: data
