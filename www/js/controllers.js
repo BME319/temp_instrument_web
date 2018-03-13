@@ -928,10 +928,11 @@
             var promise7 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_1);
             promise7.then(function(data) {
                 IsoProEnv_1 = data
-            }, function(err) {});
-            $timeout(function() {
                 newEnv()
-            }, 100)
+            }, function(err) {});
+            // $timeout(function() {
+            //     newEnv()
+            // }, 100)
 
             var ProcessEnv_2 = {
                 "IsolatorId": "Iso_Process",
@@ -940,10 +941,9 @@
             var promise6 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_2);
             promise6.then(function(data) {
                 IsoProEnv_2 = data
-            }, function(err) {});
-            $timeout(function() {
                 newEnv()
-            }, 100)
+            }, function(err) {});
+
 
             var ProcessEnv_3 = {
                 "IsolatorId": "Iso_Process",
@@ -952,10 +952,8 @@
             var promise8 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_3);
             promise6.then(function(data) {
                 IsoProEnv_3 = data
-            }, function(err) {});
-            $timeout(function() {
                 newEnv()
-            }, 100)
+            }, function(err) {});
 
             //仪器选择           
             $scope.selectInstrument = function() {
@@ -970,6 +968,7 @@
                         $scope.inc = false
                         $scope.pro = false
                         $scope.col = true
+                        newEnv()
                     }, function(err) {});
                 } else if ($scope.envins.indexOf("Iso_Process") != -1) {
                     var ProcessEnv_1 = {
@@ -1001,6 +1000,7 @@
                         console.log(data)
                         IsoProEnv_3 = data
                     }, function(err) {});
+                        newEnv()
                 } else {
                     var IncubatorEnv = {
                         "IncubatorId": $scope.envins,
@@ -1011,11 +1011,9 @@
                         $scope.pro = false
                         $scope.inc = true
                         $scope.col = false
+                        newEnv()
                     }, function(err) {});
                 }
-                $timeout(function() {
-                    newEnv()
-                }, 100)
             }
             var newEnv = function() {
                 $scope.isolator1 = {
