@@ -1108,11 +1108,24 @@
                 }
             }
 
-            $scope.detail_pro = function(SampleType, TestEquip) {
-                console.log(TestEquip)
+            $scope.detail_pro = function(SampleType, NowStep) {
+                console.log(NowStep)
                 var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
                 promise.then(function(data) {
-                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].OrderId == NowStep) {
+                            var j = i
+                            data[i].status = 1
+                        }
+                    }
+                    if (j != undefined) {
+                        for (i = 0; i < j; i++) {
+                            data[i].status = 0
+                        }
+                        for (i = j + 1; i < data.length; i++) {
+                            data[i].status = 2
+                        }
+                    }
                     $scope.tabledetail_pro = new NgTableParams({
                         count: 10
                     }, {
@@ -1123,22 +1136,30 @@
                 $('#detail_Pro').modal('show')
             }
             $scope.detail_col = function(SampleType, NowStep) {
+                console.log(NowStep)
                 var status_col = new Array()
                 var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
                 promise.then(function(data) {
-                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].OrderId == NowStep) {
+                            var j = i
+                            data[i].status = 1
+                        }
+                    }
+                    if (j != undefined) {
+                        for (i = 0; i < j; i++) {
+                            data[i].status = 0
+                        }
+                        for (i = j + 1; i < data.length; i++) {
+                            data[i].status = 2
+                        }
+                    }
                     $scope.tabledetail_col = new NgTableParams({
                         count: 10
                     }, {
                         counts: [],
                         dataset: data
                     })
-                    // for (i = 0; i < data.length; i++) {
-                    //     if(data[i].OrderId == NowStep){
-                    //         status[i] = 
-                    //     }
-                    // }
-
                 }, function(err) {});
                 $('#detail_Col').modal('show')
             }

@@ -1,5 +1,5 @@
 angular.module('filters', [])
- 
+
 
     .filter('timeFormat', [function() {
         return function(date, format) {
@@ -20,4 +20,13 @@ angular.module('filters', [])
             return ret
         }
     }])
-  
+
+.filter('filterStatus', [function () {
+  return function (status) {
+    var s = '未开始'
+    if (status == 0) { s = '已完成' }
+    if (status == 1) { s = '正在进行中' }
+    if (status == 2) { s = '未完成' }
+    return s
+  }
+}])

@@ -634,7 +634,7 @@
                         </td>
                         <td title="'操作说明'">{{dpro.OpDescription}}
                         </td>
-                        <td title="'操作状态'">
+                        <td title="'操作状态'">{{dpro.status|filterStatus}}
                         </td>
                     </tr>
                 </table>
@@ -656,16 +656,14 @@
             </div>
             <div class="modal-body" id="modal-body">
                 <table ng-table="tabledetail_col" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
-                    <tr ng-repeat="dpro in $data" style="text-align: center;">
-                        <td title="'步骤'" sortable="'OrderId'">{{dpro.OrderId}}
+                    <tr ng-repeat="dcol in $data" style="text-align: center;">
+                        <td title="'步骤'" sortable="'OrderId'">{{dcol.OrderId}}
                         </td>
-                        <td title="'操作ID'" sortable="'OperationId'">{{dpro.OperationId}}
+                        <td title="'操作ID'" sortable="'OperationId'">{{dcol.OperationId}}
                         </td>
-                        <td title="'操作说明'">{{dpro.OpDescription}}
+                        <td title="'操作说明'">{{dcol.OpDescription}}
                         </td>
-                        <td title="'操作状态'">
-                            <!--                         <div>✅</div>
-                            <div>❌</div> -->
+                        <td title="'操作状态'">{{dcol.status|filterStatus}}
                         </td>
                     </tr>
                 </table>
