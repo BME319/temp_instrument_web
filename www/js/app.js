@@ -4,6 +4,7 @@ angular.module('IntelligentDetector', ['ui.router', 'ui.bootstrap', 'controllers
 
     .config(['$stateProvider', '$urlRouterProvider',
         function($stateProvider, $urlRouterProvider) {
+
             $urlRouterProvider.otherwise('/login')
 
             $stateProvider
@@ -122,4 +123,29 @@ angular.module('IntelligentDetector', ['ui.router', 'ui.bootstrap', 'controllers
                     templateUrl: 'templates/settings/userdetail.html'
                 })
         }
+
     ])
+    .config(function($httpProvider) {
+        $httpProvider.interceptors.push(function($q, $location, $rootScope, Storage) {
+            return {
+                'request': function(config) {
+                    config.headers = config.headers || {};
+                    var token = Storage.get('TOKEN')
+                    if (token && token.length >= 16) {
+                        // console.log('token', token)
+                        config.headers.Authorization = Storage.get('TOKEN')
+                    }
+                    return config;
+                },
+                'responseError': function(response) {
+                    if (response.status === 401 || response.status === 403) {
+                        //如果之前登陆过
+
+                        $rootScope.$broadcast('unAuthenticed');
+
+                    }
+                    return $q.reject(response);
+                }
+            }
+        })
+    })

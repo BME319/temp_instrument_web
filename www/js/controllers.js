@@ -64,6 +64,7 @@
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
+                                Storage.set('pageflag',1)
                                 $scope.logStatus = " 登录成功";
                                 //获得个人信息
                                 // UserService.GetUserInfo(login.phoneno).then(function(data){
@@ -1000,7 +1001,7 @@
                         console.log(data)
                         IsoProEnv_3 = data
                     }, function(err) {});
-                        newEnv()
+                    newEnv()
                 } else {
                     var IncubatorEnv = {
                         "IncubatorId": $scope.envins,
@@ -2040,6 +2041,12 @@
     // 数据管理--样品信息表--张桠童
     .controller('samplingCtrl', ['$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo',
         function($scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo) {
+            //     console.log(Storage.get('pageflag'))
+            // if (Storage.get('pageflag')==1){
+            //     console.log(1)
+            //     window.location.reload(); 
+            //     Storage.set('pageflag',2)
+            // }
             var sampleQuery = {
                 "ObjectNo": null,
                 "ObjCompany": null,
@@ -2078,7 +2085,7 @@
             var promise = ItemInfo.GetSamplesInfo(sampleQuery);
             promise.then(function(data) {
                 var sampleInfo = data;
-                // console.log(sampleInfo);
+                console.log(sampleInfo);
                 $scope.tableParams = new NgTableParams({
                     count: 10
                 }, {
