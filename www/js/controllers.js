@@ -64,7 +64,10 @@
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
-                                Storage.set('pageflag',1)
+                                        console.log("cid : " + returnCitySN.cid);
+                                        console.log("cip : " + returnCitySN.cip); //得到IP
+                                        console.log("cname : " + returnCitySN.cname); //得到城市
+
                                 $scope.logStatus = " 登录成功";
                                 //获得个人信息
                                 // UserService.GetUserInfo(login.phoneno).then(function(data){
