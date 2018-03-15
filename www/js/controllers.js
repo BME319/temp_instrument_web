@@ -55,18 +55,20 @@
                         var loginInfo2 = {
                             "UserId": t,
                             "InPassword": login.password,
-                            "TerminalIP": null,
-                            "TerminalName": null,
-                            "revUserId": null
+                            "TerminalIP":  Storage.get("cip"),
+                            "TerminalName":  Storage.get("cname"),
+                            "revUserId":  Storage.get("UID")
                         }
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
                             if (data2.result.indexOf("登录成功") != -1) {
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
-                                        console.log("cid : " + returnCitySN.cid);
-                                        console.log("cip : " + returnCitySN.cip); //得到IP
-                                        console.log("cname : " + returnCitySN.cname); //得到城市
+                                console.log("cid : " + returnCitySN.cid);
+                                Storage.set('cip', returnCitySN.cip)
+                                console.log("cip : " + returnCitySN.cip); //得到IP
+                                Storage.set('cname', returnCitySN.cname)
+                                console.log("cname : " + returnCitySN.cname); //得到城市
 
                                 $scope.logStatus = " 登录成功";
                                 //获得个人信息
@@ -300,9 +302,9 @@
                 "Identify": '',
                 "Password": '',
                 "Role": "",
-                "TerminalIP": "sample string 7",
-                "TerminalName": "sample string 8",
-                "revUserId": "sample string 9"
+                "TerminalIP": Storage.get('cip'),
+                "TerminalName": Storage.get('cname'),
+                "revUserId": Storage.get("UID")
             }
         })
         $scope.status = "";
@@ -587,9 +589,9 @@
             $scope.newsample = function() {
                 var formLength = getJsonLength($scope.sample);
                 if (formLength == 7) {
-                    $scope.sample.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.sample.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.sample.revUserId = extraInfo.postInformation().revUserId;
+                    $scope.sample.TerminalIP = Storage.get('cip');
+                    $scope.sample.TerminalName = Storage.get('cname');
+                    $scope.sample.revUserId = Storage.get("UID");
                     console.log($scope.sample);
                     // console.log(formLength);
                     var promise = ItemInfo.SetSampleData($scope.sample);
@@ -621,9 +623,9 @@
             $scope.newreagent = function() {
                 var formLength = getJsonLength($scope.reagent);
                 if (formLength == 3) {
-                    $scope.reagent.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.reagent.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.reagent.revUserId = extraInfo.postInformation().revUserId;
+                    $scope.reagent.TerminalIP = Storage.get('cip') ;
+                    $scope.reagent.TerminalName = Storage.get('cname');
+                    $scope.reagent.revUserId =  Storage.get("UID");
                     console.log($scope.reagent)
                     var promise = ItemInfo.SetReagentData($scope.reagent);
                     promise.then(function(data) {
@@ -1057,9 +1059,9 @@
                     "Reagent2": $scope.task1.Reagent2.ReagentId,
                     "ProcessStart": now,
                     "TestPeople": Storage.get('UID'),
-                    "TerminalIP": extraInfo.postInformation().TerminalIP,
-                    "TerminalName": extraInfo.postInformation().TerminalName,
-                    "revUserId": extraInfo.postInformation().revUserId
+                    "TerminalIP": Storage.get('cip'),
+                "TerminalName": Storage.get('cname'),
+                    "revUserId":  Storage.get("UID")
                 }
                 console.log(taskInfo_1)
                 var promise = Result.CreateResult(taskInfo_1)
@@ -1083,9 +1085,9 @@
                         "Reagent2": $scope.task2.Reagent2.ReagentId,
                         "ProcessStart": now,
                         "TestPeople": Storage.get('UID'),
-                        "TerminalIP": extraInfo.postInformation().TerminalIP,
-                        "TerminalName": extraInfo.postInformation().TerminalName,
-                        "revUserId": extraInfo.postInformation().revUserId
+                        "TerminalIP": Storage.get('cip'),
+                "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID")
                     }
                     var promise = Result.CreateResult(taskInfo_2)
                     promise.then(function(data) {
@@ -1099,9 +1101,9 @@
                         "Reagent2": $scope.task3.Reagent2.ReagentId,
                         "ProcessStart": now,
                         "TestPeople": Storage.get('UID'),
-                        "TerminalIP": extraInfo.postInformation().TerminalIP,
-                        "TerminalName": extraInfo.postInformation().TerminalName,
-                        "revUserId": extraInfo.postInformation().revUserId
+                        "TerminalIP": Storage.get('cip'),
+                "TerminalName": Storage.get('cname'),
+                        "revUserId":  Storage.get("UID")
                     }
                     var promise = Result.CreateResult(taskInfo_3)
                     promise.then(function(data) {
@@ -1293,9 +1295,9 @@
             $scope.newsample = function() {
                 var formLength = getJsonLength($scope.sample);
                 if (formLength == 7) {
-                    $scope.sample.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.sample.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.sample.revUserId = extraInfo.postInformation().revUserId;
+                    $scope.sample.TerminalIP = Storage.get('cip');
+                    $scope.sample.TerminalName = Storage.get('cname');
+                    $scope.sample.revUserId =  Storage.get("UID");
                     // console.log($scope.sample);
                     // console.log(formLength);
                     var promise = ItemInfo.SetSampleData($scope.sample);
@@ -1323,9 +1325,9 @@
             $scope.newreagent = function() {
                 var formLength = getJsonLength($scope.reagent);
                 if (formLength == 3) {
-                    $scope.reagent.TerminalIP = extraInfo.postInformation().TerminalIP;
-                    $scope.reagent.TerminalName = extraInfo.postInformation().TerminalName;
-                    $scope.reagent.revUserId = extraInfo.postInformation().revUserId;
+                    $scope.reagent.TerminalIP = Storage.get('cip');
+                    $scope.reagent.TerminalName = Storage.get('cname');
+                    $scope.reagent.revUserId =  Storage.get("UID");
                     console.log($scope.reagent)
                     var promise = ItemInfo.SetReagentData($scope.reagent);
                     promise.then(function(data) {
@@ -2001,9 +2003,9 @@
                     "OperationCode": "R0",
                     "OperationValue": "R0",
                     "OperationResult": "R0",
-                    "TerminalIP": null,
-                    "TerminalName": null,
-                    "revUserId": null
+                    "TerminalIP":  Storage.get("cip"),
+                    "TerminalName":  Storage.get("cname"),
+                    "revUserId":  Storage.get("UID")
                 }).then(
                     function(data) {
                         if (data.result == "插入成功") {
