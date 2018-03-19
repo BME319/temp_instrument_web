@@ -534,8 +534,8 @@
     ])
 
     // 监控部分--阮卓欣
-    .controller('monitorsCtrl', ['$interval','Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
-        function($interval,Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
+    .controller('monitorsCtrl', ['$interval', 'Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
+        function($interval, Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
 
 
             $('.datetimepicker').datetimepicker({
@@ -770,12 +770,6 @@
             }
 
             $scope.showtubedetail = function(index) {
-                console.log($scope.tube.TubeNo)
-                console.log(tubeslist)
-                console.log(tubeslist[0].TubeNo == $scope.tube.TubeNo)
-
-
-
                 for (i = 0; i < tubeslist.length; i++) {
                     if (tubeslist[i].TubeNo == $scope.tube.TubeNo) {
                         $scope.tempTube = tubeslist[i]
@@ -813,7 +807,6 @@
                 "GetTestId": 1
             }
             var handling = function() {
-                console.log("handling")
                 Result.GetTestResultInfo(realInfo_1).then(function(data) {
                     // console.log(data)
                     $scope.handlingTable = new NgTableParams({
@@ -948,7 +941,6 @@
                 ItemInfo.GetNewIsolatorEnv(ProcessEnv_1).then(function(data) {
                     IsoProEnv_1 = data
                     newEnv()
-                    console.log('realtime')
                 }, function(err) {});
                 ItemInfo.GetNewIsolatorEnv(ProcessEnv_2).then(function(data) {
                     IsoProEnv_2 = data
@@ -1522,8 +1514,8 @@
                     for (i = 0; i < data.length; i++) {
                         if (data[i].Place != 0) {
                             temptubeslist.push({
-                                "TubeNo": data[i].TestId + data[i].TubeNo,
-                                "TestId": data[i].TestId + data[i].TubeNo,
+                                "TubeNo": data[i].TubeNo,
+                                "TestId": data[i].TestId,
                                 "CultureId": data[i].CultureId,
                                 "BacterId": data[i].BacterId,
                                 "OtherRea": data[i].OtherRea,
@@ -1542,14 +1534,16 @@
             }
 
             // 显示培养器具体信息-rh
-            $scope.showtubedetail = function(index) {
-                if (index == null) { $scope.tempTube = {} }
+            $scope.showtubedetail = function(TestIdindex, TubeNoindex) {
+                if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.tempTube = {} }
                 for (i = 0; i < tubeslist.length; i++) {
-                    if (tubeslist[i].TubeNo == $scope.tube.TubeNo) {
+                    if ((tubeslist[i].TubeNo == TubeNoindex) && ((tubeslist[i].TestId == TestIdindex))) {
                         $scope.tempTube = tubeslist[i]
                     }
                 }
             }
+
+
 
             // 取出培养-rh
             $scope.totakeout = function(index) {
@@ -1605,8 +1599,8 @@
                 for (i = 0; i < data.length; i++) {
 
                     _putintemptubeslist.push({
-                        "TubeNo": data[i].TestId + data[i].TubeNo,
-                        "TestId": data[i].TestId + data[i].TubeNo,
+                        "TubeNo": data[i].TubeNo,
+                        "TestId": data[i].TestId,
                         "CultureId": data[i].CultureId,
                         "BacterId": data[i].BacterId,
                         "OtherRea": data[i].OtherRea,
@@ -1622,10 +1616,12 @@
                 putintubeslist = _putintemptubeslist
             }, function(err) {})
             // 显示培养器具体信息-rh
-            $scope.putinshowtubedetail = function(index) {
-                if (index == null) { $scope.putintempTube = {} }
+            $scope.putinshowtubedetail = function(TestIdindex, TubeNoindex) {
+
+
+                if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.putintempTube = {} }
                 for (i = 0; i < putintubeslist.length; i++) {
-                    if (putintubeslist[i].TubeNo == $scope.putintube.TubeNo) {
+                    if ((putintubeslist[i].TubeNo == TubeNoindex) && ((putintubeslist[i].TestId == TestIdindex))) {
                         $scope.putintempTube = putintubeslist[i]
                     }
                 }
@@ -1642,42 +1638,36 @@
             var finalplace = ""
             $scope.toputinclass = function(index) {
                 finalplace = index
-            }
-            $scope.toputin = function(index) {
-                if (($scope.putinPlaceNo == undefined) || (finalplace == '')||($scope.putincultureinfo==undefined)) {
-                    $('#checkfull').modal('show')
-                    $timeout(function() {
-                        $('#checkfull').modal('hide')
-                    }, 1000)
-                }else if (isNaN($scope.putinPlaceNo)) {
-                     $('#checkisNo').modal('show')
-                        $timeout(function() {
-                            $('#checkisNo').modal('hide')
-                        }, 1000)
-                } else
+                $scope.numbers = []
                 if (finalplace.indexOf("In") != -1) {
-                    if (((parseInt($scope.putinPlaceNo) > 15) || (parseInt($scope.putinPlaceNo) < 1))) {
-                        $('#checkNo').modal('show')
-                        $timeout(function() {
-                            $('#checkNo').modal('hide')
-                        }, 1000)
+                    for (i = 1; i <= 15; i++) {
+                        $scope.numbers.push(i)
                     }
                 } else if (finalplace.indexOf("out") != -1) {
-                    if (((parseInt($scope.putinPlaceNo) > 28) || (parseInt($scope.putinPlaceNo) < 1))) {
-                        $('#checkNo').modal('show')
-                        $timeout(function() {
-                            $('#checkNo').modal('hide')
-                        }, 1000)
+                    for (i = 1; i <= 28; i++) {
+                        $scope.numbers.push(i)
                     }
-                } else {
-                    Result.GetResultTubes({
+                }
+                Array.prototype.indexOf = function(val) {
+                    for (var i = 0; i < this.length; i++) {
+                        if (this[i] == val) return i;
+                    }
+                    return -1;
+                };
+                Array.prototype.remove = function(val) {
+                    var index = this.indexOf(val);
+                    if (index > -1) {
+                        this.splice(index, 1);
+                    }
+                };
+                Result.GetResultTubes({
                     "TestId": null,
                     "TubeNo": null,
                     "CultureId": null,
                     "BacterId": null,
                     "OtherRea": null,
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": finalplace+$scope.putinPlaceNo,
+                    "Place": null,
                     "StartTimeS": null,
                     "StartTimeE": null,
                     "EndTimeS": null,
@@ -1692,16 +1682,34 @@
                     "GetEndTime": 1,
                     "GetAnalResult": 1
                 }).then(function(data) {
-                    
-                    if (data.length>=1) {
-                        
-                        $('#occupied').modal('show')
-                    $timeout(function() {
-                        $('#occupied').modal('hide')
-                    }, 1000)
+                    for (i = 0; i < data.length; i++) {
+                        if ((data[i].Place.replace(/[0-9]/ig, "")) == index) {
+                            $scope.numbers.remove(data[i].Place.replace(/[a-zA-Z_]/ig, ""));
+                        }
                     }
-                 
-                }, function(err) {}) 
+                }, function(err) {})
+                console.log($scope.numbers)
+            }
+            $scope.toputin = function(index) {
+                if (($scope.putinPlaceNo == undefined) || ($scope.putinclass == undefined) || ($scope.putincultureinfo == undefined) || ($scope.putintube == undefined)) {
+                    $('#checkfull').modal('show')
+                    $timeout(function() {
+                        $('#checkfull').modal('hide')
+                    }, 1000)
+                } else if (finalplace.indexOf("In") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 15) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
+                    }
+                } else if (finalplace.indexOf("out") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 28) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
+                    }
                 }
 
                 console.log(index)
@@ -1710,13 +1718,13 @@
                 console.log($scope.putinPlaceNo)
 
                 Result.SetResIncubator({
-                    "TestId": index.TestId.replace(/[^a-zA-Z]/ig, ""),
+                    "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
                     "CultureId": index.CultureId,
                     "BacterId": index.BacterId,
                     "OtherRea": index.OtherRea,
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": finalplace+$scope.putinPlaceNo,
+                    "Place": finalplace + $scope.putinPlaceNo,
                     "StartTime": index.StartTime,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
@@ -1731,11 +1739,6 @@
                     }
                 }, function(err) {})
             }
-
-            // 监听事件(表单清空)
-            $('#putin').on('hidden.bs.modal', function() {
-                $scope.putinPlaceNo =''
-            })
 
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
