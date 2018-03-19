@@ -55,9 +55,9 @@
                         var loginInfo2 = {
                             "UserId": t,
                             "InPassword": login.password,
-                            "TerminalIP":  Storage.get("cip"),
-                            "TerminalName":  Storage.get("cname"),
-                            "revUserId":  Storage.get("UID")
+                            "TerminalIP": Storage.get("cip"),
+                            "TerminalName": Storage.get("cname"),
+                            "revUserId": Storage.get("UID")
                         }
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
                             if (data2.result.indexOf("登录成功") != -1) {
@@ -623,9 +623,9 @@
             $scope.newreagent = function() {
                 var formLength = getJsonLength($scope.reagent);
                 if (formLength == 3) {
-                    $scope.reagent.TerminalIP = Storage.get('cip') ;
+                    $scope.reagent.TerminalIP = Storage.get('cip');
                     $scope.reagent.TerminalName = Storage.get('cname');
-                    $scope.reagent.revUserId =  Storage.get("UID");
+                    $scope.reagent.revUserId = Storage.get("UID");
                     console.log($scope.reagent)
                     var promise = ItemInfo.SetReagentData($scope.reagent);
                     promise.then(function(data) {
@@ -1060,8 +1060,8 @@
                     "ProcessStart": now,
                     "TestPeople": Storage.get('UID'),
                     "TerminalIP": Storage.get('cip'),
-                "TerminalName": Storage.get('cname'),
-                    "revUserId":  Storage.get("UID")
+                    "TerminalName": Storage.get('cname'),
+                    "revUserId": Storage.get("UID")
                 }
                 console.log(taskInfo_1)
                 var promise = Result.CreateResult(taskInfo_1)
@@ -1086,7 +1086,7 @@
                         "ProcessStart": now,
                         "TestPeople": Storage.get('UID'),
                         "TerminalIP": Storage.get('cip'),
-                "TerminalName": Storage.get('cname'),
+                        "TerminalName": Storage.get('cname'),
                         "revUserId": Storage.get("UID")
                     }
                     var promise = Result.CreateResult(taskInfo_2)
@@ -1102,8 +1102,8 @@
                         "ProcessStart": now,
                         "TestPeople": Storage.get('UID'),
                         "TerminalIP": Storage.get('cip'),
-                "TerminalName": Storage.get('cname'),
-                        "revUserId":  Storage.get("UID")
+                        "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID")
                     }
                     var promise = Result.CreateResult(taskInfo_3)
                     promise.then(function(data) {
@@ -1297,7 +1297,7 @@
                 if (formLength == 7) {
                     $scope.sample.TerminalIP = Storage.get('cip');
                     $scope.sample.TerminalName = Storage.get('cname');
-                    $scope.sample.revUserId =  Storage.get("UID");
+                    $scope.sample.revUserId = Storage.get("UID");
                     // console.log($scope.sample);
                     // console.log(formLength);
                     var promise = ItemInfo.SetSampleData($scope.sample);
@@ -1327,7 +1327,7 @@
                 if (formLength == 3) {
                     $scope.reagent.TerminalIP = Storage.get('cip');
                     $scope.reagent.TerminalName = Storage.get('cname');
-                    $scope.reagent.revUserId =  Storage.get("UID");
+                    $scope.reagent.revUserId = Storage.get("UID");
                     console.log($scope.reagent)
                     var promise = ItemInfo.SetReagentData($scope.reagent);
                     promise.then(function(data) {
@@ -1496,7 +1496,6 @@
                 if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) { _incubatorId = null } else {
                     _incubatorId = _incubator.IncubatorId
                 }
-                console.log(_incubatorId)
                 Result.GetResultTubes({
                     "TestId": null,
                     "TubeNo": null,
@@ -1633,19 +1632,81 @@
 
 
             // 放入培养-rh
+            $scope.putinclasses = [
+                { id: 'Upper_In_', name: '上轮内层' },
+                { id: 'Upper_out_', name: '上轮外层' },
+                { id: 'Lower_In_', name: '下轮内层' },
+                { id: 'Lower_out_', name: '下轮外层' }
+            ]
+            var finalplace = ""
+            $scope.toputinclass = function(index) {
+                finalplace = index
+            }
             $scope.toputin = function(index) {
-                var value = '';
-                var radio = document.getElementsByName("putinPlace");
-                for (var i = 0; i < radio.length; i++) {
-                    if (radio[i].checked == true) {
-                        value = radio[i].value;
-                        break;
+                if (($scope.putinPlaceNo == undefined) || (finalplace == '')||($scope.putincultureinfo==undefined)) {
+                    $('#checkfull').modal('show')
+                    $timeout(function() {
+                        $('#checkfull').modal('hide')
+                    }, 1000)
+                }else if (isNaN($scope.putinPlaceNo)) {
+                     $('#checkisNo').modal('show')
+                        $timeout(function() {
+                            $('#checkisNo').modal('hide')
+                        }, 1000)
+                } else
+                if (finalplace.indexOf("In") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 15) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
                     }
+                } else if (finalplace.indexOf("out") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 28) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
+                    }
+                } else {
+                    Result.GetResultTubes({
+                    "TestId": null,
+                    "TubeNo": null,
+                    "CultureId": null,
+                    "BacterId": null,
+                    "OtherRea": null,
+                    "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
+                    "Place": finalplace+$scope.putinPlaceNo,
+                    "StartTimeS": null,
+                    "StartTimeE": null,
+                    "EndTimeS": null,
+                    "EndTimeE": null,
+                    "AnalResult": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    
+                    if (data.length>=1) {
+                        
+                        $('#occupied').modal('show')
+                    $timeout(function() {
+                        $('#occupied').modal('hide')
+                    }, 1000)
+                    }
+                 
+                }, function(err) {}) 
                 }
+
                 console.log(index)
-                console.log(value)
+
+                console.log(finalplace)
                 console.log($scope.putinPlaceNo)
-                console.log($scope.putincultureinfo.IncubatorId.IncubatorId)
 
                 Result.SetResIncubator({
                     "TestId": index.TestId.replace(/[^a-zA-Z]/ig, ""),
@@ -1654,7 +1715,7 @@
                     "BacterId": index.BacterId,
                     "OtherRea": index.OtherRea,
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": value + $scope.putinPlaceNo,
+                    "Place": finalplace+$scope.putinPlaceNo,
                     "StartTime": index.StartTime,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
@@ -1670,6 +1731,10 @@
                 }, function(err) {})
             }
 
+            // 监听事件(表单清空)
+            $('#putin').on('hidden.bs.modal', function() {
+                $scope.putinPlaceNo =''
+            })
 
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
@@ -2003,9 +2068,9 @@
                     "OperationCode": "R0",
                     "OperationValue": "R0",
                     "OperationResult": "R0",
-                    "TerminalIP":  Storage.get("cip"),
-                    "TerminalName":  Storage.get("cname"),
-                    "revUserId":  Storage.get("UID")
+                    "TerminalIP": Storage.get("cip"),
+                    "TerminalName": Storage.get("cname"),
+                    "revUserId": Storage.get("UID")
                 }).then(
                     function(data) {
                         if (data.result == "插入成功") {
