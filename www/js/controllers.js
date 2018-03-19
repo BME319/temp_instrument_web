@@ -534,8 +534,8 @@
     ])
 
     // 监控部分--阮卓欣
-    .controller('monitorsCtrl', ['Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
-        function(Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
+    .controller('monitorsCtrl', ['$interval','Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
+        function($interval,Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
 
 
             $('.datetimepicker').datetimepicker({
@@ -812,16 +812,18 @@
                 "GetTestEquip": 1,
                 "GetTestId": 1
             }
-            var promise1 = Result.GetTestResultInfo(realInfo_1);
-            promise1.then(function(data) {
-                console.log(data)
-                $scope.handlingTable = new NgTableParams({
-                    count: 50
-                }, {
-                    counts: [],
-                    dataset: data
-                })
-            }, function(err) {});
+            var handling = function() {
+                console.log("handling")
+                Result.GetTestResultInfo(realInfo_1).then(function(data) {
+                    // console.log(data)
+                    $scope.handlingTable = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {})
+            }
             // Result.GetBreakDowns(TestEquip).then(
             //     function(data) {
             //         console.log(data)
@@ -839,32 +841,34 @@
                 "GetTestEquip2": 1,
                 "GetTestId": 1
             }
-            var promise2 = Result.GetTestResultInfo(realInfo_2);
-            promise2.then(function(data) {
-                console.log(data)
-                $scope.CollectTable = new NgTableParams({
-                    count: 50
-                }, {
-                    counts: [],
-                    dataset: data
-                })
-            }, function(err) {});
+            var collect = function() {
+                Result.GetTestResultInfo(realInfo_2).then(function(data) {
+                    // console.log(data)
+                    $scope.CollectTable = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {})
+            }
             //培养表            
             var realInfo_3 = {
                 "ReStatus": 2,
                 "GetObjectNo": 1,
                 "GetObjectName": 1,
             }
-            var promise3 = Result.GetTestResultInfo(realInfo_3);
-            promise3.then(function(data) {
-                console.log(data)
-                $scope.IncuTable = new NgTableParams({
-                    count: 50
-                }, {
-                    counts: [],
-                    dataset: data
-                })
-            }, function(err) {});
+            var incu = function() {
+                Result.GetTestResultInfo(realInfo_3).then(function(data) {
+                    // console.log(data)
+                    $scope.IncuTable = new NgTableParams({
+                        count: 50
+                    }, {
+                        counts: [],
+                        dataset: data
+                    })
+                }, function(err) {})
+            }
             //紧急停止
             $scope.breakpro = false
             $scope.breakcol = false
@@ -878,19 +882,20 @@
                 "GetBreakReason": 1,
                 "GetResponseTime": 1
             }
-            var promise9 = Result.GetBreakDowns(breakInfo);
-            promise9.then(function(data) {
-                console.log(data)
-                for (i = 0; i < data.length; i++) {
-                    if (data[i].BreakId == 'Iso_Process') {
-                        $scope.breakpro == true
-                        document.getElementById("pro").setAttribute("disabled", false)
-                    } else if (data[i].BreakId == 'Iso_Collect') {
-                        $scope.breakcol == true
-                        document.getElementById("col").setAttribute("disabled", false)
+            var breakdowns = function() {
+                Result.GetBreakDowns(breakInfo).then(function(data) {
+                    // console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        if (data[i].BreakId == 'Iso_Process') {
+                            $scope.breakpro == true
+                            document.getElementById("pro").setAttribute("disabled", false)
+                        } else if (data[i].BreakId == 'Iso_Collect') {
+                            $scope.breakcol == true
+                            document.getElementById("col").setAttribute("disabled", false)
+                        }
                     }
-                }
-            }, function(err) {});
+                }, function(err) {})
+            }
             //实时监控--下拉选择 
             var instruments = new Array()
             $scope.instruments = instruments
@@ -931,36 +936,44 @@
                 "IsolatorId": "Iso_Process",
                 "CabinId": 1
             }
-            var promise7 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_1);
-            promise7.then(function(data) {
-                IsoProEnv_1 = data
-                newEnv()
-            }, function(err) {});
-            // $timeout(function() {
-            //     newEnv()
-            // }, 100)
-
             var ProcessEnv_2 = {
                 "IsolatorId": "Iso_Process",
                 "CabinId": 2
             }
-            var promise6 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_2);
-            promise6.then(function(data) {
-                IsoProEnv_2 = data
-                newEnv()
-            }, function(err) {});
-
-
             var ProcessEnv_3 = {
                 "IsolatorId": "Iso_Process",
                 "CabinId": 3
             }
-            var promise8 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_3);
-            promise6.then(function(data) {
-                IsoProEnv_3 = data
-                newEnv()
-            }, function(err) {});
-
+            var realtime = function(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3) {
+                ItemInfo.GetNewIsolatorEnv(ProcessEnv_1).then(function(data) {
+                    IsoProEnv_1 = data
+                    newEnv()
+                    console.log('realtime')
+                }, function(err) {});
+                ItemInfo.GetNewIsolatorEnv(ProcessEnv_2).then(function(data) {
+                    IsoProEnv_2 = data
+                    newEnv()
+                }, function(err) {});
+                ItemInfo.GetNewIsolatorEnv(ProcessEnv_3).then(function(data) {
+                    IsoProEnv_3 = data
+                    newEnv()
+                }, function(err) {})
+            }
+            //选项环境刷新
+            var recollect = function(env) {
+                console.log('recollect')
+                ItemInfo.GetNewIsolatorEnv(env).then(function(data) {
+                    IsoColEnv = data
+                    newEnv()
+                }, function(err) {})
+            }
+            var reincu = function(env) {
+                console.log('reincu')
+                ItemInfo.GetNewIncubatorEnv(env).then(function(data) {
+                    IncEnv = data
+                    newEnv()
+                }, function(err) {});
+            }
             //仪器选择           
             $scope.selectInstrument = function() {
                 if ($scope.envins.indexOf("Iso_Collect") != -1) {
@@ -968,57 +981,23 @@
                         "IsolatorId": $scope.envins,
                         "CabinId": 1
                     }
-                    var promise = ItemInfo.GetNewIsolatorEnv(CollectEnv);
-                    promise.then(function(data) {
-                        IsoColEnv = data
-                        $scope.inc = false
-                        $scope.pro = false
-                        $scope.col = true
-                        newEnv()
-                    }, function(err) {});
+                    $scope.inc = false
+                    $scope.pro = false
+                    $scope.col = true
+                    recollect(CollectEnv)
                 } else if ($scope.envins.indexOf("Iso_Process") != -1) {
-                    var ProcessEnv_1 = {
-                        "IsolatorId": $scope.envins,
-                        "CabinId": 1
-                    }
-                    var promise1 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_1);
-                    promise1.then(function(data) {
-                        IsoProEnv_1 = data
-                        $scope.pro = true
-                        $scope.inc = false
-                        $scope.col = false
-                        console.log(data)
-                    }, function(err) {});
-                    // var ProcessEnv_2 = {
-                    //     "IsolatorId": $scope.envins,
-                    //     "CabinId": 2
-                    // }
-                    var promise2 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_2);
-                    promise2.then(function(data) {
-                        IsoProEnv_2 = data
-                    }, function(err) {});
-                    var ProcessEnv_3 = {
-                        "IsolatorId": $scope.envins,
-                        "CabinId": 3
-                    }
-                    var promise3 = ItemInfo.GetNewIsolatorEnv(ProcessEnv_3);
-                    promise3.then(function(data) {
-                        console.log(data)
-                        IsoProEnv_3 = data
-                    }, function(err) {});
-                    newEnv()
+                    $scope.pro = true
+                    $scope.inc = false
+                    $scope.col = false
+                    realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3)
                 } else {
                     var IncubatorEnv = {
                         "IncubatorId": $scope.envins,
                     }
-                    var promise = ItemInfo.GetNewIncubatorEnv(IncubatorEnv);
-                    promise.then(function(data) {
-                        IncEnv = data
-                        $scope.pro = false
-                        $scope.inc = true
-                        $scope.col = false
-                        newEnv()
-                    }, function(err) {});
+                    $scope.pro = false
+                    $scope.inc = true
+                    $scope.col = false
+                    reincu(IncubatorEnv)
                 }
             }
             var newEnv = function() {
@@ -1049,6 +1028,28 @@
                     env_status: IncEnv,
                 }
             }
+            //刷新
+            handling()
+            collect()
+            incu()
+            breakdowns()
+            realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3)
+            var cal_handling = $interval(handling, 30000)
+            var cal_collect = $interval(collect, 30000)
+            var cal_incu = $interval(incu, 30000)
+            var cal_breakdowns = $interval(breakdowns, 30000)
+            var cal_realtime = $interval(function() {
+                realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3);
+            }, 30000)
+
+            $scope.$on("$destroy", function() {
+                $interval.cancel(cal_handling)
+                $interval.cancel(cal_collect)
+                $interval.cancel(cal_incu)
+                $interval.cancel(cal_breakdowns)
+                $interval.cancel(cal_realtime)
+                console.log('aaa')
+            })
             //添加任务
             $scope.creattask = function() {
                 var taskInfo_1 = {
