@@ -1450,9 +1450,8 @@
             }
 
 
-
-
-
+            var twoweekslater = new Date();
+            twoweekslater.setDate(twoweekslater.getDate() + 14);
 
             // 取出培养-rh          
             var tubeslist = new Array()
@@ -1481,11 +1480,56 @@
                     $scope.takeoutIncubators = data;
                 }, function(err) {});
 
+                var temptubeslist = new Array()
+                // 默认状态下培养器列表
+                Result.GetResultTubes({
+                    "TestId": null,
+                    "TubeNo": null,
+                    "CultureId": null,
+                    "BacterId": null,
+                    "OtherRea": null,
+                    "IncubatorId": null,
+                    "Place": null,
+                    "StartTimeS": null,
+                    "StartTimeE": null,
+                    "EndTimeS": null,
+                    "EndTimeE": null,
+                    "AnalResult": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    for (i = 0; i < data.length; i++) {
+                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator')& (data[i].IncubatorId != '')) {
+                            temptubeslist.push({
+                                "TubeNo": data[i].TubeNo,
+                                "TestId": data[i].TestId,
+                                "CultureId": data[i].CultureId,
+                                "BacterId": data[i].BacterId,
+                                "OtherRea": data[i].OtherRea,
+                                "IncubatorId": data[i].IncubatorId,
+                                "Place": data[i].Place,
+                                "StartTime": data[i].StartTime,
+                                "EndTime": data[i].EndTime,
+                                "AnalResult": data[i].AnalResult
+                            })
+                        }
+                    }
+                    $scope.tubes = temptubeslist
+                }, function(err) {})
+
                 // 选择培养箱的培养器列表change-rh
                 $scope.tubeselect = function(_incubator) {
                     var _incubatorId = ''
-                    var temptubeslist = new Array()
-                    if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) { _incubatorId = null } else {
+                    temptubeslist = []
+                    if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) {
+                        _incubatorId = null;
+                    } else {
                         _incubatorId = _incubator.IncubatorId
                     }
                     Result.GetResultTubes({
@@ -1511,7 +1555,7 @@
                         "GetAnalResult": 1
                     }).then(function(data) {
                         for (i = 0; i < data.length; i++) {
-                            if (data[i].Place != 0) {
+                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator')& (data[i].IncubatorId != '')) {
                                 temptubeslist.push({
                                     "TubeNo": data[i].TubeNo,
                                     "TestId": data[i].TestId,
@@ -1742,6 +1786,7 @@
                     }
                 }
 
+
                 Result.SetResIncubator({
                     "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
@@ -1751,7 +1796,7 @@
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
                     "Place": finalplace + $scope.putinPlaceNo,
                     "StartTime": now,
-                    "EndTime": index.EndTime,
+                    "EndTime": twoweekslater,
                     "AnalResult": index.AnalResult,
                 }).then(function(data) {
                     if (data.result == "插入成功") {
@@ -1764,7 +1809,6 @@
                     }
                 }, function(err) {})
             }
-
 
 
             // 阳性菌加注-茹画
