@@ -517,28 +517,24 @@
                 <form id="putincultureForm" name="putincultureForm" class="form-horizontal">
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinIncubator.IncubatorId for putinIncubator in putinIncubators" ng-model="putincultureinfo.IncubatorId" ng-change="putintubeselect(putincultureinfo.IncubatorId)">
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinIncubator.IncubatorId for putinIncubator in putinIncubators" ng-model="putincultureinfo.IncubatorId">
                             <option selected value="">选择培养箱</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择位置</label>
-                        <div class="row-xs-6">
+
                             <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinclass.name for putinclass in putinclasses" ng-model="putinclass" ng-change="toputinclass(putinclass.id)">
                                 <option selected value="">选择轮层</option>
-                                <!-- <label>
-                                        <input name="putinPlace" type="radio" value="Upper_" /> 上轮 </label>
-                                    <label>
-                                        <input name="putinPlace" type="radio" value="Lower_" /> 下轮 </label> -->
-                                <input style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-model="putinPlaceNo" ng-change="toputinPlaceNo(putinPlaceNo)"></input>
-                        </div>
-                        <div class="row-xs-6">
-                            <div style="margin-left: 110px;margin-top:10px">内层请输入1~15，外层请输入1~28。</div>
-                        </div>
+                        </select>
+                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="number for number in numbers" ng-model="putinPlaceNo" >
+                                <option selected value="">选择编号</option>
+                        </select>
+
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube.TubeNo for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail($index)">
+                        <select style="width:140px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube as (putintube.TestId+'_'+putintube.TubeNo) for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail(putintube.TestId,putintube.TubeNo)">
                             <option selected value="">选择培养器</option>
                         </select>
                     </div>
@@ -547,6 +543,7 @@
                         <div class="col-xs-9" style="margin-top: 7px">
                             <div class="gridTex">
                                 <b>培养器ID： </b>{{putintempTube.TestId}}
+                                <div style="margin-top: 10px;"><b>样品管号： </b>{{putintempTube.TubeNo}}</div>
                                 <div style="margin-top: 10px;"><b>培养液ID： </b>{{putintempTube.CultureId}}</div>
                                 <div style="margin-top: 10px;"><b>菌液ID： </b>{{putintempTube.BacterId}}</div>
                                 <div style="margin-top: 10px;"><b>其他试剂： </b>{{putintempTube.OtherRea}}</div>
@@ -586,7 +583,8 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube.TubeNo for tube in tubes" ng-model="tube" ng-change="showtubedetail($index)">
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube as (tube.TestId+'_'+tube.TubeNo) for tube in tubes" ng-model="tube" ng-change="showtubedetail(tube.TestId,tube.TubeNo)">
+                        
                             <option selected value="">选择培养器</option>
                         </select>
                     </div>
@@ -595,6 +593,7 @@
                         <div class="col-xs-9" style="margin-top: 7px">
                             <div class="gridTex">
                                 <b>培养器ID： </b>{{tempTube.TestId}}
+                                <div style="margin-top: 10px;"><b>样品管号： </b>{{tempTube.TubeNo}}</div>
                                 <div style="margin-top: 10px;"><b>培养液ID： </b>{{tempTube.CultureId}}</div>
                                 <div style="margin-top: 10px;"><b>菌液ID： </b>{{tempTube.BacterId}}</div>
                                 <div style="margin-top: 10px;"><b>其他试剂： </b>{{tempTube.OtherRea}}</div>
