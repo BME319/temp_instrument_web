@@ -937,7 +937,7 @@
                 "IsolatorId": "Iso_Process",
                 "CabinId": 3
             }
-            var realtime = function(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3) {
+            var realtime = function() {
                 ItemInfo.GetNewIsolatorEnv(ProcessEnv_1).then(function(data) {
                     IsoProEnv_1 = data
                     newEnv()
@@ -952,9 +952,14 @@
                 }, function(err) {})
             }
             //选项环境刷新
-            var recollect = function(env) {
+            var CollectEnv = {
+                "IsolatorId": 'Iso_Collect',
+                "CabinId": 1
+            }
+            var IncubatorEnv = null
+            var recollect = function() {
                 console.log('recollect')
-                ItemInfo.GetNewIsolatorEnv(env).then(function(data) {
+                ItemInfo.GetNewIsolatorEnv(CollectEnv).then(function(data) {
                     IsoColEnv = data
                     newEnv()
                 }, function(err) {})
@@ -966,30 +971,26 @@
                     newEnv()
                 }, function(err) {});
             }
-            //仪器选择           
+            //仪器选择 
             $scope.selectInstrument = function() {
                 if ($scope.envins.indexOf("Iso_Collect") != -1) {
-                    var CollectEnv = {
-                        "IsolatorId": $scope.envins,
-                        "CabinId": 1
-                    }
                     $scope.inc = false
                     $scope.pro = false
                     $scope.col = true
-                    recollect(CollectEnv)
-                } else if ($scope.envins.indexOf("Iso_Process") != -1) {
-                    $scope.pro = true
-                    $scope.inc = false
-                    $scope.col = false
-                    realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3)
-                } else {
-                    var IncubatorEnv = {
+                    recollect()
+                } else if ($scope.envins.indexOf("Incu_") != -1) {
+                    IncubatorEnv = {
                         "IncubatorId": $scope.envins,
                     }
                     $scope.pro = false
                     $scope.inc = true
                     $scope.col = false
                     reincu(IncubatorEnv)
+                } else {
+                    $scope.pro = true
+                    $scope.inc = false
+                    $scope.col = false
+                    realtime()
                 }
             }
             var newEnv = function() {
@@ -997,7 +998,6 @@
                     env_names: ["进料区温度/℃", "进料区湿度", "进料区压力", "进料区过氧化氢浓度高", "进料区过氧化氢浓度低"],
                     env_codes: ["1", "2", "3", "4", "5"],
                     env_status: IsoProEnv_1,
-
                 }
                 $scope.isolator2 = {
                     env_names: ["加工区温度/℃", "加工区湿度", "加工区压力", "加工区过氧化氢浓度高", "加工区过氧化氢浓度低"],
@@ -1030,17 +1030,16 @@
             var cal_collect = $interval(collect, 30000)
             var cal_incu = $interval(incu, 30000)
             var cal_breakdowns = $interval(breakdowns, 30000)
-            var cal_realtime = $interval(function() {
-                realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3);
-            }, 30000)
-
+            var cal_realtime = $interval(realtime, 30000)
+            // var cal_realtime = $interval(function() {
+            //     realtime();
+            // }, 30000)
             $scope.$on("$destroy", function() {
                 $interval.cancel(cal_handling)
                 $interval.cancel(cal_collect)
                 $interval.cancel(cal_incu)
                 $interval.cancel(cal_breakdowns)
                 $interval.cancel(cal_realtime)
-                console.log('aaa')
             })
             //添加任务
             $scope.creattask = function() {
@@ -1056,9 +1055,8 @@
                     "TerminalName": Storage.get('cname'),
                     "revUserId": Storage.get("UID")
                 }
-                console.log(taskInfo_1)
-                var promise = Result.CreateResult(taskInfo_1)
-                promise.then(function(data) {
+                // console.log(taskInfo_1)
+                var task_1 = Result.CreateResult(taskInfo_1).then(function(data) {
                     console.log(data)
                     if (data.result == "插入成功") {
                         $('#add_task').modal('hide')
@@ -1067,6 +1065,7 @@
                         $timeout(function() {
                             $('#tasksuccess').modal('hide')
                         }, 1000)
+                        $interval(handling, 1000, 1)
                     }
                 }, function(err) {});
                 if ($scope.iflarge == true) {
@@ -1082,8 +1081,7 @@
                         "TerminalName": Storage.get('cname'),
                         "revUserId": Storage.get("UID")
                     }
-                    var promise = Result.CreateResult(taskInfo_2)
-                    promise.then(function(data) {
+                    var task_2 = Result.CreateResult(taskInfo_2).then(function(data) {
                         console.log(data)
                     }, function(err) {});
                     var taskInfo_3 = {
@@ -1098,8 +1096,7 @@
                         "TerminalName": Storage.get('cname'),
                         "revUserId": Storage.get("UID")
                     }
-                    var promise = Result.CreateResult(taskInfo_3)
-                    promise.then(function(data) {
+                    var task_3 = Result.CreateResult(taskInfo_3).then(function(data) {
                         console.log(data)
                     }, function(err) {});
                 }
@@ -1129,6 +1126,7 @@
                         counts: [],
                         dataset: data
                     })
+                    var cal_datailpro = $interval(handling, 30000)
                 }, function(err) {});
                 $('#detail_Pro').modal('show')
             }
@@ -1739,7 +1737,8 @@
                     }
                 }, function(err) {})
             }
-
+            
+            
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
                 $('#new_posibacInjection').modal('show');
