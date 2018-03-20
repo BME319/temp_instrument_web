@@ -1548,13 +1548,13 @@
             // 取出培养-rh
             $scope.totakeout = function(index) {
                 Result.SetResIncubator({
-                    "TestId": index.TestId.replace(/[^a-zA-Z]/ig, ""),
+                    "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
                     "CultureId": index.CultureId,
                     "BacterId": index.BacterId,
                     "OtherRea": index.OtherRea,
                     "IncubatorId": "",
-                    "Place": index.Place + index.IncubatorId,
+                    "Place": index.Place,
                     "StartTime": index.StartTime,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
@@ -1638,7 +1638,8 @@
             var finalplace = ""
             $scope.toputinclass = function(index) {
                 finalplace = index
-                $scope.numbers = []
+
+             $scope.numbers = []
                 if (finalplace.indexOf("In") != -1) {
                     for (i = 1; i <= 15; i++) {
                         $scope.numbers.push(i)
@@ -1688,7 +1689,6 @@
                         }
                     }
                 }, function(err) {})
-                console.log($scope.numbers)
             }
             $scope.toputin = function(index) {
                 if (($scope.putinPlaceNo == undefined) || ($scope.putinclass == undefined) || ($scope.putincultureinfo == undefined) || ($scope.putintube == undefined)) {
@@ -1725,7 +1725,7 @@
                     "OtherRea": index.OtherRea,
                     "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
                     "Place": finalplace + $scope.putinPlaceNo,
-                    "StartTime": index.StartTime,
+                    "StartTime": now,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
                 }).then(function(data) {
