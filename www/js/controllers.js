@@ -578,6 +578,12 @@
                 $scope.task2 = null
                 $scope.task3 = null
             })
+            $('#detail_Pro').on('hidden.bs.modal', function() {
+                $interval.cancel(cal_pro)
+            })
+            $('#detail_Inc').on('hidden.bs.modal', function() {
+                $interval.cancel(cal_detailIncu)
+            })
             $scope.sample = {};
             var getJsonLength = function(jsonData) {
                 var jsonLength = 0;
@@ -807,6 +813,7 @@
                 "GetTestId": 1
             }
             var handling = function() {
+                console.log('handling')
                 Result.GetTestResultInfo(realInfo_1).then(function(data) {
                     // console.log(data)
                     $scope.handlingTable = new NgTableParams({
@@ -938,6 +945,7 @@
                 "CabinId": 3
             }
             var realtime = function() {
+                // console.log('realtime')
                 ItemInfo.GetNewIsolatorEnv(ProcessEnv_1).then(function(data) {
                     IsoProEnv_1 = data
                     newEnv()
@@ -958,41 +966,51 @@
             }
             var IncubatorEnv = null
             var recollect = function() {
-                console.log('recollect')
+                // console.log('recollect')
                 ItemInfo.GetNewIsolatorEnv(CollectEnv).then(function(data) {
                     IsoColEnv = data
                     newEnv()
                 }, function(err) {})
             }
             var reincu = function(env) {
-                console.log('reincu')
+                // console.log('reincu')
                 ItemInfo.GetNewIncubatorEnv(env).then(function(data) {
                     IncEnv = data
                     newEnv()
                 }, function(err) {});
             }
             //仪器选择 
-            $scope.selectInstrument = function() {
-                if ($scope.envins.indexOf("Iso_Collect") != -1) {
-                    $scope.inc = false
-                    $scope.pro = false
-                    $scope.col = true
-                    recollect()
-                } else if ($scope.envins.indexOf("Incu_") != -1) {
-                    IncubatorEnv = {
-                        "IncubatorId": $scope.envins,
+            var timer = $interval(function() {
+                $scope.selectInstrument = function() {
+                    if ($scope.envins.indexOf("Iso_Collect") != -1) {
+                        $scope.inc = false
+                        $scope.pro = false
+                        $scope.col = true
+                        recollect()
+                    } else if ($scope.envins.indexOf("Incu_") != -1) {
+                        IncubatorEnv = {
+                            "IncubatorId": $scope.envins,
+                        }
+                        $scope.pro = false
+                        $scope.inc = true
+                        $scope.col = false
+                        reincu(IncubatorEnv)
+                    } else {
+                        $scope.pro = true
+                        $scope.inc = false
+                        $scope.col = false
+                        realtime()
                     }
-                    $scope.pro = false
-                    $scope.inc = true
-                    $scope.col = false
+                }
+                if ($scope.inc == true) {
                     reincu(IncubatorEnv)
+                } else if ($scope.col == true) {
+                    recollect()
                 } else {
-                    $scope.pro = true
-                    $scope.inc = false
-                    $scope.col = false
                     realtime()
                 }
-            }
+            }, 30000)
+
             var newEnv = function() {
                 $scope.isolator1 = {
                     env_names: ["进料区温度/℃", "进料区湿度", "进料区压力", "进料区过氧化氢浓度高", "进料区过氧化氢浓度低"],
@@ -1025,12 +1043,12 @@
             collect()
             incu()
             breakdowns()
-            realtime(ProcessEnv_1, ProcessEnv_2, ProcessEnv_3)
+            realtime()
             var cal_handling = $interval(handling, 30000)
             var cal_collect = $interval(collect, 30000)
             var cal_incu = $interval(incu, 30000)
             var cal_breakdowns = $interval(breakdowns, 30000)
-            var cal_realtime = $interval(realtime, 30000)
+            // var cal_realtime = $interval(realtime, 30000)
             // var cal_realtime = $interval(function() {
             //     realtime();
             // }, 30000)
@@ -1039,7 +1057,8 @@
                 $interval.cancel(cal_collect)
                 $interval.cancel(cal_incu)
                 $interval.cancel(cal_breakdowns)
-                $interval.cancel(cal_realtime)
+                // $interval.cancel(cal_realtime)
+                $interval.cancel(timer)
             })
             //添加任务
             $scope.creattask = function() {
@@ -1101,11 +1120,9 @@
                     }, function(err) {});
                 }
             }
-
-            $scope.detail_pro = function(SampleType, NowStep) {
-                console.log(NowStep)
-                var promise = Operation.GetSampleFlow({ "SampleType": SampleType })
-                promise.then(function(data) {
+            var getflow = function(SampleType, NowStep) {
+                console.log(SampleType)
+                Operation.GetSampleFlow({ "SampleType": SampleType }).then(function(data) {
                     for (i = 0; i < data.length; i++) {
                         if (data[i].OrderId == NowStep) {
                             var j = i
@@ -1126,10 +1143,19 @@
                         counts: [],
                         dataset: data
                     })
-                    var cal_datailpro = $interval(handling, 30000)
-                }, function(err) {});
-                $('#detail_Pro').modal('show')
+                }, function(err) {})
             }
+
+            var cal_pro = null
+            $scope.detail_pro = function(SampleType, NowStep) {
+                // console.log(NowStep)
+                $('#detail_Pro').modal('show')
+                getflow(SampleType, NowStep)
+                cal_pro = $interval(function() {
+                    getflow(SampleType, NowStep)
+                }, 30000)
+            }
+
             $scope.detail_col = function(SampleType, NowStep) {
                 console.log(NowStep)
                 var status_col = new Array()
@@ -1158,6 +1184,26 @@
                 }, function(err) {});
                 $('#detail_Col').modal('show')
             }
+            var cal_detailIncu = null
+            var getimages = function(topInfo, incInfo) {
+                Result.GetTopAnalysis(topInfo).then(function(data) {
+                    // console.log(topInfo)
+                    for (i = 0; i < data.length; i++) {
+                        topanalysis[i] = data[i].AnalResult
+                    }
+                    Result.GetTestPictures(incInfo).then(function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            data[i].TopResult = topanalysis[i]
+                        }
+                        $scope.pictureTable = new NgTableParams({
+                            count: 3
+                        }, {
+                            counts: [],
+                            dataset: data
+                        })
+                    }, function(err) {});
+                }, function(err) {})
+            }
             $scope.detail_inc = function(ObjectNo, ObjectName, TestId) {
                 $scope.Number = ObjectNo
                 $scope.Name = ObjectName
@@ -1179,23 +1225,11 @@
                     "GetAnalResult": 1,
                     "TestId": $scope.Id
                 }
-                Result.GetTopAnalysis(topInfo).then(function(data) {
-                    for (i = 0; i < data.length; i++) {
-                        topanalysis[i] = data[i].AnalResult
-                    }
-                    Result.GetTestPictures(incInfo).then(function(data) {
-                        for (i = 0; i < data.length; i++) {
-                            data[i].TopResult = topanalysis[i]
-                        }
-                        $scope.pictureTable = new NgTableParams({
-                            count: 3
-                        }, {
-                            counts: [],
-                            dataset: data
-                        })
-                    }, function(err) {});
-                }, function(err) {});
                 $('#detail_Inc').modal('show')
+                getimages(topInfo, incInfo)
+                cal_detailIncu = $interval(function() {
+                    getimages(topInfo, incInfo)
+                }, 30000)
             }
             $scope.connected = function() {
                 console.log($scope.instruments)
@@ -1637,7 +1671,7 @@
             $scope.toputinclass = function(index) {
                 finalplace = index
 
-             $scope.numbers = []
+                $scope.numbers = []
                 if (finalplace.indexOf("In") != -1) {
                     for (i = 1; i <= 15; i++) {
                         $scope.numbers.push(i)
@@ -1737,8 +1771,8 @@
                     }
                 }, function(err) {})
             }
-            
-            
+
+
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
                 $('#new_posibacInjection').modal('show');
