@@ -1289,6 +1289,7 @@
 
             $scope.sampleEntry = function() {
                 $('#new_sample').modal('show')
+                $scope.sampleuid = Storage.get("UID")
             }
             $scope.reagentEntry = function() {
                 $('#new_reagent').modal('show')
@@ -1319,7 +1320,7 @@
             }
             $scope.newsample = function() {
                 var formLength = getJsonLength($scope.sample);
-                if (formLength == 7) {
+                if (formLength == 6) {
                     $scope.sample.TerminalIP = Storage.get('cip');
                     $scope.sample.TerminalName = Storage.get('cname');
                     $scope.sample.revUserId = Storage.get("UID");
@@ -1505,7 +1506,7 @@
                     "GetAnalResult": 1
                 }).then(function(data) {
                     for (i = 0; i < data.length; i++) {
-                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator')& (data[i].IncubatorId != '')) {
+                        if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
                             temptubeslist.push({
                                 "TubeNo": data[i].TubeNo,
                                 "TestId": data[i].TestId,
@@ -1555,7 +1556,7 @@
                         "GetAnalResult": 1
                     }).then(function(data) {
                         for (i = 0; i < data.length; i++) {
-                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator')& (data[i].IncubatorId != '')) {
+                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
                                 temptubeslist.push({
                                     "TubeNo": data[i].TubeNo,
                                     "TestId": data[i].TestId,
