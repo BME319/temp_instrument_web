@@ -174,6 +174,7 @@
                 GetNewIsolatorEnv: { method: 'GET', params: { route: 'EnvIsolatorGetNewIsolatorEnv' }, timeout: 10000, isArray: true },
                 SetReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeSetData' }, timeout: 10000 },
                 DeleteReagentTypeData: { method: 'POST', params: { route: 'MstReagentTypeDeleteByPK' }, timeout: 10000 },
+                UpdateSampleInfo: { method: 'POST', params: { route: 'ItemSampleUpdateSampleInfo' }, timeout: 10000 },
             })
         }
         // 检测结果-张桠童
@@ -501,6 +502,15 @@
         self.DeleteReagentTypeData = function(arr) {
             var deferred = $q.defer();
             Data.ItemInfo.DeleteReagentTypeData(arr, function(data, headers) {
+                deferred.resolve(data);
+            }, function(err) {
+                deferred.reject(err);
+            });
+            return deferred.promise;
+        }
+        self.UpdateSampleInfo = function(arr) {
+            var deferred = $q.defer();
+            Data.ItemInfo.UpdateSampleInfo(arr, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);
