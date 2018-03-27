@@ -537,7 +537,6 @@
     .controller('monitorsCtrl', ['$interval', 'Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
         function($interval, Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
 
-
             $('.datetimepicker').datetimepicker({
                 language: 'zh-CN',
                 format: 'yyyy-mm-dd hh:ii',
@@ -558,6 +557,7 @@
             }
             $scope.sampleEntry = function() {
                 $('#new_sample').modal('show')
+                $scope.sampleuid = Storage.get("UID")
             }
             $scope.reagentEntry = function() {
                 $('#new_reagent').modal('show')
@@ -593,6 +593,7 @@
                 return jsonLength;
             }
             $scope.newsample = function() {
+                $scope.sample.SamplingPeople = $scope.sampleuid
                 var formLength = getJsonLength($scope.sample);
                 if (formLength == 7) {
                     $scope.sample.TerminalIP = Storage.get('cip');
@@ -618,7 +619,6 @@
                     }, 1000)
                 }
             }
-
 
             // var promise = UserService.GetReagentType();
             // promise.then(function(data){
@@ -664,11 +664,16 @@
                 var sampleQuery_1 = {
                     "ObjectType": $scope.task1.SampleType,
                     "GetObjectName": 1,
+                    "GetObjectType": 1,
+                    "GetSamplingPeople": 1,
+                    "GetSamplingTime": 1,
+                    "GetWarning": 1,
+                    "GetRevisionInfo": 1,
+                    "Status": "untested"
                 }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_1);
-                promise.then(function(data) {
+                ItemInfo.GetSamplesInfo(sampleQuery_1).then(function(data) {
                     $scope.Objects_1 = data
-                    console.log(data)
+                    // console.log(data)
                 }, function(err) {});
                 //选择试剂
                 var ReagentsQuery_1 = {
@@ -681,10 +686,17 @@
                     console.log($scope.Reagents)
                 }, function(err) {});
             }
+
             $scope.queryflow2 = function() {
                 var sampleQuery_2 = {
                     "ObjectType": $scope.task2.SampleType,
                     "GetObjectName": 1,
+                    "GetObjectType": 1,
+                    "GetSamplingPeople": 1,
+                    "GetSamplingTime": 1,
+                    "GetWarning": 1,
+                    "GetRevisionInfo": 1,
+                    "Status": "untested"
                 }
                 var promise = ItemInfo.GetSamplesInfo(sampleQuery_2);
                 promise.then(function(data) {
@@ -695,6 +707,12 @@
                 var sampleQuery_3 = {
                     "ObjectType": $scope.task3.SampleType,
                     "GetObjectName": 1,
+                    "GetObjectType": 1,
+                    "GetSamplingPeople": 1,
+                    "GetSamplingTime": 1,
+                    "GetWarning": 1,
+                    "GetRevisionInfo": 1,
+                    "Status": "untested"
                 }
                 var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
                 promise.then(function(data) {
@@ -732,7 +750,6 @@
                 $('#ResetOrNot').modal('show');
             }
 
-            var tubeslist = new Array()
             // 培养modal
             $scope.culture = function() {
                 $('#culturemodal').modal('show');
@@ -1062,6 +1079,7 @@
             })
             //添加任务
             $scope.creattask = function() {
+                console.log($scope.task1.Sample)
                 var taskInfo_1 = {
                     "ObjectNo": $scope.task1.Sample.ObjectNo,
                     "ObjCompany": $scope.task1.Sample.ObjCompany,
@@ -1074,10 +1092,24 @@
                     "TerminalName": Storage.get('cname'),
                     "revUserId": Storage.get("UID")
                 }
-                // console.log(taskInfo_1)
+                var updateInfo_1 = {
+                    "ObjectNo": $scope.task1.Sample.ObjectNo,
+                    "ObjCompany": $scope.task1.Sample.ObjCompany,
+                    "NewObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
+                    "SamplingPeople": Storage.get("UID"),
+                    "SamplingTime": $scope.task1.Sample.SamplingTime,
+                    "Status": "testing",
+                    "TerminalIP": Storage.get('cip'),
+                    "TerminalName": Storage.get('cname'),
+                    "revUserId": Storage.get("UID"),
+                }
+                // console.log(updateInfo_1)
                 var task_1 = Result.CreateResult(taskInfo_1).then(function(data) {
-                    console.log(data)
+                    // console.log(data.result)
                     if (data.result == "插入成功") {
+                        ItemInfo.UpdateSampleInfo(updateInfo_1).then(function(data) {
+                            console.log(data)
+                        })
                         $('#add_task').modal('hide')
                         // 提示成功
                         $('#tasksuccess').modal('show')
@@ -1100,8 +1132,24 @@
                         "TerminalName": Storage.get('cname'),
                         "revUserId": Storage.get("UID")
                     }
+                    var updateInfo_2 = {
+                        "ObjectNo": $scope.task2Sample.ObjectNo,
+                        "ObjCompany": $scope.task2.Sample.ObjCompany,
+                        "NewObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
+                        "SamplingPeople": Storage.get("UID"),
+                        "SamplingTime": $scope.task2.Sample.SamplingTime,
+                        "Status": "testing",
+                        "TerminalIP": Storage.get('cip'),
+                        "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID"),
+                    }
                     var task_2 = Result.CreateResult(taskInfo_2).then(function(data) {
-                        console.log(data)
+                        // console.log(data)
+                        if (data.result == "插入成功") {
+                            ItemInfo.UpdateSampleInfo(updateInfo_2).then(function(data) {
+                                console.log(data)
+                            })
+                        }
                     }, function(err) {});
                     var taskInfo_3 = {
                         "ObjectNo": $scope.task3.Sample.ObjectNo,
@@ -1115,8 +1163,24 @@
                         "TerminalName": Storage.get('cname'),
                         "revUserId": Storage.get("UID")
                     }
+                    var updateInfo_3 = {
+                        "ObjectNo": $scope.task3.Sample.ObjectNo,
+                        "ObjCompany": $scope.task3.Sample.ObjCompany,
+                        "NewObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
+                        "SamplingPeople": Storage.get("UID"),
+                        "SamplingTime": $scope.task3.Sample.SamplingTime,
+                        "Status": "testing",
+                        "TerminalIP": Storage.get('cip'),
+                        "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID"),
+                    }
                     var task_3 = Result.CreateResult(taskInfo_3).then(function(data) {
-                        console.log(data)
+                        // console.log(data)
+                        if (data.result == "插入成功") {
+                            ItemInfo.UpdateSampleInfo(updateInfo_3).then(function(data) {
+                                console.log(data)
+                            })
+                        }
                     }, function(err) {});
                 }
             }
@@ -1285,171 +1349,6 @@
             //     SocketService.emit('get params', code);
             //     $scope.text = name;
             // }
-
-
-            $scope.sampleEntry = function() {
-                $('#new_sample').modal('show')
-                $scope.sampleuid = Storage.get("UID")
-            }
-            $scope.reagentEntry = function() {
-                $('#new_reagent').modal('show')
-            }
-            $scope.addtask = function() {
-                $('#add_task').modal('show')
-                // document.getElementById('confirm').setAttribute("disabled", false)
-            }
-            // 监听事件(表单清空)
-            $('#new_sample').on('hidden.bs.modal', function() {
-                $scope.sample = null
-            })
-            $('#new_reagent').on('hidden.bs.modal', function() {
-                $scope.reagent = null
-            })
-            $('#add_task').on('hidden.bs.modal', function() {
-                $scope.task1 = null
-                $scope.task2 = null
-                $scope.task3 = null
-            })
-            $scope.sample = {};
-            var getJsonLength = function(jsonData) {
-                var jsonLength = 0;
-                for (var item in jsonData) {
-                    jsonLength++;
-                }
-                return jsonLength;
-            }
-            $scope.newsample = function() {
-                var formLength = getJsonLength($scope.sample);
-                if (formLength == 6) {
-                    $scope.sample.TerminalIP = Storage.get('cip');
-                    $scope.sample.TerminalName = Storage.get('cname');
-                    $scope.sample.revUserId = Storage.get("UID");
-                    // console.log($scope.sample);
-                    // console.log(formLength);
-                    var promise = ItemInfo.SetSampleData($scope.sample);
-                    promise.then(function(data) {
-                        console.log(data[0]);
-                        if (data[0] == "插入成功") {
-                            $('#new_sample').modal('hide')
-                        }
-                    }, function(err) {});
-                } else {
-                    $('#signupFail').modal('show')
-                    $timeout(function() {
-                        $('#signupFail').modal('hide')
-                    }, 1000)
-                }
-            }
-
-
-            // var promise = UserService.GetReagentType();
-            // promise.then(function(data){
-            //     // console.log(data);
-            //     $scope.reagenttypes = data;
-            // },function(err){});
-
-            $scope.newreagent = function() {
-                var formLength = getJsonLength($scope.reagent);
-                if (formLength == 3) {
-                    $scope.reagent.TerminalIP = Storage.get('cip');
-                    $scope.reagent.TerminalName = Storage.get('cname');
-                    $scope.reagent.revUserId = Storage.get("UID");
-                    console.log($scope.reagent)
-                    var promise = ItemInfo.SetReagentData($scope.reagent);
-                    promise.then(function(data) {
-                        console.log(data);
-                        if (data.result == 1) {
-                            $('#new_reagent').modal('hide')
-                        }
-                    }, function(err) {})
-                } else {
-                    $('#signupFail').modal('show')
-                    $timeout(function() {
-                        $('#signupFail').modal('hide')
-                    }, 1000)
-                }
-            }
-
-
-            $scope.queryflow1 = function() {
-                $scope.iflarge = false
-                if ($scope.task1.SampleType == "SOB") {
-                    $scope.iflarge = false
-                } else {
-                    $scope.iflarge = true
-                }
-                //选择样品
-                var sampleQuery_1 = {
-                    "ObjectType": $scope.task1.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_1);
-                promise.then(function(data) {
-                    $scope.Objects_1 = data
-                    console.log(data)
-                }, function(err) {});
-                //选择试剂
-                var ReagentsQuery_1 = {
-                    "GetReagentId": 1,
-                    "GetReagentName": 1,
-                };
-                var promise = ItemInfo.GetReagentsInfo(ReagentsQuery_1);
-                promise.then(function(data) {
-                    $scope.Reagents = data
-                    console.log($scope.Reagents)
-                }, function(err) {});
-            }
-            $scope.queryflow2 = function() {
-                var sampleQuery_2 = {
-                    "ObjectType": $scope.task2.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_2);
-                promise.then(function(data) {
-                    $scope.Objects_2 = data
-                }, function(err) {});
-            }
-            $scope.queryflow3 = function() {
-                var sampleQuery_3 = {
-                    "ObjectType": $scope.task3.SampleType,
-                    "GetObjectName": 1,
-                }
-                var promise = ItemInfo.GetSamplesInfo(sampleQuery_3);
-                promise.then(function(data) {
-                    $scope.Objects_3 = data
-                    console.log(data)
-                }, function(err) {});
-            }
-
-
-
-            // 是否复位确认
-            $scope.instrumentreset = function() {
-                var promise4 = ItemInfo.GetIsolatorsInfo({
-                    "IsolatorId": null,
-                    "ProductDayS": null,
-                    "ProductDayE": null,
-                    "EquipPro": null,
-                    "InsDescription": null,
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "GetProductDay": 1,
-                    "GetEquipPro": 1,
-                    "GetInsDescription": 1,
-                    "GetRevisionInfo": 1
-                });
-                promise4.then(function(data) {
-                    console.log(data)
-                    $scope.Isolator_search = data
-                }, function(err) {});
-
-                $('#ResetOrNot').modal('show');
-            }
-
 
             var twoweekslater = new Date();
             twoweekslater.setDate(twoweekslater.getDate() + 14);
