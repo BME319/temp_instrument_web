@@ -595,6 +595,7 @@
             $scope.newsample = function() {
                 $scope.sample.SamplingPeople = $scope.sampleuid
                 var formLength = getJsonLength($scope.sample);
+                console.log(formLength)
                 if (formLength == 7) {
                     $scope.sample.TerminalIP = Storage.get('cip');
                     $scope.sample.TerminalName = Storage.get('cname');
@@ -613,6 +614,7 @@
                         }
                     }, function(err) {});
                 } else {
+                    console.log('sss')
                     $('#signupFail').modal('show')
                     $timeout(function() {
                         $('#signupFail').modal('hide')
@@ -773,7 +775,6 @@
                     "GetStartTime": 1,
                     "GetEndTime": 1,
                     "GetAnalResult": 1
-
                 }).then(function(data) {
                     for (i = 0; i < data.length; i++) {
                         tubeslist.push({
@@ -874,15 +875,32 @@
                 "ReStatus": 2,
                 "GetObjectNo": 1,
                 "GetObjectName": 1,
+                "GetCollectStart": 1,
+                "GetCollectEnd": 1
+
             }
             var incu = function() {
                 Result.GetTestResultInfo(realInfo_3).then(function(data) {
+                    var incuresult = data
                     // console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        incuresult[i].testid = data[i].TestId
+                        var test = {
+                            "TestId": incuresult[i].testid,
+                            "TubeNo": 1,
+                            "GetStartTime": 1,
+                            "GetEndTime": 1
+                        }
+                        Result.GetResultTubes(test).then(function(data) {
+                        incuresult[i].EndTime = data[0].EndTime
+                        }, function(err) {})
+                    }
+                    console.log(incuresult)
                     $scope.IncuTable = new NgTableParams({
-                        count: 50
+                        count: 10
                     }, {
                         counts: [],
-                        dataset: data
+                        dataset: incuresult
                     })
                 }, function(err) {})
             }
@@ -1079,109 +1097,133 @@
             })
             //添加任务
             $scope.creattask = function() {
-                console.log($scope.task1.Sample)
-                var taskInfo_1 = {
-                    "ObjectNo": $scope.task1.Sample.ObjectNo,
-                    "ObjCompany": $scope.task1.Sample.ObjCompany,
-                    "ObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
-                    "Reagent1": $scope.task1.Reagent1.ReagentId,
-                    "Reagent2": $scope.task1.Reagent2.ReagentId,
-                    "ProcessStart": now,
-                    "TestPeople": Storage.get('UID'),
-                    "TerminalIP": Storage.get('cip'),
-                    "TerminalName": Storage.get('cname'),
-                    "revUserId": Storage.get("UID")
-                }
-                var updateInfo_1 = {
-                    "ObjectNo": $scope.task1.Sample.ObjectNo,
-                    "ObjCompany": $scope.task1.Sample.ObjCompany,
-                    "NewObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
-                    "SamplingPeople": Storage.get("UID"),
-                    "SamplingTime": $scope.task1.Sample.SamplingTime,
-                    "Status": "testing",
-                    "TerminalIP": Storage.get('cip'),
-                    "TerminalName": Storage.get('cname'),
-                    "revUserId": Storage.get("UID"),
-                }
-                // console.log(updateInfo_1)
-                var task_1 = Result.CreateResult(taskInfo_1).then(function(data) {
-                    // console.log(data.result)
-                    if (data.result == "插入成功") {
-                        ItemInfo.UpdateSampleInfo(updateInfo_1).then(function(data) {
-                            console.log(data)
-                        })
-                        $('#add_task').modal('hide')
-                        // 提示成功
-                        $('#tasksuccess').modal('show')
-                        $timeout(function() {
-                            $('#tasksuccess').modal('hide')
-                        }, 1000)
-                        $interval(handling, 1000, 1)
+                if ($scope.task1.Sample == undefined || $scope.task1.Reagent1 == undefined || $scope.task1.Reagent2 == undefined) {
+                    $('#signupFail').modal('show')
+                    $timeout(function() {
+                        $('#signupFail').modal('hide')
+                    }, 1000)
+                } else {
+                    var taskInfo_1 = {
+                        "ObjectNo": $scope.task1.Sample.ObjectNo,
+                        "ObjCompany": $scope.task1.Sample.ObjCompany,
+                        "ObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
+                        "Reagent1": $scope.task1.Reagent1.ReagentId,
+                        "Reagent2": $scope.task1.Reagent2.ReagentId,
+                        "ProcessStart": now,
+                        "TestPeople": Storage.get('UID'),
+                        "TerminalIP": Storage.get('cip'),
+                        "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID")
                     }
-                }, function(err) {});
+                    var updateInfo_1 = {
+                        "ObjectNo": $scope.task1.Sample.ObjectNo,
+                        "ObjCompany": $scope.task1.Sample.ObjCompany,
+                        "NewObjIncuSeq": $scope.task1.Sample.ObjIncuSeq,
+                        "SamplingPeople": Storage.get("UID"),
+                        "SamplingTime": $scope.task1.Sample.SamplingTime,
+                        "Status": "testing",
+                        "TerminalIP": Storage.get('cip'),
+                        "TerminalName": Storage.get('cname'),
+                        "revUserId": Storage.get("UID"),
+                    }
+                    // console.log(updateInfo_1)
+                    var task_1 = Result.CreateResult(taskInfo_1).then(function(data) {
+                        // console.log(data.result)
+                        if (data.result == "插入成功") {
+                            ItemInfo.UpdateSampleInfo(updateInfo_1).then(function(data) {
+                                console.log(data)
+                            })
+                            if ($scope.iflarge == false) {
+                                $('#add_task').modal('hide')
+                                // 提示成功
+                                $('#tasksuccess').modal('show')
+                                $timeout(function() {
+                                    $('#tasksuccess').modal('hide')
+                                }, 1000)
+                                $interval(handling, 1000, 1)
+                            }
+                        }
+                    }, function(err) {})
+                }
                 if ($scope.iflarge == true) {
-                    var taskInfo_2 = {
-                        "ObjectNo": $scope.task2.Sample.ObjectNo,
-                        "ObjCompany": $scope.task2.Sample.ObjCompany,
-                        "ObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
-                        "Reagent1": $scope.task2.Reagent1.ReagentId,
-                        "Reagent2": $scope.task2.Reagent2.ReagentId,
-                        "ProcessStart": now,
-                        "TestPeople": Storage.get('UID'),
-                        "TerminalIP": Storage.get('cip'),
-                        "TerminalName": Storage.get('cname'),
-                        "revUserId": Storage.get("UID")
-                    }
-                    var updateInfo_2 = {
-                        "ObjectNo": $scope.task2Sample.ObjectNo,
-                        "ObjCompany": $scope.task2.Sample.ObjCompany,
-                        "NewObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
-                        "SamplingPeople": Storage.get("UID"),
-                        "SamplingTime": $scope.task2.Sample.SamplingTime,
-                        "Status": "testing",
-                        "TerminalIP": Storage.get('cip'),
-                        "TerminalName": Storage.get('cname'),
-                        "revUserId": Storage.get("UID"),
-                    }
-                    var task_2 = Result.CreateResult(taskInfo_2).then(function(data) {
-                        // console.log(data)
-                        if (data.result == "插入成功") {
-                            ItemInfo.UpdateSampleInfo(updateInfo_2).then(function(data) {
-                                console.log(data)
-                            })
+                    if ($scope.task2.Sample == undefined || $scope.task2.Reagent1 == undefined || $scope.task2.Reagent2 == undefined || $scope.task3.Sample == undefined || $scope.task3.Reagent1 == undefined || $scope.task3.Reagent2 == undefined) {
+                        $('#signupFail').modal('show')
+                        $timeout(function() {
+                            $('#signupFail').modal('hide')
+                        }, 1000)
+                    } else {
+                        var taskInfo_2 = {
+                            "ObjectNo": $scope.task2.Sample.ObjectNo,
+                            "ObjCompany": $scope.task2.Sample.ObjCompany,
+                            "ObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
+                            "Reagent1": $scope.task2.Reagent1.ReagentId,
+                            "Reagent2": $scope.task2.Reagent2.ReagentId,
+                            "ProcessStart": now,
+                            "TestPeople": Storage.get('UID'),
+                            "TerminalIP": Storage.get('cip'),
+                            "TerminalName": Storage.get('cname'),
+                            "revUserId": Storage.get("UID")
                         }
-                    }, function(err) {});
-                    var taskInfo_3 = {
-                        "ObjectNo": $scope.task3.Sample.ObjectNo,
-                        "ObjCompany": $scope.task3.Sample.ObjCompany,
-                        "ObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
-                        "Reagent1": $scope.task3.Reagent1.ReagentId,
-                        "Reagent2": $scope.task3.Reagent2.ReagentId,
-                        "ProcessStart": now,
-                        "TestPeople": Storage.get('UID'),
-                        "TerminalIP": Storage.get('cip'),
-                        "TerminalName": Storage.get('cname'),
-                        "revUserId": Storage.get("UID")
-                    }
-                    var updateInfo_3 = {
-                        "ObjectNo": $scope.task3.Sample.ObjectNo,
-                        "ObjCompany": $scope.task3.Sample.ObjCompany,
-                        "NewObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
-                        "SamplingPeople": Storage.get("UID"),
-                        "SamplingTime": $scope.task3.Sample.SamplingTime,
-                        "Status": "testing",
-                        "TerminalIP": Storage.get('cip'),
-                        "TerminalName": Storage.get('cname'),
-                        "revUserId": Storage.get("UID"),
-                    }
-                    var task_3 = Result.CreateResult(taskInfo_3).then(function(data) {
-                        // console.log(data)
-                        if (data.result == "插入成功") {
-                            ItemInfo.UpdateSampleInfo(updateInfo_3).then(function(data) {
-                                console.log(data)
-                            })
+                        var updateInfo_2 = {
+                            "ObjectNo": $scope.task2.Sample.ObjectNo,
+                            "ObjCompany": $scope.task2.Sample.ObjCompany,
+                            "NewObjIncuSeq": $scope.task2.Sample.ObjIncuSeq,
+                            "SamplingPeople": Storage.get("UID"),
+                            "SamplingTime": $scope.task2.Sample.SamplingTime,
+                            "Status": "testing",
+                            "TerminalIP": Storage.get('cip'),
+                            "TerminalName": Storage.get('cname'),
+                            "revUserId": Storage.get("UID"),
                         }
-                    }, function(err) {});
+                        var taskInfo_3 = {
+                            "ObjectNo": $scope.task3.Sample.ObjectNo,
+                            "ObjCompany": $scope.task3.Sample.ObjCompany,
+                            "ObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
+                            "Reagent1": $scope.task3.Reagent1.ReagentId,
+                            "Reagent2": $scope.task3.Reagent2.ReagentId,
+                            "ProcessStart": now,
+                            "TestPeople": Storage.get('UID'),
+                            "TerminalIP": Storage.get('cip'),
+                            "TerminalName": Storage.get('cname'),
+                            "revUserId": Storage.get("UID")
+                        }
+                        var updateInfo_3 = {
+                            "ObjectNo": $scope.task3.Sample.ObjectNo,
+                            "ObjCompany": $scope.task3.Sample.ObjCompany,
+                            "NewObjIncuSeq": $scope.task3.Sample.ObjIncuSeq,
+                            "SamplingPeople": Storage.get("UID"),
+                            "SamplingTime": $scope.task3.Sample.SamplingTime,
+                            "Status": "testing",
+                            "TerminalIP": Storage.get('cip'),
+                            "TerminalName": Storage.get('cname'),
+                            "revUserId": Storage.get("UID"),
+                        }
+                        Result.CreateResult(taskInfo_2).then(function(data) {
+                            console.log('2')
+                            console.log(data)
+                            if (data.result == "插入成功") {
+                                ItemInfo.UpdateSampleInfo(updateInfo_2).then(function(data) {
+                                    console.log(data)
+                                })
+                            }
+                        }, function(err) {});
+                        Result.CreateResult(taskInfo_3).then(function(data) {
+                            console.log('3')
+                            console.log(data)
+                            if (data.result == "插入成功") {
+                                ItemInfo.UpdateSampleInfo(updateInfo_3).then(function(data) {
+                                    console.log(data)
+                                })
+                                $('#add_task').modal('hide')
+                                // 提示成功
+                                $('#tasksuccess').modal('show')
+                                $timeout(function() {
+                                    $('#tasksuccess').modal('hide')
+                                }, 1000)
+                                $interval(handling, 1000, 1)
+                            }
+                        }, function(err) {});
+                    }
                 }
             }
             var getflow = function(SampleType, NowStep) {

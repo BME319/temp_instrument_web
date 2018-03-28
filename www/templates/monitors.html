@@ -91,11 +91,11 @@
             <h3>培养</h3>
             <table ng-table="IncuTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="i in $data" style="text-align: center;">
-                    <td title="'检测编号'">
+                    <td title="'检测编号'">{{i.TestId}}
                     </td>
                     <td title="'样品'" sortable="'ObjectName'">{{i.ObjectName}}
                     </td>
-                    <td title="'已培养时间'">
+                    <td title="'结束培养时间'">{{i.EndTime}}
                     </td>
                     <td title="'剩余培养时间'">
                     </td>
@@ -459,7 +459,7 @@
     </div>
 </div> -->
 <!-- 录入失败modal -->
-<div class="modal fade " id="signupFail ">
+<div class="modal fade " id="signupFail">
     <div class="modal-dialog modal-sm ">
         <div class="modal-content " style="text-align: center; font-size: 20px ">
             请确认信息填写完整！
