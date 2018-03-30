@@ -21,12 +21,21 @@ angular.module('filters', [])
         }
     }])
 
-.filter('filterStatus', [function () {
-  return function (status) {
-    var s = '未开始'
-    if (status == 0) { s = '已完成' }
-    if (status == 1) { s = '正在进行中' }
-    if (status == 2) { s = '未完成' }
-    return s
-  }
-}])
+    .filter('filterStatus', [function() {
+        return function(status) {
+            var s = '未开始'
+            if (status == 0) { s = '已完成' }
+            if (status == 1) { s = '正在进行中' }
+            if (status == 2) { s = '未完成' }
+            return s
+        }
+    }])
+
+    .filter('filterHours', [function() {
+        return function(hours) {
+            var h = '未开始'
+            if (hours < 0) { h = '未开始' }
+            if (hours >= 0) { h = hours }
+            return h
+        }
+    }])
