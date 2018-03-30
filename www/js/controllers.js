@@ -880,20 +880,15 @@
 
             }
             var incu = function() {
+                var incuresult = new Array()
+                var endtime = new Array()
+                var ms = new Array()
                 Result.GetTestResultInfo(realInfo_3).then(function(data) {
-                    var incuresult = data
-                    // console.log(data)
+                    incuresult = data
                     for (i = 0; i < data.length; i++) {
-                        incuresult[i].testid = data[i].TestId
-                        var test = {
-                            "TestId": incuresult[i].testid,
-                            "TubeNo": 1,
-                            "GetStartTime": 1,
-                            "GetEndTime": 1
-                        }
-                        Result.GetResultTubes(test).then(function(data) {
-                        incuresult[i].EndTime = data[0].EndTime
-                        }, function(err) {})
+                        endtime[i] = new Date(data[i].EndTime)
+                        ms[i] = endtime[i] - myDate
+                        incuresult[i] = Object.assign(incuresult[i], { "Time": ms[i] })
                     }
                     console.log(incuresult)
                     $scope.IncuTable = new NgTableParams({

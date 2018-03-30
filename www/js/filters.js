@@ -21,12 +21,31 @@ angular.module('filters', [])
         }
     }])
 
-.filter('filterStatus', [function () {
-  return function (status) {
-    var s = '未开始'
-    if (status == 0) { s = '已完成' }
-    if (status == 1) { s = '正在进行中' }
-    if (status == 2) { s = '未完成' }
-    return s
-  }
-}])
+    .filter('filterStatus', [function() {
+        return function(status) {
+            var s = '未开始'
+            if (status == 0) { s = '已完成' }
+            if (status == 1) { s = '正在进行中' }
+            if (status == 2) { s = '未完成' }
+            return s
+        }
+    }])
+
+    .filter('filterTimes', [function() {
+        return function(ms) {
+            var t = '未开始'
+            if (ms < 0) { t = '未开始' }
+            if (ms >= 0) {
+                var days = Math.floor(ms / (24 * 3600 * 1000))
+                var leave1 = ms % (24 * 3600 * 1000)
+                var hours = Math.floor(leave1 / (3600 * 1000))
+                var leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数  
+                var minutes = Math.floor(leave2 / (60 * 1000))
+                //计算相差秒数  
+                var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数  
+                var seconds = Math.round(leave3 / 1000)
+                t = days + "天 " + hours + "小时 " + minutes + " 分钟"
+            }
+            return t
+        }
+    }])

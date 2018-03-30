@@ -73,7 +73,7 @@
                     </td>
                     <td title="'正在执行的步骤'">{{z.NowStep}}
                     </td>
-                    <td title="'上一步骤'">{{z.FormerStep}}
+<!--                     <td title="'上一步骤'">{{z.FormerStep}}
                     </td>
                     <td title="'下一步骤'">{{z.LaterStep}}
                     </td>
@@ -85,7 +85,7 @@
                             <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" style="width:{{z.JinDu}}%">{{z.JinDu}}%完成
                             </div>
                         </div>
-                    </td>
+                    </td> -->
                 </tr>
             </table>
             <h3>培养</h3>
@@ -95,9 +95,9 @@
                     </td>
                     <td title="'样品'" sortable="'ObjectName'">{{i.ObjectName}}
                     </td>
-                    <td title="'结束培养时间'">{{i.EndTime}}
+                    <td title="'结束培养时间'">{{i.EndTime|timeFormat:'YYYY-MM-DD h:m'}}
                     </td>
-                    <td title="'剩余培养时间'">
+                    <td title="'剩余培养时间'">{{i.Time|filterTimes}}
                     </td>
                     <td title="'培养阶段任务'">
                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)">详情</button>
