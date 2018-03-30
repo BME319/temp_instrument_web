@@ -882,14 +882,15 @@
             var incu = function() {
                 var incuresult = new Array()
                 var endtime = new Array()
-                var hours = new Array()
+                var ms = new Array()
                 Result.GetTestResultInfo(realInfo_3).then(function(data) {
                     incuresult = data
                     for (i = 0; i < data.length; i++) {
                         endtime[i] = new Date(data[i].EndTime)
-                        hours[i] = (endtime[i] - myDate)/1000/60/60
-                        incuresult[i] = Object.assign(incuresult[i], { "Time": hours[i] })
+                        ms[i] = endtime[i] - myDate
+                        incuresult[i] = Object.assign(incuresult[i], { "Time": ms[i] })
                     }
+                    console.log(incuresult)
                     $scope.IncuTable = new NgTableParams({
                         count: 10
                     }, {

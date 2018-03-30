@@ -31,11 +31,21 @@ angular.module('filters', [])
         }
     }])
 
-    .filter('filterHours', [function() {
-        return function(hours) {
-            var h = '未开始'
-            if (hours < 0) { h = '未开始' }
-            if (hours >= 0) { h = hours }
-            return h
+    .filter('filterTimes', [function() {
+        return function(ms) {
+            var t = '未开始'
+            if (ms < 0) { t = '未开始' }
+            if (ms >= 0) {
+                var days = Math.floor(ms / (24 * 3600 * 1000))
+                var leave1 = ms % (24 * 3600 * 1000)
+                var hours = Math.floor(leave1 / (3600 * 1000))
+                var leave2 = leave1 % (3600 * 1000) //计算小时数后剩余的毫秒数  
+                var minutes = Math.floor(leave2 / (60 * 1000))
+                //计算相差秒数  
+                var leave3 = leave2 % (60 * 1000) //计算分钟数后剩余的毫秒数  
+                var seconds = Math.round(leave3 / 1000)
+                t = days + "天 " + hours + "小时 " + minutes + " 分钟"
+            }
+            return t
         }
     }])
