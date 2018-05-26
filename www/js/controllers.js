@@ -2160,6 +2160,7 @@
                 "GetSamAmount": 1,
                 "GetDevideWay": 1,
                 "GetSamContain": 1,
+                "GetStatus": 1,
                 "GetWarning": 1,
                 "GetSamSave": 1,
                 "GetRevisionInfo": 1
@@ -2226,6 +2227,7 @@
                 "GetTestTime": 1,
                 "GetTestResult": 1,
                 "GetTestPeople": 1,
+                "GetTestPeople2": 1,
                 "GetReStatus": 1,
                 "GetRePeople": 1,
                 "GetReTime": 1,
@@ -2268,11 +2270,30 @@
                         };
                     });
                 }, function(err) {});
+
                 $scope.toMonitors = function() {
                     $('#myModal').modal('hide').on('hidden.bs.modal', function() {
                         $state.go('main.monitors');
                     });
                 };
+            }
+
+            $scope.todetail = function(tempID) {
+                testResultQuery.TestId = tempID
+                var promise = Result.GetTestResultInfo(testResultQuery);
+                promise.then(function(data) {
+                    console.log(data)
+                    $scope.userInfo = data[0];
+                    $('#detailObject').modal('show')
+
+                }, function(err) {});
+                // console.log(tempID)
+
+            }
+            // 关闭modal控制
+            $scope.modal_close = function(target) {
+                $(target).modal('hide')
+
             }
         }
     ])
@@ -2298,6 +2319,7 @@
                 "ReIdentify": null,
                 "GetProductDay": 1,
                 "GetReagentType": 1,
+                "GetReagentSource": 1,
                 "GetExpiryDay": 1,
                 "GetReagentName": 1,
                 "GetReagentTest": 1,
