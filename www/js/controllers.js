@@ -902,8 +902,8 @@
             //紧急停止
             $scope.breakpro = false
             $scope.breakcol = false
-            document.getElementById("pro").setAttribute("disabled", true)
-            document.getElementById("col").setAttribute("disabled", true)
+            document.getElementById("pro").setAttribute("disabled", false)
+            document.getElementById("col").setAttribute("disabled", false)
             var breakInfo = {
                 "GetBreakTime": 1,
                 "GetBreakEquip": 1,
@@ -914,14 +914,15 @@
             }
             var breakdowns = function() {
                 Result.GetBreakDowns(breakInfo).then(function(data) {
-                    // console.log(data)
+                    console.log(data)
                     for (i = 0; i < data.length; i++) {
-                        if (data[i].BreakId == 'Iso_Process') {
-                            $scope.breakpro == true
-                            document.getElementById("pro").setAttribute("disabled", false)
-                        } else if (data[i].BreakId == 'Iso_Collect') {
-                            $scope.breakcol == true
-                            document.getElementById("col").setAttribute("disabled", false)
+                        // console.log(data[i].BreakEquip)
+                        if (data[i].BreakEquip == 'Iso_Process') {
+                            $scope.breakpro = true
+                            document.getElementById("pro").removeAttribute("disabled")
+                        } else if (data[i].BreakEquip == 'Iso_Collect') {
+                            $scope.breakcol = true
+                            document.getElementById("col").removeAttribute("disabled")
                         }
                     }
                 }, function(err) {})
@@ -1286,9 +1287,10 @@
                 $('#detail_Col').modal('show')
             }
             var cal_detailIncu = null
+            var topanalysis = new Array()
             var getimages = function(topInfo, incInfo) {
                 Result.GetTopAnalysis(topInfo).then(function(data) {
-                    // console.log(topInfo)
+                    console.log(data)
                     for (i = 0; i < data.length; i++) {
                         topanalysis[i] = data[i].AnalResult
                     }
@@ -1309,7 +1311,6 @@
                 $scope.Number = ObjectNo
                 $scope.Name = ObjectName
                 $scope.Id = TestId
-                var topanalysis = new Array()
                 var topInfo = {
                     "TestId": $scope.Id,
                     "TubeNo": null,
