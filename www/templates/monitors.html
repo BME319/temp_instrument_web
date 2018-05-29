@@ -73,7 +73,7 @@
                     </td>
                     <td title="'正在执行的步骤'">{{z.NowStep}}
                     </td>
-<!--                     <td title="'上一步骤'">{{z.FormerStep}}
+                    <!--                     <td title="'上一步骤'">{{z.FormerStep}}
                     </td>
                     <td title="'下一步骤'">{{z.LaterStep}}
                     </td>
@@ -100,7 +100,9 @@
                     <td title="'剩余培养时间'">{{i.Time|filterTimes}}
                     </td>
                     <td title="'培养阶段任务'">
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)">详情</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)" ng-show="i.EndTime >= i.now">详情</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" )>放入</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'">取出</button>
                     </td>
                 </tr>
             </table>
@@ -521,14 +523,12 @@
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择位置</label>
-
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinclass.name for putinclass in putinclasses" ng-model="putinclass" ng-change="toputinclass(putinclass.id)">
-                                <option selected value="">选择轮层</option>
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinclass.name for putinclass in putinclasses" ng-model="putinclass" ng-change="toputinclass(putinclass.id)">
+                            <option selected value="">选择轮层</option>
                         </select>
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="number for number in numbers" ng-model="putinPlaceNo" >
-                                <option selected value="">选择编号</option>
+                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="number for number in numbers" ng-model="putinPlaceNo">
+                            <option selected value="">选择编号</option>
                         </select>
-
                     </div>
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
@@ -582,7 +582,6 @@
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
                         <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube as (tube.TestId+'_'+tube.TubeNo) for tube in tubes" ng-model="tube" ng-change="showtubedetail(tube.TestId,tube.TubeNo)">
-                        
                             <option selected value="">选择培养器</option>
                         </select>
                     </div>
@@ -682,6 +681,12 @@
                     <p>样品编号：{{Number}}</p>
                     <p>样品名：{{Name}}</p>
                 </div>
+                <div style="text-align: left;margin-bottom: 15px">
+                    <select style="width:100px;height: 25px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-change="selectTubeNo()" ng-model="TubeNo">
+                        <option selected value="">选择样品管号</option>
+                        <option ng-repeat="selectInc in selectIncs">{{selectInc}}</option>
+                    </select>
+                </div>
                 <table ng-table="pictureTable" class="table table-condensed table-bordered table-striped">
                     <tr ng-repeat="pic in $data" style="text-align: center;">
                         <td title="'样品管号'" sortable="'TubeNo'">{{pic.TubeNo}}
@@ -692,6 +697,10 @@
                             <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
                         </td>
                         <td title="'分析结果'">{{pic.AnalResult}}
+                            <br>
+                            <button class="btn btn-primary" ng-click="setanalResult(pic)" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">有菌</button>
+                            <br>
+                            <button class="btn btn-primary" ng-click="setanalResult()" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button>
                         </td>
                         <td title="'顶空分析结果'">{{pic.TopResult}}
                         </td>
@@ -730,6 +739,13 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
             放入成功！
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="setanalSuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            修改成功！
         </div>
     </div>
 </div>
