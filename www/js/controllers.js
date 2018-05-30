@@ -874,11 +874,28 @@
             var realInfo_3 = {
                 "ReStatus": 2,
                 "GetObjectNo": 1,
-                "GetObjectName": 1,
+                "GetObjCompany": 1,
+                "GetObjIncuSeq": 1,
+                "GetTestType": 1,
+                "GetTestStand": 1,
+                "GetTestEquip": 1,
+                "GetTestEquip2": 1,
+                "GetDescription": 1,
+                "GetProcessStart": 1,
+                "GetProcessEnd": 1,
                 "GetCollectStart": 1,
                 "GetCollectEnd": 1,
+                "GetTestTime": 1,
+                "GetTestResult": 1,
+                "GetTestPeople": 1,
+                "GetTestPeople2": 1,
+                "GetReStatus": 1,
+                "GetRePeople": 1,
+                "GetReTime": 1,
+                "GetRevisionInfo": 1,
+                "GetFormerStep": 1,
                 "GetNowStep": 1,
-                "GetReStatus": 1
+                "GetLaterStep": 1
             }
             var incu = function() {
                 var incuresult = new Array()
@@ -886,6 +903,7 @@
                 var ms = new Array()
                 Result.GetTestResultInfo(realInfo_3).then(function(data) {
                     incuresult = data
+                    console.log(data)
                     for (i = 0; i < data.length; i++) {
                         endtime[i] = new Date(data[i].EndTime)
                         ms[i] = endtime[i] - myDate
@@ -907,6 +925,15 @@
             document.getElementById("pro").setAttribute("disabled", false)
             document.getElementById("col").setAttribute("disabled", false)
             var breakInfo = {
+                "BreakId": null,
+                "BreakTimeS": null,
+                "BreakTimeE": null,
+                "BreakEquip": null,
+                "BreakPara": null,
+                "BreakValue": null,
+                "BreakReason": null,
+                "ResponseTimeS": 1,
+                "ResponseTimeE": null,
                 "GetBreakTime": 1,
                 "GetBreakEquip": 1,
                 "GetBreakPara": 1,
@@ -920,14 +947,44 @@
                     for (i = 0; i < data.length; i++) {
                         // console.log(data[i].BreakEquip)
                         if (data[i].BreakEquip == 'Iso_Process') {
-                            $scope.breakpro = true
+                            $scope.breakpro = 1
                             document.getElementById("pro").removeAttribute("disabled")
+                            if (data[i].BreakReason != undefined) {
+                                $scope.unconpro = data[i].BreakReason
+                            }
                         } else if (data[i].BreakEquip == 'Iso_Collect') {
-                            $scope.breakcol = true
+                            $scope.breakcol = 1
                             document.getElementById("col").removeAttribute("disabled")
+                            if (data[i].BreakReason != undefined) {
+                                $scope.unconcol = data[i].BreakReason
+                            }
                         }
                     }
                 }, function(err) {})
+            }
+            $scope.setbreakData = function(equip) {
+                console.log(equip)
+                Operation.OpEquipmentSetData({
+                    "EquipmentId": equip,
+                    "OperationTime": now,
+                    "OperationCode": "op30",
+                    "OperationValue": "1",
+                    "OperationResult": "",
+                    "TerminalIP": Storage.get("cip"),
+                    "TerminalName": Storage.get("cname"),
+                    "revUserId": Storage.get("UID")
+                }).then(function(data) {
+                        console.log(data)
+                        if (data.result == "插入成功") {
+                            // 提示成功
+                            $('#setbreak').modal('show')
+                            $timeout(function() {
+                                $('#setbreak').modal('hide')
+                            }, 1000)
+                            breakdowns()
+                        }
+                    },
+                    function(e) {});
             }
             //实时监控--下拉选择 
             var instruments = new Array()
@@ -1014,35 +1071,65 @@
             }
             //仪器选择 
             var timer = $interval(function() {
-                $scope.selectInstrument = function() {
-                    if ($scope.envins.indexOf("Iso_Collect") != -1) {
-                        $scope.inc = false
-                        $scope.pro = false
-                        $scope.col = true
-                        recollect()
-                    } else if ($scope.envins.indexOf("Incu_") != -1) {
-                        IncubatorEnv = {
-                            "IncubatorId": $scope.envins,
-                        }
-                        $scope.pro = false
-                        $scope.inc = true
-                        $scope.col = false
-                        reincu(IncubatorEnv)
-                    } else {
-                        $scope.pro = true
-                        $scope.inc = false
-                        $scope.col = false
-                        realtime()
-                    }
-                }
-                if ($scope.inc == true) {
-                    reincu(IncubatorEnv)
-                } else if ($scope.col == true) {
-                    recollect()
+                if ($scope.envins != undefined) {
+                    $scope.selectInstrument()
                 } else {
                     realtime()
                 }
             }, 30000)
+            $scope.selectInstrument = function() {
+                // console.log($scope.envins)
+                if ($scope.envins.indexOf("Iso_Collect") != -1) {
+                    $scope.inc = false
+                    $scope.pro = false
+                    $scope.col = true
+                    recollect()
+                } else if ($scope.envins.indexOf("Incu_") != -1) {
+                    IncubatorEnv = {
+                        "IncubatorId": $scope.envins,
+                    }
+                    $scope.pro = false
+                    $scope.inc = true
+                    $scope.col = false
+                    reincu(IncubatorEnv)
+                } else {
+                    $scope.pro = true
+                    $scope.inc = false
+                    $scope.col = false
+                    realtime()
+                }
+                Result.GetBreakDowns({
+                    "BreakId": null,
+                    "BreakTimeS": null,
+                    "BreakTimeE": null,
+                    "BreakEquip": $scope.envins,
+                    "BreakPara": null,
+                    "BreakValue": null,
+                    "BreakReason": "unconnected",
+                    "ResponseTimeS": 1,
+                    "ResponseTimeE": null,
+                    "GetBreakTime": 1,
+                    "GetBreakEquip": 1,
+                    "GetBreakPara": 1,
+                    "GetBreakValue": 1,
+                    "GetBreakReason": 1,
+                    "GetResponseTime": 1
+                }).then(function(data) {
+                    console.log(data[0])
+                    if (data[0] == undefined) {
+                        $scope.unconnected = 0
+                    } else {
+                        $scope.unconnected = 1
+                    }
+                }, function(err) {})
+            }
+            // if ($scope.inc == true) {
+            //     reincu(IncubatorEnv)
+            // } else if ($scope.col == true) {
+            //     recollect()
+            // } else {
+            //     realtime()
+            // }
 
             var newEnv = function() {
                 $scope.isolator1 = {
@@ -1327,6 +1414,7 @@
                     "GetAnalResult": 1
                 }
                 var incInfo = {
+                    "TubeNo": 1,
                     "GetCameraTime": 1,
                     "GetImageAddress": 1,
                     "GetAnalResult": 1,
@@ -1370,166 +1458,137 @@
             }
             $scope.setanalResult = function(index) {
                 console.log(index)
-                Result.SetResIncubator({
+                Result.GetResultTubes({
                     "TestId": index.TestId,
-                    "TubeNo": index.TubeNo,
-                    "AnalResult": "有菌"
+                    "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+
                 }).then(function(data) {
-                    console.log(data)
-                    if (data.result == "插入成功") {
-                        $('#putin').modal('hide')
-                        // 提示成功
-                        $('#setanalSuccess').modal('show')
-                        $timeout(function() {
-                            $('#setanalSuccess').modal('hide')
-                        }, 1000)
-                    }
-                }, function(err) {})
-        }
-        $scope.connected = function() {
-            console.log($scope.instruments)
-        }
+                    Result.SetResIncubator({
+                        "TestId": data[0].TestId,
+                        "TubeNo": data[0].TubeNo,
+                        "CultureId": data[0].CultureId,
+                        "BacterId": data[0].BacterId,
+                        "OtherRea": data[0].OtherRea,
+                        "IncubatorId": data[0].IncubatorId,
+                        "Place": data[0].Place,
+                        "StartTime": data[0].StartTime,
+                        "EndTime": data[0].EndTime,
+                        "AnalResult": "有菌",
+                    }).then(function(data) {
+                        console.log(data)
+                        if (data.result == "插入成功") {
+                            // 提示成功
+                            $('#setanalSuccess').modal('show')
+                            $timeout(function() {
+                                $('#setanalSuccess').modal('hide')
+                            }, 1000)
+                        }
+                    }, function(err) {})
+                }, function(e) {});
 
-        //实时监控
-        $scope.status = "No Connection";
+            }
+            $scope.connected = function() {
+                console.log($scope.instruments)
+            }
 
-        SocketService.on('connect', function() {
-            // console.log('Connected');
-            $scope.status = "Connected"
-        });
+            //实时监控
+            $scope.status = "No Connection";
 
-        SocketService.on('disconnect', function() {
-            $scope.status = "No Connection"
-        });
+            SocketService.on('connect', function() {
+                // console.log('Connected');
+                $scope.status = "Connected"
+            });
 
-        // SocketService.on('message', function(data) {
-        //     // console.log(data);
-        //     $scope.status = "Connected";
-        //     var myChart = echarts.init(document.getElementById('main'));
-        //     myChart.showLoading();
-        //     // 指定图表的配置项和数据
-        //     var option = {
-        //         title: {
-        //             text: $scope.text
-        //         },
-        //         tooltip: {},
-        //         legend: {
-        //             data: ['params']
-        //         },
-        //         xAxis: {
-        //             data: []
-        //         },
-        //         yAxis: {},
-        //         series: [{
-        //             name: '销量',
-        //             type: 'line',
-        //             data: data.data
-        //         }]
-        //     };
+            SocketService.on('disconnect', function() {
+                $scope.status = "No Connection"
+            });
 
-        //     // 使用刚指定的配置项和数据显示图表。
-        //     myChart.setOption(option);
-        //     myChart.hideLoading();
-        // });
+            // SocketService.on('message', function(data) {
+            //     // console.log(data);
+            //     $scope.status = "Connected";
+            //     var myChart = echarts.init(document.getElementById('main'));
+            //     myChart.showLoading();
+            //     // 指定图表的配置项和数据
+            //     var option = {
+            //         title: {
+            //             text: $scope.text
+            //         },
+            //         tooltip: {},
+            //         legend: {
+            //             data: ['params']
+            //         },
+            //         xAxis: {
+            //             data: []
+            //         },
+            //         yAxis: {},
+            //         series: [{
+            //             name: '销量',
+            //             type: 'line',
+            //             data: data.data
+            //         }]
+            //     };
+
+            //     // 使用刚指定的配置项和数据显示图表。
+            //     myChart.setOption(option);
+            //     myChart.hideLoading();
+            // });
 
 
 
 
-        // $scope.printcode = function(code, name) {
-        //     // console.log(code);
-        //     SocketService.emit('get params', code);
-        //     $scope.text = name;
-        // }
+            // $scope.printcode = function(code, name) {
+            //     // console.log(code);
+            //     SocketService.emit('get params', code);
+            //     $scope.text = name;
+            // }
 
-        var twoweekslater = new Date();
-        twoweekslater.setDate(twoweekslater.getDate() + 14);
+            var twoweekslater = new Date();
+            twoweekslater.setDate(twoweekslater.getDate() + 14);
 
-        // 取出培养-rh          
-        var tubeslist = new Array()
-        var _temptubeslist = new Array()
+            // 取出培养-rh          
+            var tubeslist = new Array()
+            var _temptubeslist = new Array()
 
-        // 取出培养modal的初始化
-        $('#takeout').on('show.bs.modal', function() {
-            // 培养箱列表
-            ItemInfo.GetIncubatorsInfo({
-                "IncubatorId": null,
-                "ProductDayS": null,
-                "ProductDayE": null,
-                "EquipPro": null,
-                "InsDescription": null,
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
-                "GetProductDay": 1,
-                "GetEquipPro": 1,
-                "GetInsDescription": 1,
-                "GetRevisionInfo": 1
-            }).then(function(data) {
-                $scope.takeoutIncubators = data;
-            }, function(err) {});
+            // 取出培养modal的初始化
+            $('#takeout').on('show.bs.modal', function() {
+                // 培养箱列表
+                ItemInfo.GetIncubatorsInfo({
+                    "IncubatorId": null,
+                    "ProductDayS": null,
+                    "ProductDayE": null,
+                    "EquipPro": null,
+                    "InsDescription": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetProductDay": 1,
+                    "GetEquipPro": 1,
+                    "GetInsDescription": 1,
+                    "GetRevisionInfo": 1
+                }).then(function(data) {
+                    $scope.takeoutIncubators = data;
+                }, function(err) {});
 
-            var temptubeslist = new Array()
-            // 默认状态下培养器列表
-            Result.GetResultTubes({
-                "TestId": null,
-                "TubeNo": null,
-                "CultureId": null,
-                "BacterId": null,
-                "OtherRea": null,
-                "IncubatorId": null,
-                "Place": null,
-                "StartTimeS": null,
-                "StartTimeE": null,
-                "EndTimeS": null,
-                "EndTimeE": null,
-                "AnalResult": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                for (i = 0; i < data.length; i++) {
-                    if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
-                        temptubeslist.push({
-                            "TubeNo": data[i].TubeNo,
-                            "TestId": data[i].TestId,
-                            "CultureId": data[i].CultureId,
-                            "BacterId": data[i].BacterId,
-                            "OtherRea": data[i].OtherRea,
-                            "IncubatorId": data[i].IncubatorId,
-                            "Place": data[i].Place,
-                            "StartTime": data[i].StartTime,
-                            "EndTime": data[i].EndTime,
-                            "AnalResult": data[i].AnalResult
-                        })
-                    }
-                }
-                $scope.tubes = temptubeslist
-            }, function(err) {})
-
-            // 选择培养箱的培养器列表change-rh
-            $scope.tubeselect = function(_incubator) {
-                var _incubatorId = ''
-                temptubeslist = []
-                if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) {
-                    _incubatorId = null;
-                } else {
-                    _incubatorId = _incubator.IncubatorId
-                }
+                var temptubeslist = new Array()
+                // 默认状态下培养器列表
                 Result.GetResultTubes({
                     "TestId": null,
                     "TubeNo": null,
                     "CultureId": null,
                     "BacterId": null,
                     "OtherRea": null,
-                    "IncubatorId": _incubatorId,
+                    "IncubatorId": null,
                     "Place": null,
                     "StartTimeS": null,
                     "StartTimeE": null,
@@ -1562,164 +1621,139 @@
                         }
                     }
                     $scope.tubes = temptubeslist
-                    tubeslist = temptubeslist
                 }, function(err) {})
-                $scope.tempTube = {}
+
+                // 选择培养箱的培养器列表change-rh
+                $scope.tubeselect = function(_incubator) {
+                    var _incubatorId = ''
+                    temptubeslist = []
+                    if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) {
+                        _incubatorId = null;
+                    } else {
+                        _incubatorId = _incubator.IncubatorId
+                    }
+                    Result.GetResultTubes({
+                        "TestId": null,
+                        "TubeNo": null,
+                        "CultureId": null,
+                        "BacterId": null,
+                        "OtherRea": null,
+                        "IncubatorId": _incubatorId,
+                        "Place": null,
+                        "StartTimeS": null,
+                        "StartTimeE": null,
+                        "EndTimeS": null,
+                        "EndTimeE": null,
+                        "AnalResult": null,
+                        "GetCultureId": 1,
+                        "GetBacterId": 1,
+                        "GetOtherRea": 1,
+                        "GetIncubatorId": 1,
+                        "GetPlace": 1,
+                        "GetStartTime": 1,
+                        "GetEndTime": 1,
+                        "GetAnalResult": 1
+                    }).then(function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
+                                temptubeslist.push({
+                                    "TubeNo": data[i].TubeNo,
+                                    "TestId": data[i].TestId,
+                                    "CultureId": data[i].CultureId,
+                                    "BacterId": data[i].BacterId,
+                                    "OtherRea": data[i].OtherRea,
+                                    "IncubatorId": data[i].IncubatorId,
+                                    "Place": data[i].Place,
+                                    "StartTime": data[i].StartTime,
+                                    "EndTime": data[i].EndTime,
+                                    "AnalResult": data[i].AnalResult
+                                })
+                            }
+                        }
+                        $scope.tubes = temptubeslist
+                        tubeslist = temptubeslist
+                    }, function(err) {})
+                    $scope.tempTube = {}
+                }
+
+            })
+
+
+            // 显示培养器具体信息-rh
+            $scope.showtubedetail = function(TestIdindex, TubeNoindex) {
+                if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.tempTube = {} }
+                for (i = 0; i < tubeslist.length; i++) {
+                    if ((tubeslist[i].TubeNo == TubeNoindex) && ((tubeslist[i].TestId == TestIdindex))) {
+                        $scope.tempTube = tubeslist[i]
+                    }
+                }
             }
 
-        })
 
 
-        // 显示培养器具体信息-rh
-        $scope.showtubedetail = function(TestIdindex, TubeNoindex) {
-            if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.tempTube = {} }
-            for (i = 0; i < tubeslist.length; i++) {
-                if ((tubeslist[i].TubeNo == TubeNoindex) && ((tubeslist[i].TestId == TestIdindex))) {
-                    $scope.tempTube = tubeslist[i]
-                }
+            // 取出培养-rh
+            $scope.totakeout = function(index) {
+                Result.SetResIncubator({
+                    "TestId": index.TestId,
+                    "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                    "CultureId": index.CultureId,
+                    "BacterId": index.BacterId,
+                    "OtherRea": index.OtherRea,
+                    "IncubatorId": "",
+                    "Place": index.Place,
+                    "StartTime": index.StartTime,
+                    "EndTime": index.EndTime,
+                    "AnalResult": index.AnalResult,
+                }).then(function(data) {
+                    if (data.result == "插入成功") {
+                        $('#takeout').modal('hide')
+                        // 提示成功
+                        $('#takeoutsuccess').modal('show')
+                        $timeout(function() {
+                            $('#takeoutsuccess').modal('hide')
+                        }, 1000)
+                    }
+                }, function(err) {})
             }
-        }
 
+            // 放入培养-rh
+            var putintubeslist = new Array()
+            var finalplace = ""
 
+            // 放入培养modal的初始化-rh
+            $('#putin').on('show.bs.modal', function() {
+                //培养箱列表
+                ItemInfo.GetIncubatorsInfo({
+                    "IncubatorId": null,
+                    "ProductDayS": null,
+                    "ProductDayE": null,
+                    "EquipPro": null,
+                    "InsDescription": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetProductDay": 1,
+                    "GetEquipPro": 1,
+                    "GetInsDescription": 1,
+                    "GetRevisionInfo": 1
+                }).then(function(data) {
+                    $scope.putinIncubators = data;
+                }, function(err) {});
 
-        // 取出培养-rh
-        $scope.totakeout = function(index) {
-            Result.SetResIncubator({
-                "TestId": index.TestId,
-                "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
-                "CultureId": index.CultureId,
-                "BacterId": index.BacterId,
-                "OtherRea": index.OtherRea,
-                "IncubatorId": "",
-                "Place": index.Place,
-                "StartTime": index.StartTime,
-                "EndTime": index.EndTime,
-                "AnalResult": index.AnalResult,
-            }).then(function(data) {
-                if (data.result == "插入成功") {
-                    $('#takeout').modal('hide')
-                    // 提示成功
-                    $('#takeoutsuccess').modal('show')
-                    $timeout(function() {
-                        $('#takeoutsuccess').modal('hide')
-                    }, 1000)
-                }
-            }, function(err) {})
-        }
+                var _putintemptubeslist = new Array()
 
-        // 放入培养-rh
-        var putintubeslist = new Array()
-        var finalplace = ""
-
-        // 放入培养modal的初始化-rh
-        $('#putin').on('show.bs.modal', function() {
-            //培养箱列表
-            ItemInfo.GetIncubatorsInfo({
-                "IncubatorId": null,
-                "ProductDayS": null,
-                "ProductDayE": null,
-                "EquipPro": null,
-                "InsDescription": null,
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
-                "GetProductDay": 1,
-                "GetEquipPro": 1,
-                "GetInsDescription": 1,
-                "GetRevisionInfo": 1
-            }).then(function(data) {
-                $scope.putinIncubators = data;
-            }, function(err) {});
-
-            var _putintemptubeslist = new Array()
-
-            //培养器列表
-            Result.GetResultTubes({
-                "TestId": null,
-                "TubeNo": null,
-                "CultureId": null,
-                "BacterId": null,
-                "OtherRea": null,
-                "IncubatorId": null,
-                "Place": 0,
-                "StartTimeS": null,
-                "StartTimeE": null,
-                "EndTimeS": null,
-                "EndTimeE": null,
-                "AnalResult": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                for (i = 0; i < data.length; i++) {
-                    _putintemptubeslist.push({
-                        "TubeNo": data[i].TubeNo,
-                        "TestId": data[i].TestId,
-                        "CultureId": data[i].CultureId,
-                        "BacterId": data[i].BacterId,
-                        "OtherRea": data[i].OtherRea,
-                        "IncubatorId": data[i].IncubatorId,
-                        "Place": data[i].Place,
-                        "StartTime": data[i].StartTime,
-                        "EndTime": data[i].EndTime,
-                        "AnalResult": data[i].AnalResult
-                    })
-
-                }
-                $scope.putintubes = _putintemptubeslist
-                putintubeslist = _putintemptubeslist
-            }, function(err) {})
-
-            // 培养箱位置-轮层列表
-            $scope.putinclasses = [
-                { id: 'Upper_In_', name: '上轮内层' },
-                { id: 'Upper_out_', name: '上轮外层' },
-                { id: 'Lower_In_', name: '下轮内层' },
-                { id: 'Lower_out_', name: '下轮外层' }
-            ]
-            // 培养箱位置-编号列表
-            $scope.toputinclass = function(index) {
-                finalplace = index
-                $scope.numbers = []
-                if (finalplace != undefined) {
-                    if (finalplace.indexOf("In") != -1) {
-                        for (i = 1; i <= 15; i++) {
-                            $scope.numbers.push(i)
-                        }
-                    } else if (finalplace.indexOf("out") != -1) {
-                        for (i = 1; i <= 28; i++) {
-                            $scope.numbers.push(i)
-                        }
-                    }
-                }
-                Array.prototype.indexOf = function(val) {
-                    for (var i = 0; i < this.length; i++) {
-                        if (this[i] == val) return i;
-                    }
-                    return -1;
-                };
-                Array.prototype.remove = function(val) {
-                    var index = this.indexOf(val);
-                    if (index > -1) {
-                        this.splice(index, 1);
-                    }
-                };
+                //培养器列表
                 Result.GetResultTubes({
                     "TestId": null,
                     "TubeNo": null,
                     "CultureId": null,
                     "BacterId": null,
                     "OtherRea": null,
-                    "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": null,
+                    "IncubatorId": null,
+                    "Place": 0,
                     "StartTimeS": null,
                     "StartTimeE": null,
                     "EndTimeS": null,
@@ -1735,429 +1769,505 @@
                     "GetAnalResult": 1
                 }).then(function(data) {
                     for (i = 0; i < data.length; i++) {
-                        if ((data[i].Place.replace(/[0-9]/ig, "")) == index) {
-                            $scope.numbers.remove(data[i].Place.replace(/[a-zA-Z_]/ig, ""));
+                        _putintemptubeslist.push({
+                            "TubeNo": data[i].TubeNo,
+                            "TestId": data[i].TestId,
+                            "CultureId": data[i].CultureId,
+                            "BacterId": data[i].BacterId,
+                            "OtherRea": data[i].OtherRea,
+                            "IncubatorId": data[i].IncubatorId,
+                            "Place": data[i].Place,
+                            "StartTime": data[i].StartTime,
+                            "EndTime": data[i].EndTime,
+                            "AnalResult": data[i].AnalResult
+                        })
+
+                    }
+                    $scope.putintubes = _putintemptubeslist
+                    putintubeslist = _putintemptubeslist
+                }, function(err) {})
+
+                // 培养箱位置-轮层列表
+                $scope.putinclasses = [
+                    { id: 'Upper_In_', name: '上轮内层' },
+                    { id: 'Upper_out_', name: '上轮外层' },
+                    { id: 'Lower_In_', name: '下轮内层' },
+                    { id: 'Lower_out_', name: '下轮外层' }
+                ]
+                // 培养箱位置-编号列表
+                $scope.toputinclass = function(index) {
+                    finalplace = index
+                    $scope.numbers = []
+                    if (finalplace != undefined) {
+                        if (finalplace.indexOf("In") != -1) {
+                            for (i = 1; i <= 15; i++) {
+                                $scope.numbers.push(i)
+                            }
+                        } else if (finalplace.indexOf("out") != -1) {
+                            for (i = 1; i <= 28; i++) {
+                                $scope.numbers.push(i)
+                            }
                         }
+                    }
+                    Array.prototype.indexOf = function(val) {
+                        for (var i = 0; i < this.length; i++) {
+                            if (this[i] == val) return i;
+                        }
+                        return -1;
+                    };
+                    Array.prototype.remove = function(val) {
+                        var index = this.indexOf(val);
+                        if (index > -1) {
+                            this.splice(index, 1);
+                        }
+                    };
+                    Result.GetResultTubes({
+                        "TestId": null,
+                        "TubeNo": null,
+                        "CultureId": null,
+                        "BacterId": null,
+                        "OtherRea": null,
+                        "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
+                        "Place": null,
+                        "StartTimeS": null,
+                        "StartTimeE": null,
+                        "EndTimeS": null,
+                        "EndTimeE": null,
+                        "AnalResult": null,
+                        "GetCultureId": 1,
+                        "GetBacterId": 1,
+                        "GetOtherRea": 1,
+                        "GetIncubatorId": 1,
+                        "GetPlace": 1,
+                        "GetStartTime": 1,
+                        "GetEndTime": 1,
+                        "GetAnalResult": 1
+                    }).then(function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            if ((data[i].Place.replace(/[0-9]/ig, "")) == index) {
+                                $scope.numbers.remove(data[i].Place.replace(/[a-zA-Z_]/ig, ""));
+                            }
+                        }
+                    }, function(err) {})
+                }
+
+            })
+
+            // 显示培养器具体信息-rh
+            $scope.putinshowtubedetail = function(TestIdindex, TubeNoindex) {
+                if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.putintempTube = {} }
+                for (i = 0; i < putintubeslist.length; i++) {
+                    if ((putintubeslist[i].TubeNo == TubeNoindex) && ((putintubeslist[i].TestId == TestIdindex))) {
+                        $scope.putintempTube = putintubeslist[i]
+                    }
+                }
+            }
+
+            // 确认放入培养
+            $scope.toputin = function(index) {
+                if (($scope.putinPlaceNo == undefined) || ($scope.putinclass == undefined) || ($scope.putincultureinfo == undefined) || ($scope.putintube == undefined)) {
+                    $('#checkfull').modal('show')
+                    $timeout(function() {
+                        $('#checkfull').modal('hide')
+                    }, 1000)
+                } else if (finalplace.indexOf("In") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 15) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
+                    }
+                } else if (finalplace.indexOf("out") != -1) {
+                    if (((parseInt($scope.putinPlaceNo) > 28) || (parseInt($scope.putinPlaceNo) < 1))) {
+                        $('#checkNo').modal('show')
+                        $timeout(function() {
+                            $('#checkNo').modal('hide')
+                        }, 1000)
+                    }
+                }
+
+
+                Result.SetResIncubator({
+                    "TestId": index.TestId,
+                    "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                    "CultureId": index.CultureId,
+                    "BacterId": index.BacterId,
+                    "OtherRea": index.OtherRea,
+                    "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
+                    "Place": finalplace + $scope.putinPlaceNo,
+                    "StartTime": now,
+                    "EndTime": twoweekslater,
+                    "AnalResult": index.AnalResult,
+                }).then(function(data) {
+                    if (data.result == "插入成功") {
+                        $('#putin').modal('hide')
+                        // 提示成功
+                        $('#putinsuccess').modal('show')
+                        $timeout(function() {
+                            $('#putinsuccess').modal('hide')
+                        }, 1000)
                     }
                 }, function(err) {})
             }
 
-        })
 
-        // 显示培养器具体信息-rh
-        $scope.putinshowtubedetail = function(TestIdindex, TubeNoindex) {
-            if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.putintempTube = {} }
-            for (i = 0; i < putintubeslist.length; i++) {
-                if ((putintubeslist[i].TubeNo == TubeNoindex) && ((putintubeslist[i].TestId == TestIdindex))) {
-                    $scope.putintempTube = putintubeslist[i]
-                }
+            // 阳性菌加注-茹画
+            $scope.posibacInjection = function() {
+                $('#new_posibacInjection').modal('show');
+
+                // 菌液列表
+                ItemInfo.GetReagentsInfo({
+                    "ReagentId": null,
+                    "ReagentSource": null,
+                    "ReagentName": "菌",
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetReagentSource": 1,
+                    "GetReagentName": 1,
+                    "GetRevisionInfo": 1
+                }).then(
+                    function(data) {
+                        $scope.Reagent_search = data
+                    },
+                    function(e) {});
+
+
+                // 任务列表
+                Result.GetTestResultInfo({
+                    "TestId": null,
+                    "ObjectNo": null,
+                    "ObjCompany": null,
+                    "ObjIncuSeq": null,
+                    "TestType": null,
+                    "TestStand": null,
+                    "TestEquip": null,
+                    "TestEquip2": null,
+                    "Description": null,
+                    "ProcessStartS": null,
+                    "ProcessStartE": null,
+                    "ProcessEndS": null,
+                    "ProcessEndE": null,
+                    "CollectStartS": null,
+                    "CollectStartE": null,
+                    "CollectEndS": null,
+                    "CollectEndE": null,
+                    "TestTimeS": null,
+                    "TestTimeE": null,
+                    "TestResult": null,
+                    "TestPeople": null,
+                    "TestPeople2": null,
+                    "ReStatus": 1,
+                    "RePeople": null,
+                    "ReTimeS": null,
+                    "ReTimeE": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "FormerStep": null,
+                    "NowStep": null,
+                    "LaterStep": null,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        $scope.Result_search = data
+                    },
+                    function(e) {});
             }
-        }
+            $scope.setposibacInjection = function() {
+                var result1 = new Array()
+                var result2 = new Array()
+                var result3 = new Array()
 
-        // 确认放入培养
-        $scope.toputin = function(index) {
-            if (($scope.putinPlaceNo == undefined) || ($scope.putinclass == undefined) || ($scope.putincultureinfo == undefined) || ($scope.putintube == undefined)) {
-                $('#checkfull').modal('show')
-                $timeout(function() {
-                    $('#checkfull').modal('hide')
-                }, 1000)
-            } else if (finalplace.indexOf("In") != -1) {
-                if (((parseInt($scope.putinPlaceNo) > 15) || (parseInt($scope.putinPlaceNo) < 1))) {
-                    $('#checkNo').modal('show')
-                    $timeout(function() {
-                        $('#checkNo').modal('hide')
-                    }, 1000)
-                }
-            } else if (finalplace.indexOf("out") != -1) {
-                if (((parseInt($scope.putinPlaceNo) > 28) || (parseInt($scope.putinPlaceNo) < 1))) {
-                    $('#checkNo').modal('show')
-                    $timeout(function() {
-                        $('#checkNo').modal('hide')
-                    }, 1000)
-                }
+                var tube1 = new Array()
+                var tube2 = new Array()
+                var tube3 = new Array()
+
+                // console.log($scope.registerInfo.TestId1)
+                // console.log($scope.registerInfo.TestId2)
+                // console.log($scope.registerInfo.TestId3)
+                console.log($scope.registerInfo.ReagentId)
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId1,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        // console.log(data)
+                        result1 = data
+                        result1[0].NowStep = "正在加注中"
+                        result1[0].CollectStart = now
+                        result1[0].TestEquip2 = "Iso_Collect"
+                        result1[0].TestPeople2 = Storage.get('UID')
+                        console.log(result1)
+                        Result.ResultSetData(result1[0]).then(
+                            function(data) {
+                                console.log(data)
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId2,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        result2 = data
+                        result2[0].NowStep = "正在加注中"
+                        result2[0].CollectStart = now
+                        result2[0].TestEquip2 = "Iso_Collect"
+                        result2[0].TestPeople2 = Storage.get('UID')
+                        Result.ResultSetData(result2[0]).then(
+                            function(data) {
+                                console.log(data)
+                                if (data.result == "插入成功") {
+                                    $('#new_posibacInjection').modal('hide')
+                                    $('#tasksuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#tasksuccess').modal('hide')
+                                    }, 1000)
+                                }
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
+                Result.GetTestResultInfo({
+                    "TestId": $scope.registerInfo.TestId3,
+                    "GetObjectNo": 1,
+                    "GetObjCompany": 1,
+                    "GetObjIncuSeq": 1,
+                    "GetTestType": 1,
+                    "GetTestStand": 1,
+                    "GetTestEquip": 1,
+                    "GetTestEquip2": 1,
+                    "GetDescription": 1,
+                    "GetProcessStart": 1,
+                    "GetProcessEnd": 1,
+                    "GetCollectStart": 1,
+                    "GetCollectEnd": 1,
+                    "GetTestTime": 1,
+                    "GetTestResult": 1,
+                    "GetTestPeople": 1,
+                    "GetTestPeople2": 1,
+                    "GetReStatus": 1,
+                    "GetRePeople": 1,
+                    "GetReTime": 1,
+                    "GetRevisionInfo": 1,
+                    "GetFormerStep": 1,
+                    "GetNowStep": 1,
+                    "GetLaterStep": 1
+                }).then(
+                    function(data) {
+                        result3 = data
+                        result3[0].NowStep = "正在加注中"
+                        result3[0].CollectStart = now
+                        result3[0].TestEquip3 = "Iso_Collect"
+                        result3[0].TestPeople3 = Storage.get('UID')
+                        Result.ResultSetData(result2[0]).then(
+                            function(data) {
+                                console.log(data)
+                                if (data.result == "插入成功") {
+                                    $('#new_posibacInjection').modal('hide')
+                                    $('#tasksuccess').modal('show')
+                                    $timeout(function() {
+                                        $('#tasksuccess').modal('hide')
+                                    }, 1000)
+                                }
+                            },
+                            function(e) {});
+                    },
+                    function(e) {});
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId1,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube1 = data
+                    tube1[4].BacterId = $scope.registerInfo.ReagentId
+                    tube1[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube1[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube1[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId2,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube2 = data
+                    tube2[4].BacterId = $scope.registerInfo.ReagentId
+                    tube2[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube2[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube2[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
+                Result.GetResultTubes({
+                    "TestId": $scope.registerInfo.TestId3,
+                    "TubeNo": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetPlace": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    tube3 = data
+                    tube3[4].BacterId = $scope.registerInfo.ReagentId
+                    tube3[5].BacterId = $scope.registerInfo.ReagentId
+                    Result.IncubatorSetData(tube3[4]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                    Result.IncubatorSetData(tube3[5]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                }, function(err) { console.log(err) })
             }
 
 
-            Result.SetResIncubator({
-                "TestId": index.TestId,
-                "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
-                "CultureId": index.CultureId,
-                "BacterId": index.BacterId,
-                "OtherRea": index.OtherRea,
-                "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                "Place": finalplace + $scope.putinPlaceNo,
-                "StartTime": now,
-                "EndTime": twoweekslater,
-                "AnalResult": index.AnalResult,
-            }).then(function(data) {
-                if (data.result == "插入成功") {
-                    $('#putin').modal('hide')
-                    // 提示成功
-                    $('#putinsuccess').modal('show')
-                    $timeout(function() {
-                        $('#putinsuccess').modal('hide')
-                    }, 1000)
-                }
-            }, function(err) {})
+            // 隔离器复位 - 茹画
+            $scope.reset = function(_IsolatorId) {
+                // 获取当前日期
+                var myDate = new Date();
+                $scope.myDate = myDate
+                Operation.OpEquipmentSetData({
+                    "EquipmentId": _IsolatorId,
+                    "OperationTime": myDate,
+                    "OperationCode": "R0",
+                    "OperationValue": "R0",
+                    "OperationResult": "R0",
+                    "TerminalIP": Storage.get("cip"),
+                    "TerminalName": Storage.get("cname"),
+                    "revUserId": Storage.get("UID")
+                }).then(
+                    function(data) {
+                        if (data.result == "插入成功") {
+                            $('#ResetOrNot').modal('hide')
+
+                            // 提示成功
+                            $('#resetsuccess').modal('show')
+                            $timeout(function() {
+                                $('#resetsuccess').modal('hide')
+                            }, 1000)
+                        }
+
+                    },
+                    function(e) {});
+            }
+
         }
+    ])
 
 
-        // 阳性菌加注-茹画
-        $scope.posibacInjection = function() {
-            $('#new_posibacInjection').modal('show');
-
-            // 菌液列表
-            ItemInfo.GetReagentsInfo({
-                "ReagentId": null,
-                "ReagentSource": null,
-                "ReagentName": "菌",
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
-                "GetReagentSource": 1,
-                "GetReagentName": 1,
-                "GetRevisionInfo": 1
-            }).then(
-                function(data) {
-                    $scope.Reagent_search = data
-                },
-                function(e) {});
-
-
-            // 任务列表
-            Result.GetTestResultInfo({
-                "TestId": null,
-                "ObjectNo": null,
-                "ObjCompany": null,
-                "ObjIncuSeq": null,
-                "TestType": null,
-                "TestStand": null,
-                "TestEquip": null,
-                "TestEquip2": null,
-                "Description": null,
-                "ProcessStartS": null,
-                "ProcessStartE": null,
-                "ProcessEndS": null,
-                "ProcessEndE": null,
-                "CollectStartS": null,
-                "CollectStartE": null,
-                "CollectEndS": null,
-                "CollectEndE": null,
-                "TestTimeS": null,
-                "TestTimeE": null,
-                "TestResult": null,
-                "TestPeople": null,
-                "TestPeople2": null,
-                "ReStatus": 1,
-                "RePeople": null,
-                "ReTimeS": null,
-                "ReTimeE": null,
-                "ReDateTimeS": null,
-                "ReDateTimeE": null,
-                "ReTerminalIP": null,
-                "ReTerminalName": null,
-                "ReUserId": null,
-                "ReIdentify": null,
-                "FormerStep": null,
-                "NowStep": null,
-                "LaterStep": null,
-                "GetObjectNo": 1,
-                "GetObjCompany": 1,
-                "GetObjIncuSeq": 1,
-                "GetTestType": 1,
-                "GetTestStand": 1,
-                "GetTestEquip": 1,
-                "GetTestEquip2": 1,
-                "GetDescription": 1,
-                "GetProcessStart": 1,
-                "GetProcessEnd": 1,
-                "GetCollectStart": 1,
-                "GetCollectEnd": 1,
-                "GetTestTime": 1,
-                "GetTestResult": 1,
-                "GetTestPeople": 1,
-                "GetTestPeople2": 1,
-                "GetReStatus": 1,
-                "GetRePeople": 1,
-                "GetReTime": 1,
-                "GetRevisionInfo": 1,
-                "GetFormerStep": 1,
-                "GetNowStep": 1,
-                "GetLaterStep": 1
-            }).then(
-                function(data) {
-                    $scope.Result_search = data
-                },
-                function(e) {});
-        }
-        $scope.setposibacInjection = function() {
-            var result1 = new Array()
-            var result2 = new Array()
-            var result3 = new Array()
-
-            var tube1 = new Array()
-            var tube2 = new Array()
-            var tube3 = new Array()
-
-            // console.log($scope.registerInfo.TestId1)
-            // console.log($scope.registerInfo.TestId2)
-            // console.log($scope.registerInfo.TestId3)
-            console.log($scope.registerInfo.ReagentId)
-            Result.GetTestResultInfo({
-                "TestId": $scope.registerInfo.TestId1,
-                "GetObjectNo": 1,
-                "GetObjCompany": 1,
-                "GetObjIncuSeq": 1,
-                "GetTestType": 1,
-                "GetTestStand": 1,
-                "GetTestEquip": 1,
-                "GetTestEquip2": 1,
-                "GetDescription": 1,
-                "GetProcessStart": 1,
-                "GetProcessEnd": 1,
-                "GetCollectStart": 1,
-                "GetCollectEnd": 1,
-                "GetTestTime": 1,
-                "GetTestResult": 1,
-                "GetTestPeople": 1,
-                "GetTestPeople2": 1,
-                "GetReStatus": 1,
-                "GetRePeople": 1,
-                "GetReTime": 1,
-                "GetRevisionInfo": 1,
-                "GetFormerStep": 1,
-                "GetNowStep": 1,
-                "GetLaterStep": 1
-            }).then(
-                function(data) {
-                    // console.log(data)
-                    result1 = data
-                    result1[0].NowStep = "正在加注中"
-                    result1[0].CollectStart = now
-                    result1[0].TestEquip2 = "Iso_Collect"
-                    result1[0].TestPeople2 = Storage.get('UID')
-                    console.log(result1)
-                    Result.ResultSetData(result1[0]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                },
-                function(e) {});
-            Result.GetTestResultInfo({
-                "TestId": $scope.registerInfo.TestId2,
-                "GetObjectNo": 1,
-                "GetObjCompany": 1,
-                "GetObjIncuSeq": 1,
-                "GetTestType": 1,
-                "GetTestStand": 1,
-                "GetTestEquip": 1,
-                "GetTestEquip2": 1,
-                "GetDescription": 1,
-                "GetProcessStart": 1,
-                "GetProcessEnd": 1,
-                "GetCollectStart": 1,
-                "GetCollectEnd": 1,
-                "GetTestTime": 1,
-                "GetTestResult": 1,
-                "GetTestPeople": 1,
-                "GetTestPeople2": 1,
-                "GetReStatus": 1,
-                "GetRePeople": 1,
-                "GetReTime": 1,
-                "GetRevisionInfo": 1,
-                "GetFormerStep": 1,
-                "GetNowStep": 1,
-                "GetLaterStep": 1
-            }).then(
-                function(data) {
-                    result2 = data
-                    result2[0].NowStep = "正在加注中"
-                    result2[0].CollectStart = now
-                    result2[0].TestEquip2 = "Iso_Collect"
-                    result2[0].TestPeople2 = Storage.get('UID')
-                    Result.ResultSetData(result2[0]).then(
-                        function(data) {
-                            console.log(data)
-                            if (data.result == "插入成功") {
-                                $('#new_posibacInjection').modal('hide')
-                                $('#tasksuccess').modal('show')
-                                $timeout(function() {
-                                    $('#tasksuccess').modal('hide')
-                                }, 1000)
-                            }
-                        },
-                        function(e) {});
-                },
-                function(e) {});
-            Result.GetTestResultInfo({
-                "TestId": $scope.registerInfo.TestId3,
-                "GetObjectNo": 1,
-                "GetObjCompany": 1,
-                "GetObjIncuSeq": 1,
-                "GetTestType": 1,
-                "GetTestStand": 1,
-                "GetTestEquip": 1,
-                "GetTestEquip2": 1,
-                "GetDescription": 1,
-                "GetProcessStart": 1,
-                "GetProcessEnd": 1,
-                "GetCollectStart": 1,
-                "GetCollectEnd": 1,
-                "GetTestTime": 1,
-                "GetTestResult": 1,
-                "GetTestPeople": 1,
-                "GetTestPeople2": 1,
-                "GetReStatus": 1,
-                "GetRePeople": 1,
-                "GetReTime": 1,
-                "GetRevisionInfo": 1,
-                "GetFormerStep": 1,
-                "GetNowStep": 1,
-                "GetLaterStep": 1
-            }).then(
-                function(data) {
-                    result3 = data
-                    result3[0].NowStep = "正在加注中"
-                    result3[0].CollectStart = now
-                    result3[0].TestEquip3 = "Iso_Collect"
-                    result3[0].TestPeople3 = Storage.get('UID')
-                    Result.ResultSetData(result2[0]).then(
-                        function(data) {
-                            console.log(data)
-                            if (data.result == "插入成功") {
-                                $('#new_posibacInjection').modal('hide')
-                                $('#tasksuccess').modal('show')
-                                $timeout(function() {
-                                    $('#tasksuccess').modal('hide')
-                                }, 1000)
-                            }
-                        },
-                        function(e) {});
-                },
-                function(e) {});
-            Result.GetResultTubes({
-                "TestId": $scope.registerInfo.TestId1,
-                "TubeNo": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                console.log(data)
-                tube1 = data
-                tube1[4].BacterId = $scope.registerInfo.ReagentId
-                tube1[5].BacterId = $scope.registerInfo.ReagentId
-                Result.IncubatorSetData(tube1[4]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-                Result.IncubatorSetData(tube1[5]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-            }, function(err) { console.log(err) })
-            Result.GetResultTubes({
-                "TestId": $scope.registerInfo.TestId2,
-                "TubeNo": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                console.log(data)
-                tube2 = data
-                tube2[4].BacterId = $scope.registerInfo.ReagentId
-                tube2[5].BacterId = $scope.registerInfo.ReagentId
-                Result.IncubatorSetData(tube2[4]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-                Result.IncubatorSetData(tube2[5]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-            }, function(err) { console.log(err) })
-            Result.GetResultTubes({
-                "TestId": $scope.registerInfo.TestId3,
-                "TubeNo": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                console.log(data)
-                tube3 = data
-                tube3[4].BacterId = $scope.registerInfo.ReagentId
-                tube3[5].BacterId = $scope.registerInfo.ReagentId
-                Result.IncubatorSetData(tube3[4]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-                Result.IncubatorSetData(tube3[5]).then(
-                    function(data) {
-                        console.log(data)
-                    },
-                    function(e) {});
-            }, function(err) { console.log(err) })
-        }
-
-
-        // 隔离器复位 - 茹画
-        $scope.reset = function(_IsolatorId) {
-            // 获取当前日期
-            var myDate = new Date();
-            $scope.myDate = myDate
-            Operation.OpEquipmentSetData({
-                "EquipmentId": _IsolatorId,
-                "OperationTime": myDate,
-                "OperationCode": "R0",
-                "OperationValue": "R0",
-                "OperationResult": "R0",
-                "TerminalIP": Storage.get("cip"),
-                "TerminalName": Storage.get("cname"),
-                "revUserId": Storage.get("UID")
-            }).then(
-                function(data) {
-                    if (data.result == "插入成功") {
-                        $('#ResetOrNot').modal('hide')
-
-                        // 提示成功
-                        $('#resetsuccess').modal('show')
-                        $timeout(function() {
-                            $('#resetsuccess').modal('hide')
-                        }, 1000)
-                    }
-
-                },
-                function(e) {});
-        }
-
-    }])
-
-
-// 数据管理
-.controller('dataCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
+    // 数据管理
+    .controller('dataCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
         Storage.set('Tab', 0)
         $scope.tosampling = function() {
             $state.go('main.data.sampling')
