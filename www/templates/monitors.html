@@ -105,8 +105,8 @@
                     </td>
                     <td title="'培养阶段任务'">
                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)" ng-show="i.EndTime >= i.now">详情</button>
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" )>放入</button>
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'">取出</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" data-toggle="modal" data-target="#putin" )>放入</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'" data-toggle="modal" data-target="#takeout">取出</button>
                     </td>
                 </tr>
             </table>
@@ -517,6 +517,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h3 class="modal-title">放入培养器</h3>
+                 <h5 class="modal-title">目前未在培养箱的管数：{{sumtoputin}}</h5>
             </div>
             <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
                 <form id="putincultureForm" name="putincultureForm" class="form-horizontal">
@@ -575,6 +576,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <h3 class="modal-title">取出培养器</h3>
+                 <h5 class="modal-title">目前仍在培养箱的管数：{{sumtotakeout}}</h5>
             </div>
             <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
                 <form id="cultureForm" name="cultureForm" class="form-horizontal">

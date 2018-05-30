@@ -1556,6 +1556,32 @@
             // 取出培养-rh          
             var tubeslist = new Array()
             var _temptubeslist = new Array()
+            Result.GetResultTubes({
+                "TestId": null,
+                "TubeNo": null,
+                "CultureId": null,
+                "BacterId": null,
+                "OtherRea": null,
+                "IncubatorId": null,
+                "Place": null,
+                "StartTimeS": null,
+                "StartTimeE": null,
+                "EndTimeS": null,
+                "EndTimeE": null,
+                "AnalResult": null,
+                "GetCultureId": 1,
+                "GetBacterId": 1,
+                "GetOtherRea": 1,
+                "GetIncubatorId": 1,
+                "GetPlace": 1,
+                "GetStartTime": 1,
+                "GetEndTime": 1,
+                "GetAnalResult": 1
+            }).then(function(data) {
+                    console.log(data)
+                    $scope.sumtotakeout = data.length
+                },
+                function(err) {})
 
             // 取出培养modal的初始化
             $('#takeout').on('show.bs.modal', function() {
@@ -1719,6 +1745,30 @@
             // 放入培养-rh
             var putintubeslist = new Array()
             var finalplace = ""
+            Result.GetResultTubes({
+                "TestId": null,
+                "TubeNo": null,
+                "CultureId": null,
+                "BacterId": null,
+                "OtherRea": null,
+                "IncubatorId": null,
+                "Place": 0,
+                "StartTimeS": null,
+                "StartTimeE": null,
+                "EndTimeS": null,
+                "EndTimeE": null,
+                "AnalResult": null,
+                "GetCultureId": 1,
+                "GetBacterId": 1,
+                "GetOtherRea": 1,
+                "GetIncubatorId": 1,
+                "GetPlace": 1,
+                "GetStartTime": 1,
+                "GetEndTime": 1,
+                "GetAnalResult": 1
+            }).then(function(data) {
+                $scope.sumtoputin = data.length
+            }, function(err) {})
 
             // 放入培养modal的初始化-rh
             $('#putin').on('show.bs.modal', function() {
