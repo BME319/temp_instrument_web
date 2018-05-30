@@ -39,8 +39,10 @@
                 </ul>
             </div>
             <div>
-                <h3>加工 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px" ng-if=breakpro>
-                <button class="btn btn-primary" style="margin-top:-10px" id='pro'>紧急停止</button></h3>
+                <h3>加工 
+                <button class="btn btn-primary" style="margin-top:-10px" id='pro' ng-click="setbreakData('Iso_Process')">紧急停止</button>
+                <img ng-src="image/warning.ico" style="width:17x;height: 17px;margin-top:-40px;margin-left: -20px" ng-if=breakpro>
+                <span style="margin-right:20px;font-size:15px;color: Red" ng-show="unconpro == 'unconnected'">未连接</span></h3>
             </div>
             <table ng-table="handlingTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="g in $data" style="text-align: center;">
@@ -64,8 +66,10 @@
                 </tr>
             </table>
             <div>
-                <h3>加注 <img ng-src="image/warning.ico" style="width:34px;height: 34px;margin-top:-10px" ng-if=breakcol>
-                <button class="btn btn-primary" style="margin-top:-10px" id='col'>紧急停止</button></h3>
+                <h3>加注 
+                    <button class="btn btn-primary" style="margin-top:-10px" id='col' ng-click="setbreakData('Iso_Collect')">紧急停止</button>
+                    <img ng-src="image/warning.ico" style="width:17x;height: 17px;margin-top:-40px;margin-left: -20px"ng-if=breakcol>
+                    <span  style="margin-right:20px;font-size:15px;color: Red" ng-show= "unconcol == 'unconnected'">未连接</span></h3>
             </div>
             <table ng-table="CollectTable" class="table table-condensed table-bordered table-striped">
                 <tr ng-repeat="z in $data" style="text-align: center;">
@@ -112,7 +116,8 @@
                 <option selected value="">选择仪器</option>
                 <option ng-repeat="instrument in instruments">{{instrument}}</option>
             </select>
-            <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="connected()">是否连上</button>
+            <span style="margin-right:20px;font-size:15px;color: Green;" ng-show="unconnected == 0">已连接</span>
+            <span style="margin-right:20px;font-size:15px;color: Red" ng-show="unconnected == 1">未连接</span>
         </div>
         <div class="col-md-12 col-md-offset-1">
             <!--             <!--<h2>实时监控 {{status}}</h2>-->
@@ -696,13 +701,13 @@
                         <td title="'机器视觉'">
                             <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
                         </td>
+                        <td title="'顶空分析结果'">{{pic.TopResult}}
+                        </td>
                         <td title="'分析结果'">{{pic.AnalResult}}
                             <br>
                             <button class="btn btn-primary" ng-click="setanalResult(pic)" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">有菌</button>
                             <br>
-                            <button class="btn btn-primary" ng-click="setanalResult()" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button>
-                        </td>
-                        <td title="'顶空分析结果'">{{pic.TopResult}}
+                            <button class="btn btn-primary" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button>
                         </td>
                     </tr>
                 </table>
@@ -774,6 +779,13 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
             选择的位置已有样品！
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="setbreak">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            紧急停止成功！
         </div>
     </div>
 </div>
