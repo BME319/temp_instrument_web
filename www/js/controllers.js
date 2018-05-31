@@ -1554,67 +1554,80 @@
             twoweekslater.setDate(twoweekslater.getDate() + 14);
 
             // 取出培养-rh          
-            var tubeslist = new Array()
-            var _temptubeslist = new Array()
-            Result.GetResultTubes({
-                "TestId": null,
-                "TubeNo": null,
-                "CultureId": null,
-                "BacterId": null,
-                "OtherRea": null,
-                "IncubatorId": null,
-                "Place": null,
-                "StartTimeS": null,
-                "StartTimeE": null,
-                "EndTimeS": null,
-                "EndTimeE": null,
-                "AnalResult": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                    console.log(data)
-                    $scope.sumtotakeout = data.length
-                },
-                function(err) {})
+
+
+
+
+            // 选择培养箱的培养器列表change-rh
+            // $scope.tubeselect = function(_incubator) {
+            //     var _incubatorId = ''
+            //     temptubeslist = []
+            //     if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) {
+            //         _incubatorId = null;
+            //     } else {
+            //         _incubatorId = _incubator.IncubatorId
+            //     }
+            //     Result.GetResultTubes({
+            //         "TestId": null,
+            //         "TubeNo": null,
+            //         "CultureId": null,
+            //         "BacterId": null,
+            //         "OtherRea": null,
+            //         "IncubatorId": _incubatorId,
+            //         "Place": null,
+            //         "StartTimeS": null,
+            //         "StartTimeE": null,
+            //         "EndTimeS": null,
+            //         "EndTimeE": null,
+            //         "AnalResult": null,
+            //         "GetCultureId": 1,
+            //         "GetBacterId": 1,
+            //         "GetOtherRea": 1,
+            //         "GetIncubatorId": 1,
+            //         "GetPlace": 1,
+            //         "GetStartTime": 1,
+            //         "GetEndTime": 1,
+            //         "GetAnalResult": 1
+            //     }).then(function(data) {
+            //         for (i = 0; i < data.length; i++) {
+            //             if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
+            //                 temptubeslist.push({
+            //                     "TubeNo": data[i].TubeNo,
+            //                     "TestId": data[i].TestId,
+            //                     "CultureId": data[i].CultureId,
+            //                     "BacterId": data[i].BacterId,
+            //                     "OtherRea": data[i].OtherRea,
+            //                     "IncubatorId": data[i].IncubatorId,
+            //                     "Place": data[i].Place,
+            //                     "StartTime": data[i].StartTime,
+            //                     "EndTime": data[i].EndTime,
+            //                     "AnalResult": data[i].AnalResult
+            //                 })
+            //             }
+            //         }
+            //         $scope.tubes = temptubeslist
+            //         tubeslist = temptubeslist
+            //     }, function(err) {})
+            //     $scope.tempTube = {}
+            // }
+
+
+
+
+
 
             // 取出培养modal的初始化
-            $('#takeout').on('show.bs.modal', function() {
-                // 培养箱列表
-                ItemInfo.GetIncubatorsInfo({
-                    "IncubatorId": null,
-                    "ProductDayS": null,
-                    "ProductDayE": null,
-                    "EquipPro": null,
-                    "InsDescription": null,
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "GetProductDay": 1,
-                    "GetEquipPro": 1,
-                    "GetInsDescription": 1,
-                    "GetRevisionInfo": 1
-                }).then(function(data) {
-                    $scope.takeoutIncubators = data;
-                }, function(err) {});
-
-                var temptubeslist = new Array()
+            $scope.takeoutmodal = function(tempTestId) {
+                var tubeslist = new Array()
+                var _temptubeslist = new Array()
                 // 默认状态下培养器列表
                 Result.GetResultTubes({
-                    "TestId": null,
+                    "TestId": tempTestId,
                     "TubeNo": null,
                     "CultureId": null,
                     "BacterId": null,
                     "OtherRea": null,
-                    "IncubatorId": null,
+                    "IncubatorId": 'Incu',
                     "Place": null,
                     "StartTimeS": null,
                     "StartTimeE": null,
@@ -1630,95 +1643,26 @@
                     "GetEndTime": 1,
                     "GetAnalResult": 1
                 }).then(function(data) {
-                    for (i = 0; i < data.length; i++) {
-                        if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
-                            temptubeslist.push({
-                                "TubeNo": data[i].TubeNo,
-                                "TestId": data[i].TestId,
-                                "CultureId": data[i].CultureId,
-                                "BacterId": data[i].BacterId,
-                                "OtherRea": data[i].OtherRea,
-                                "IncubatorId": data[i].IncubatorId,
-                                "Place": data[i].Place,
-                                "StartTime": data[i].StartTime,
-                                "EndTime": data[i].EndTime,
-                                "AnalResult": data[i].AnalResult
-                            })
-                        }
-                    }
-                    $scope.tubes = temptubeslist
+                    $scope.tubes = data
+                    $scope.sumtotakeout = $scope.tubes.length
                 }, function(err) {})
-
-                // 选择培养箱的培养器列表change-rh
-                $scope.tubeselect = function(_incubator) {
-                    var _incubatorId = ''
-                    temptubeslist = []
-                    if ((_incubator == null) || (_incubator.IncubatorId == undefined) || (_incubator.IncubatorId == '')) {
-                        _incubatorId = null;
-                    } else {
-                        _incubatorId = _incubator.IncubatorId
-                    }
-                    Result.GetResultTubes({
-                        "TestId": null,
-                        "TubeNo": null,
-                        "CultureId": null,
-                        "BacterId": null,
-                        "OtherRea": null,
-                        "IncubatorId": _incubatorId,
-                        "Place": null,
-                        "StartTimeS": null,
-                        "StartTimeE": null,
-                        "EndTimeS": null,
-                        "EndTimeE": null,
-                        "AnalResult": null,
-                        "GetCultureId": 1,
-                        "GetBacterId": 1,
-                        "GetOtherRea": 1,
-                        "GetIncubatorId": 1,
-                        "GetPlace": 1,
-                        "GetStartTime": 1,
-                        "GetEndTime": 1,
-                        "GetAnalResult": 1
-                    }).then(function(data) {
-                        for (i = 0; i < data.length; i++) {
-                            if ((data[i].Place != 0) & (data[i].IncubatorId != 'Isolator') & (data[i].IncubatorId != '')) {
-                                temptubeslist.push({
-                                    "TubeNo": data[i].TubeNo,
-                                    "TestId": data[i].TestId,
-                                    "CultureId": data[i].CultureId,
-                                    "BacterId": data[i].BacterId,
-                                    "OtherRea": data[i].OtherRea,
-                                    "IncubatorId": data[i].IncubatorId,
-                                    "Place": data[i].Place,
-                                    "StartTime": data[i].StartTime,
-                                    "EndTime": data[i].EndTime,
-                                    "AnalResult": data[i].AnalResult
-                                })
-                            }
-                        }
-                        $scope.tubes = temptubeslist
-                        tubeslist = temptubeslist
-                    }, function(err) {})
-                    $scope.tempTube = {}
-                }
-
-            })
-
+                $('#takeout').modal('show')
+            }
 
             // 显示培养器具体信息-rh
             $scope.showtubedetail = function(TestIdindex, TubeNoindex) {
+                // console.log(TestIdindex, TubeNoindex)
                 if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.tempTube = {} }
-                for (i = 0; i < tubeslist.length; i++) {
-                    if ((tubeslist[i].TubeNo == TubeNoindex) && ((tubeslist[i].TestId == TestIdindex))) {
-                        $scope.tempTube = tubeslist[i]
+                for (i = 0; i < $scope.tubes.length; i++) {
+                    if (($scope.tubes[i].TubeNo == TubeNoindex) && (($scope.tubes[i].TestId == TestIdindex))) {
+                        $scope.tempTube = $scope.tubes[i]
                     }
                 }
             }
 
-
-
             // 取出培养-rh
             $scope.totakeout = function(index) {
+
                 Result.SetResIncubator({
                     "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
@@ -1732,7 +1676,59 @@
                     "AnalResult": index.AnalResult,
                 }).then(function(data) {
                     if (data.result == "插入成功") {
-                        $('#takeout').modal('hide')
+                        // console.log($scope.tubes)
+                        for (i = 0; i < $scope.tubes.length; i++) {
+                            if ((index.TestId == $scope.tubes[i].TestId) && (index.TubeNo == $scope.tubes[i].TubeNo)) {
+                                console.log("yes", i)
+                                $scope.tubes.splice(i, 1);
+                                break;
+                            }
+                        }
+                        $scope.sumtotakeout = $scope.sumtotakeout - 1
+                        if ($scope.sumtotakeout == 0) {
+                            // 一个查询
+                            Result.GetTestResultInfo({
+                                "TestId": index.TestId,
+                                "GetObjectNo": 1,
+                                "GetObjCompany": 1,
+                                "GetObjIncuSeq": 1,
+                                "GetTestType": 1,
+                                "GetTestStand": 1,
+                                "GetTestEquip": 1,
+                                "GetTestEquip2": 1,
+                                "GetDescription": 1,
+                                "GetProcessStart": 1,
+                                "GetProcessEnd": 1,
+                                "GetCollectStart": 1,
+                                "GetCollectEnd": 1,
+                                "GetTestTime": 1,
+                                "GetTestResult": 1,
+                                "GetTestPeople": 1,
+                                "GetTestPeople2": 1,
+                                "GetReStatus": 1,
+                                "GetRePeople": 1,
+                                "GetReTime": 1,
+                                "GetRevisionInfo": 1,
+                                "GetFormerStep": 1,
+                                "GetNowStep": 1,
+                                "GetLaterStep": 1
+                            }).then(function(result) {
+                                var tempdata = result
+                                tempdata.status = 3
+                                // 一个状态修改
+                                Result.ResultSetData(tempdata).then(function(data) {
+                                    if (data.result == "插入成功") {
+                                        $('#alltakeoutsuccess').modal('show')
+                                        $timeout(function() {
+                                            $('#alltakeoutsuccess').modal('hide')
+                                        }, 1000)
+                                        $('#takeout').modal('hide')
+                                    }
+                                }, function(err) {})
+                            }, function(err) {})
+
+
+                        }
                         // 提示成功
                         $('#takeoutsuccess').modal('show')
                         $timeout(function() {
@@ -1743,35 +1739,13 @@
             }
 
             // 放入培养-rh
-            var putintubeslist = new Array()
             var finalplace = ""
-            Result.GetResultTubes({
-                "TestId": null,
-                "TubeNo": null,
-                "CultureId": null,
-                "BacterId": null,
-                "OtherRea": null,
-                "IncubatorId": null,
-                "Place": 0,
-                "StartTimeS": null,
-                "StartTimeE": null,
-                "EndTimeS": null,
-                "EndTimeE": null,
-                "AnalResult": null,
-                "GetCultureId": 1,
-                "GetBacterId": 1,
-                "GetOtherRea": 1,
-                "GetIncubatorId": 1,
-                "GetPlace": 1,
-                "GetStartTime": 1,
-                "GetEndTime": 1,
-                "GetAnalResult": 1
-            }).then(function(data) {
-                $scope.sumtoputin = data.length
-            }, function(err) {})
+            $scope.putinmodal = function(tempTestId) {
+                // 放入培养modal的初始化-rh
+                var putintubeslist = new Array()
 
-            // 放入培养modal的初始化-rh
-            $('#putin').on('show.bs.modal', function() {
+                var _putintemptubeslist = new Array()
+                console.log(tempTestId)
                 //培养箱列表
                 ItemInfo.GetIncubatorsInfo({
                     "IncubatorId": null,
@@ -1793,17 +1767,15 @@
                     $scope.putinIncubators = data;
                 }, function(err) {});
 
-                var _putintemptubeslist = new Array()
-
                 //培养器列表
                 Result.GetResultTubes({
-                    "TestId": null,
+                    "TestId": tempTestId,
                     "TubeNo": null,
                     "CultureId": null,
                     "BacterId": null,
                     "OtherRea": null,
                     "IncubatorId": null,
-                    "Place": 0,
+                    "Place": "ready_to_putin",
                     "StartTimeS": null,
                     "StartTimeE": null,
                     "EndTimeS": null,
@@ -1818,6 +1790,8 @@
                     "GetEndTime": 1,
                     "GetAnalResult": 1
                 }).then(function(data) {
+                    console.log(data)
+                    $scope.sumtoputin = data.length
                     for (i = 0; i < data.length; i++) {
                         _putintemptubeslist.push({
                             "TubeNo": data[i].TubeNo,
@@ -1833,9 +1807,11 @@
                         })
 
                     }
+                    console.log(_putintemptubeslist)
                     $scope.putintubes = _putintemptubeslist
                     putintubeslist = _putintemptubeslist
                 }, function(err) {})
+
 
                 // 培养箱位置-轮层列表
                 $scope.putinclasses = [
@@ -1900,15 +1876,17 @@
                         }
                     }, function(err) {})
                 }
+                $('#putin').modal('show')
+            }
 
-            })
 
             // 显示培养器具体信息-rh
             $scope.putinshowtubedetail = function(TestIdindex, TubeNoindex) {
+
                 if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.putintempTube = {} }
-                for (i = 0; i < putintubeslist.length; i++) {
-                    if ((putintubeslist[i].TubeNo == TubeNoindex) && ((putintubeslist[i].TestId == TestIdindex))) {
-                        $scope.putintempTube = putintubeslist[i]
+                for (i = 0; i < $scope.putintubes.length; i++) {
+                    if (($scope.putintubes[i].TubeNo == TubeNoindex) && (($scope.putintubes[i].TestId == TestIdindex))) {
+                        $scope.putintempTube = $scope.putintubes[i]
                     }
                 }
             }
@@ -1950,7 +1928,17 @@
                     "AnalResult": index.AnalResult,
                 }).then(function(data) {
                     if (data.result == "插入成功") {
-                        $('#putin').modal('hide')
+                        console.log($scope.putintubes)
+                        for (i = 0; i < $scope.putintubes.length; i++) {
+                            if ((index.TestId == $scope.putintubes[i].TestId) && (index.TubeNo == $scope.putintubes[i].TubeNo)) {
+                                console.log("yes", i)
+                                $scope.putintubes.splice(i, 1);
+                                break;
+                            }
+                        }
+                        console.log($scope.putintubes)
+                        $scope.sumtoputin = $scope.sumtoputin - 1
+                        if ($scope.sumtoputin == 0) { $('#putin').modal('hide') }
                         // 提示成功
                         $('#putinsuccess').modal('show')
                         $timeout(function() {

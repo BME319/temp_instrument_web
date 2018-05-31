@@ -105,8 +105,8 @@
                     </td>
                     <td title="'培养阶段任务'">
                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)" ng-show="i.EndTime >= i.now">详情</button>
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" data-toggle="modal" data-target="#putin" )>放入</button>
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'" data-toggle="modal" data-target="#takeout">取出</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" ng-click="putinmodal(i.TestId)">放入</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'" ng-click="takeoutmodal(i.TestId)">取出</button>
                     </td>
                 </tr>
             </table>
@@ -580,12 +580,12 @@
             </div>
             <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
                 <form id="cultureForm" name="cultureForm" class="form-horizontal">
-                    <div class="form-group">
+<!--                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
                         <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="takeoutIncubator.IncubatorId for takeoutIncubator in takeoutIncubators" ng-model="cultureinfo.IncubatorId" ng-change="tubeselect(cultureinfo.IncubatorId)">
                             <option selected value="">选择培养箱</option>
                         </select>
-                    </div>
+                    </div> -->
                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养器</label>
                         <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube as (tube.TestId+'_'+tube.TubeNo) for tube in tubes" ng-model="tube" ng-change="showtubedetail(tube.TestId,tube.TubeNo)">
@@ -739,6 +739,13 @@
     <div class="modal-dialog modal-sm" role="document">
         <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
             取出成功！
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="alltakeoutsuccess">
+    <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+            全部取出成功！
         </div>
     </div>
 </div>
