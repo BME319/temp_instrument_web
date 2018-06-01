@@ -1421,11 +1421,32 @@
                     "TestId": $scope.Id
                 }
                 $('#detail_Inc').modal('show')
-                Result.GetTopAnalysis(topInfo).then(function(data) {
-                    for (i = 0; i < data.length / 2; i++) {
-                        $scope.selectIncs[i] = data[2 * i + 1].TubeNo
+                Result.GetResultTubes({
+                    "TestId": $scope.Id,
+                    "TubeNo": null,
+                    "CultureId": null,
+                    "BacterId": null,
+                    "OtherRea": null,
+                    "IncubatorId": null,
+                    "Place": null,
+                    "StartTimeS": null,
+                    "StartTimeE": null,
+                    "EndTimeS": null,
+                    "EndTimeE": null,
+                    "AnalResult": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        $scope.selectIncs[i] = data[i].TubeNo
                     }
-                    console.log(selectIncs)
+                    // console.log(selectIncs)
                 }, function(err) {})
                 getimages(topInfo, incInfo)
                 // cal_detailIncu = $interval(function() {
