@@ -1744,6 +1744,7 @@
                                             $('#alltakeoutsuccess').modal('hide')
                                         }, 1000)
                                         $('#takeout').modal('hide')
+                                        window.location.reload();
                                     }
                                 }, function(err) {})
                             }, function(err) {})
@@ -2012,7 +2013,15 @@
                                 }, function(err) {})
                             }
                             $scope.sumtoputin = $scope.sumtoputin - 1
-                            if ($scope.sumtoputin == 0) { $('#putin').modal('hide') }
+                            if ($scope.sumtoputin == 0) { 
+                                $('#allputinsuccess').modal('show')
+                                        $timeout(function() {
+                                            $('#allputinsuccess').modal('hide')
+                                        }, 1000)
+
+                                        $('#putin').modal('hide') 
+                                        window.location.reload();
+                                    }
                             // 提示成功
                             $('#putinsuccess').modal('show')
                             $timeout(function() {
