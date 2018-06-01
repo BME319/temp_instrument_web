@@ -1841,8 +1841,10 @@
                     { id: 'Lower_In_', name: '下轮内层' },
                     { id: 'Lower_out_', name: '下轮外层' }
                 ]
+
                 // 培养箱位置-编号列表
                 $scope.toputinclass = function(index) {
+                    finalplacenow = ''
                     finalplace = index
                     $scope.numbers = []
                     if (finalplace != undefined) {
@@ -1937,396 +1939,447 @@
 
 
                 Result.SetResIncubator({
-                    "TestId": index.TestId,
-                    "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
-                    "CultureId": index.CultureId,
-                    "BacterId": index.BacterId,
-                    "OtherRea": index.OtherRea,
-                    "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
-                    "Place": finalplace + $scope.putinPlaceNo,
-                    "StartTime": now,
-                    "EndTime": twoweekslater,
-                    "AnalResult": index.AnalResult,
-                }).then(function(data) {
-                    if (data.result == "插入成功") {
-                        console.log($scope.putintubes)
-                        for (i = 0; i < $scope.putintubes.length; i++) {
-                            if ((index.TestId == $scope.putintubes[i].TestId) && (index.TubeNo == $scope.putintubes[i].TubeNo)) {
-                                console.log("yes", i)
-                                $scope.putintubes.splice(i, 1);
-                                break;
+                        "TestId": index.TestId,
+                        "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                        "CultureId": index.CultureId,
+                        "BacterId": index.BacterId,
+                        "OtherRea": index.OtherRea,
+                        "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
+                        "Place": finalplace + $scope.putinPlaceNo,
+                        "StartTime": now,
+                        "EndTime": twoweekslater,
+                        "AnalResult": index.AnalResult,
+                    }).then(function(data) {
+                            if (data.result == "插入成功") {
+                                console.log($scope.putintubes)
+                                for (i = 0; i < $scope.putintubes.length; i++) {
+                                    if ((index.TestId == $scope.putintubes[i].TestId) && (index.TubeNo == $scope.putintubes[i].TubeNo)) {
+                                        $scope.putintubes.splice(i, 1);
+                                        break;
+                                    }
+                                }
+                                $scope.numbers = []
+                                if (finalplace != undefined) {
+                                    if (finalplace.indexOf("In") != -1) {
+                                        for (i = 1; i <= 15; i++) {
+                                            $scope.numbers.push(i)
+                                        }
+                                    } else if (finalplace.indexOf("out") != -1) {
+                                        for (i = 1; i <= 28; i++) {
+                                            $scope.numbers.push(i)
+                                        }
+                                    }
+                                }
+                                Array.prototype.indexOf = function(val) {
+                                    for (var i = 0; i < this.length; i++) {
+                                        if (this[i] == val) return i;
+                                    }
+                                    return -1;
+                                };
+                                Array.prototype.remove = function(val) {
+                                    var index = this.indexOf(val);
+                                    if (index > -1) {
+                                        this.splice(index, 1);
+                                    }
+                                };
+                                Result.GetResultTubes({
+                                    "TestId": null,
+                                    "TubeNo": null,
+                                    "CultureId": null,
+                                    "BacterId": null,
+                                    "OtherRea": null,
+                                    "IncubatorId": $scope.putincultureinfo.IncubatorId.IncubatorId,
+                                    "Place": null,
+                                    "StartTimeS": null,
+                                    "StartTimeE": null,
+                                    "EndTimeS": null,
+                                    "EndTimeE": null,
+                                    "AnalResult": null,
+                                    "GetCultureId": 1,
+                                    "GetBacterId": 1,
+                                    "GetOtherRea": 1,
+                                    "GetIncubatorId": 1,
+                                    "GetPlace": 1,
+                                    "GetStartTime": 1,
+                                    "GetEndTime": 1,
+                                    "GetAnalResult": 1
+                                }).then(function(data) {
+                                    for (i = 0; i < data.length; i++) {
+                                        if ((data[i].Place.replace(/[0-9]/ig, "")) == index) {
+                                            $scope.numbers.remove(data[i].Place.replace(/[a-zA-Z_]/ig, ""));
+                                        }
+                                    }
+                                }, function(err) {})
                             }
-                        }
-                        console.log($scope.putintubes)
-                        $scope.sumtoputin = $scope.sumtoputin - 1
-                        if ($scope.sumtoputin == 0) { $('#putin').modal('hide') }
+                            $scope.sumtoputin = $scope.sumtoputin - 1
+                            if ($scope.sumtoputin == 0) { $('#putin').modal('hide') }
+                            // 提示成功
+                            $('#putinsuccess').modal('show')
+                            $timeout(function() {
+                                $('#putinsuccess').modal('hide')
+                            }, 1000)
+                        
+                    },
+                    function(err) {})
+        }
+
+
+        // 阳性菌加注-茹画
+        $scope.posibacInjection = function() {
+            $('#new_posibacInjection').modal('show');
+
+            // 菌液列表
+            ItemInfo.GetReagentsInfo({
+                "ReagentId": null,
+                "ReagentSource": null,
+                "ReagentName": "菌",
+                "ReDateTimeS": null,
+                "ReDateTimeE": null,
+                "ReTerminalIP": null,
+                "ReTerminalName": null,
+                "ReUserId": null,
+                "ReIdentify": null,
+                "GetReagentSource": 1,
+                "GetReagentName": 1,
+                "GetRevisionInfo": 1
+            }).then(
+                function(data) {
+                    $scope.Reagent_search = data
+                },
+                function(e) {});
+
+
+            // 任务列表
+            Result.GetTestResultInfo({
+                "TestId": null,
+                "ObjectNo": null,
+                "ObjCompany": null,
+                "ObjIncuSeq": null,
+                "TestType": null,
+                "TestStand": null,
+                "TestEquip": null,
+                "TestEquip2": null,
+                "Description": null,
+                "ProcessStartS": null,
+                "ProcessStartE": null,
+                "ProcessEndS": null,
+                "ProcessEndE": null,
+                "CollectStartS": null,
+                "CollectStartE": null,
+                "CollectEndS": null,
+                "CollectEndE": null,
+                "TestTimeS": null,
+                "TestTimeE": null,
+                "TestResult": null,
+                "TestPeople": null,
+                "TestPeople2": null,
+                "ReStatus": 1,
+                "RePeople": null,
+                "ReTimeS": null,
+                "ReTimeE": null,
+                "ReDateTimeS": null,
+                "ReDateTimeE": null,
+                "ReTerminalIP": null,
+                "ReTerminalName": null,
+                "ReUserId": null,
+                "ReIdentify": null,
+                "FormerStep": null,
+                "NowStep": null,
+                "LaterStep": null,
+                "GetObjectNo": 1,
+                "GetObjCompany": 1,
+                "GetObjIncuSeq": 1,
+                "GetTestType": 1,
+                "GetTestStand": 1,
+                "GetTestEquip": 1,
+                "GetTestEquip2": 1,
+                "GetDescription": 1,
+                "GetProcessStart": 1,
+                "GetProcessEnd": 1,
+                "GetCollectStart": 1,
+                "GetCollectEnd": 1,
+                "GetTestTime": 1,
+                "GetTestResult": 1,
+                "GetTestPeople": 1,
+                "GetTestPeople2": 1,
+                "GetReStatus": 1,
+                "GetRePeople": 1,
+                "GetReTime": 1,
+                "GetRevisionInfo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1
+            }).then(
+                function(data) {
+                    $scope.Result_search = data
+                },
+                function(e) {});
+        }
+        $scope.setposibacInjection = function() {
+            var result1 = new Array()
+            var result2 = new Array()
+            var result3 = new Array()
+
+            var tube1 = new Array()
+            var tube2 = new Array()
+            var tube3 = new Array()
+
+            // console.log($scope.registerInfo.TestId1)
+            // console.log($scope.registerInfo.TestId2)
+            // console.log($scope.registerInfo.TestId3)
+            console.log($scope.registerInfo.ReagentId)
+            Result.GetTestResultInfo({
+                "TestId": $scope.registerInfo.TestId1,
+                "GetObjectNo": 1,
+                "GetObjCompany": 1,
+                "GetObjIncuSeq": 1,
+                "GetTestType": 1,
+                "GetTestStand": 1,
+                "GetTestEquip": 1,
+                "GetTestEquip2": 1,
+                "GetDescription": 1,
+                "GetProcessStart": 1,
+                "GetProcessEnd": 1,
+                "GetCollectStart": 1,
+                "GetCollectEnd": 1,
+                "GetTestTime": 1,
+                "GetTestResult": 1,
+                "GetTestPeople": 1,
+                "GetTestPeople2": 1,
+                "GetReStatus": 1,
+                "GetRePeople": 1,
+                "GetReTime": 1,
+                "GetRevisionInfo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1
+            }).then(
+                function(data) {
+                    // console.log(data)
+                    result1 = data
+                    result1[0].NowStep = "正在加注中"
+                    result1[0].CollectStart = now
+                    result1[0].TestEquip2 = "Iso_Collect"
+                    result1[0].TestPeople2 = Storage.get('UID')
+                    console.log(result1)
+                    Result.ResultSetData(result1[0]).then(
+                        function(data) {
+                            console.log(data)
+                        },
+                        function(e) {});
+                },
+                function(e) {});
+            Result.GetTestResultInfo({
+                "TestId": $scope.registerInfo.TestId2,
+                "GetObjectNo": 1,
+                "GetObjCompany": 1,
+                "GetObjIncuSeq": 1,
+                "GetTestType": 1,
+                "GetTestStand": 1,
+                "GetTestEquip": 1,
+                "GetTestEquip2": 1,
+                "GetDescription": 1,
+                "GetProcessStart": 1,
+                "GetProcessEnd": 1,
+                "GetCollectStart": 1,
+                "GetCollectEnd": 1,
+                "GetTestTime": 1,
+                "GetTestResult": 1,
+                "GetTestPeople": 1,
+                "GetTestPeople2": 1,
+                "GetReStatus": 1,
+                "GetRePeople": 1,
+                "GetReTime": 1,
+                "GetRevisionInfo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1
+            }).then(
+                function(data) {
+                    result2 = data
+                    result2[0].NowStep = "正在加注中"
+                    result2[0].CollectStart = now
+                    result2[0].TestEquip2 = "Iso_Collect"
+                    result2[0].TestPeople2 = Storage.get('UID')
+                    Result.ResultSetData(result2[0]).then(
+                        function(data) {
+                            console.log(data)
+                            if (data.result == "插入成功") {
+                                $('#new_posibacInjection').modal('hide')
+                                $('#tasksuccess').modal('show')
+                                $timeout(function() {
+                                    $('#tasksuccess').modal('hide')
+                                }, 1000)
+                            }
+                        },
+                        function(e) {});
+                },
+                function(e) {});
+            Result.GetTestResultInfo({
+                "TestId": $scope.registerInfo.TestId3,
+                "GetObjectNo": 1,
+                "GetObjCompany": 1,
+                "GetObjIncuSeq": 1,
+                "GetTestType": 1,
+                "GetTestStand": 1,
+                "GetTestEquip": 1,
+                "GetTestEquip2": 1,
+                "GetDescription": 1,
+                "GetProcessStart": 1,
+                "GetProcessEnd": 1,
+                "GetCollectStart": 1,
+                "GetCollectEnd": 1,
+                "GetTestTime": 1,
+                "GetTestResult": 1,
+                "GetTestPeople": 1,
+                "GetTestPeople2": 1,
+                "GetReStatus": 1,
+                "GetRePeople": 1,
+                "GetReTime": 1,
+                "GetRevisionInfo": 1,
+                "GetFormerStep": 1,
+                "GetNowStep": 1,
+                "GetLaterStep": 1
+            }).then(
+                function(data) {
+                    result3 = data
+                    result3[0].NowStep = "正在加注中"
+                    result3[0].CollectStart = now
+                    result3[0].TestEquip3 = "Iso_Collect"
+                    result3[0].TestPeople3 = Storage.get('UID')
+                    Result.ResultSetData(result2[0]).then(
+                        function(data) {
+                            console.log(data)
+                            if (data.result == "插入成功") {
+                                $('#new_posibacInjection').modal('hide')
+                                $('#tasksuccess').modal('show')
+                                $timeout(function() {
+                                    $('#tasksuccess').modal('hide')
+                                }, 1000)
+                            }
+                        },
+                        function(e) {});
+                },
+                function(e) {});
+            Result.GetResultTubes({
+                "TestId": $scope.registerInfo.TestId1,
+                "TubeNo": null,
+                "GetCultureId": 1,
+                "GetBacterId": 1,
+                "GetOtherRea": 1,
+                "GetIncubatorId": 1,
+                "GetPlace": 1,
+                "GetStartTime": 1,
+                "GetEndTime": 1,
+                "GetAnalResult": 1
+            }).then(function(data) {
+                console.log(data)
+                tube1 = data
+                tube1[4].BacterId = $scope.registerInfo.ReagentId
+                tube1[5].BacterId = $scope.registerInfo.ReagentId
+                Result.IncubatorSetData(tube1[4]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+                Result.IncubatorSetData(tube1[5]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+            }, function(err) { console.log(err) })
+            Result.GetResultTubes({
+                "TestId": $scope.registerInfo.TestId2,
+                "TubeNo": null,
+                "GetCultureId": 1,
+                "GetBacterId": 1,
+                "GetOtherRea": 1,
+                "GetIncubatorId": 1,
+                "GetPlace": 1,
+                "GetStartTime": 1,
+                "GetEndTime": 1,
+                "GetAnalResult": 1
+            }).then(function(data) {
+                console.log(data)
+                tube2 = data
+                tube2[4].BacterId = $scope.registerInfo.ReagentId
+                tube2[5].BacterId = $scope.registerInfo.ReagentId
+                Result.IncubatorSetData(tube2[4]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+                Result.IncubatorSetData(tube2[5]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+            }, function(err) { console.log(err) })
+            Result.GetResultTubes({
+                "TestId": $scope.registerInfo.TestId3,
+                "TubeNo": null,
+                "GetCultureId": 1,
+                "GetBacterId": 1,
+                "GetOtherRea": 1,
+                "GetIncubatorId": 1,
+                "GetPlace": 1,
+                "GetStartTime": 1,
+                "GetEndTime": 1,
+                "GetAnalResult": 1
+            }).then(function(data) {
+                console.log(data)
+                tube3 = data
+                tube3[4].BacterId = $scope.registerInfo.ReagentId
+                tube3[5].BacterId = $scope.registerInfo.ReagentId
+                Result.IncubatorSetData(tube3[4]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+                Result.IncubatorSetData(tube3[5]).then(
+                    function(data) {
+                        console.log(data)
+                    },
+                    function(e) {});
+            }, function(err) { console.log(err) })
+        }
+
+
+        // 隔离器复位 - 茹画
+        $scope.reset = function(_IsolatorId) {
+            // 获取当前日期
+            var myDate = new Date();
+            $scope.myDate = myDate
+            Operation.OpEquipmentSetData({
+                "EquipmentId": _IsolatorId,
+                "OperationTime": myDate,
+                "OperationCode": "R0",
+                "OperationValue": "R0",
+                "OperationResult": "R0",
+                "TerminalIP": Storage.get("cip"),
+                "TerminalName": Storage.get("cname"),
+                "revUserId": Storage.get("UID")
+            }).then(
+                function(data) {
+                    if (data.result == "插入成功") {
+                        $('#ResetOrNot').modal('hide')
+
                         // 提示成功
-                        $('#putinsuccess').modal('show')
+                        $('#resetsuccess').modal('show')
                         $timeout(function() {
-                            $('#putinsuccess').modal('hide')
+                            $('#resetsuccess').modal('hide')
                         }, 1000)
                     }
-                }, function(err) {})
-            }
 
-
-            // 阳性菌加注-茹画
-            $scope.posibacInjection = function() {
-                $('#new_posibacInjection').modal('show');
-
-                // 菌液列表
-                ItemInfo.GetReagentsInfo({
-                    "ReagentId": null,
-                    "ReagentSource": null,
-                    "ReagentName": "菌",
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "GetReagentSource": 1,
-                    "GetReagentName": 1,
-                    "GetRevisionInfo": 1
-                }).then(
-                    function(data) {
-                        $scope.Reagent_search = data
-                    },
-                    function(e) {});
-
-
-                // 任务列表
-                Result.GetTestResultInfo({
-                    "TestId": null,
-                    "ObjectNo": null,
-                    "ObjCompany": null,
-                    "ObjIncuSeq": null,
-                    "TestType": null,
-                    "TestStand": null,
-                    "TestEquip": null,
-                    "TestEquip2": null,
-                    "Description": null,
-                    "ProcessStartS": null,
-                    "ProcessStartE": null,
-                    "ProcessEndS": null,
-                    "ProcessEndE": null,
-                    "CollectStartS": null,
-                    "CollectStartE": null,
-                    "CollectEndS": null,
-                    "CollectEndE": null,
-                    "TestTimeS": null,
-                    "TestTimeE": null,
-                    "TestResult": null,
-                    "TestPeople": null,
-                    "TestPeople2": null,
-                    "ReStatus": 1,
-                    "RePeople": null,
-                    "ReTimeS": null,
-                    "ReTimeE": null,
-                    "ReDateTimeS": null,
-                    "ReDateTimeE": null,
-                    "ReTerminalIP": null,
-                    "ReTerminalName": null,
-                    "ReUserId": null,
-                    "ReIdentify": null,
-                    "FormerStep": null,
-                    "NowStep": null,
-                    "LaterStep": null,
-                    "GetObjectNo": 1,
-                    "GetObjCompany": 1,
-                    "GetObjIncuSeq": 1,
-                    "GetTestType": 1,
-                    "GetTestStand": 1,
-                    "GetTestEquip": 1,
-                    "GetTestEquip2": 1,
-                    "GetDescription": 1,
-                    "GetProcessStart": 1,
-                    "GetProcessEnd": 1,
-                    "GetCollectStart": 1,
-                    "GetCollectEnd": 1,
-                    "GetTestTime": 1,
-                    "GetTestResult": 1,
-                    "GetTestPeople": 1,
-                    "GetTestPeople2": 1,
-                    "GetReStatus": 1,
-                    "GetRePeople": 1,
-                    "GetReTime": 1,
-                    "GetRevisionInfo": 1,
-                    "GetFormerStep": 1,
-                    "GetNowStep": 1,
-                    "GetLaterStep": 1
-                }).then(
-                    function(data) {
-                        $scope.Result_search = data
-                    },
-                    function(e) {});
-            }
-            $scope.setposibacInjection = function() {
-                var result1 = new Array()
-                var result2 = new Array()
-                var result3 = new Array()
-
-                var tube1 = new Array()
-                var tube2 = new Array()
-                var tube3 = new Array()
-
-                // console.log($scope.registerInfo.TestId1)
-                // console.log($scope.registerInfo.TestId2)
-                // console.log($scope.registerInfo.TestId3)
-                console.log($scope.registerInfo.ReagentId)
-                Result.GetTestResultInfo({
-                    "TestId": $scope.registerInfo.TestId1,
-                    "GetObjectNo": 1,
-                    "GetObjCompany": 1,
-                    "GetObjIncuSeq": 1,
-                    "GetTestType": 1,
-                    "GetTestStand": 1,
-                    "GetTestEquip": 1,
-                    "GetTestEquip2": 1,
-                    "GetDescription": 1,
-                    "GetProcessStart": 1,
-                    "GetProcessEnd": 1,
-                    "GetCollectStart": 1,
-                    "GetCollectEnd": 1,
-                    "GetTestTime": 1,
-                    "GetTestResult": 1,
-                    "GetTestPeople": 1,
-                    "GetTestPeople2": 1,
-                    "GetReStatus": 1,
-                    "GetRePeople": 1,
-                    "GetReTime": 1,
-                    "GetRevisionInfo": 1,
-                    "GetFormerStep": 1,
-                    "GetNowStep": 1,
-                    "GetLaterStep": 1
-                }).then(
-                    function(data) {
-                        // console.log(data)
-                        result1 = data
-                        result1[0].NowStep = "正在加注中"
-                        result1[0].CollectStart = now
-                        result1[0].TestEquip2 = "Iso_Collect"
-                        result1[0].TestPeople2 = Storage.get('UID')
-                        console.log(result1)
-                        Result.ResultSetData(result1[0]).then(
-                            function(data) {
-                                console.log(data)
-                            },
-                            function(e) {});
-                    },
-                    function(e) {});
-                Result.GetTestResultInfo({
-                    "TestId": $scope.registerInfo.TestId2,
-                    "GetObjectNo": 1,
-                    "GetObjCompany": 1,
-                    "GetObjIncuSeq": 1,
-                    "GetTestType": 1,
-                    "GetTestStand": 1,
-                    "GetTestEquip": 1,
-                    "GetTestEquip2": 1,
-                    "GetDescription": 1,
-                    "GetProcessStart": 1,
-                    "GetProcessEnd": 1,
-                    "GetCollectStart": 1,
-                    "GetCollectEnd": 1,
-                    "GetTestTime": 1,
-                    "GetTestResult": 1,
-                    "GetTestPeople": 1,
-                    "GetTestPeople2": 1,
-                    "GetReStatus": 1,
-                    "GetRePeople": 1,
-                    "GetReTime": 1,
-                    "GetRevisionInfo": 1,
-                    "GetFormerStep": 1,
-                    "GetNowStep": 1,
-                    "GetLaterStep": 1
-                }).then(
-                    function(data) {
-                        result2 = data
-                        result2[0].NowStep = "正在加注中"
-                        result2[0].CollectStart = now
-                        result2[0].TestEquip2 = "Iso_Collect"
-                        result2[0].TestPeople2 = Storage.get('UID')
-                        Result.ResultSetData(result2[0]).then(
-                            function(data) {
-                                console.log(data)
-                                if (data.result == "插入成功") {
-                                    $('#new_posibacInjection').modal('hide')
-                                    $('#tasksuccess').modal('show')
-                                    $timeout(function() {
-                                        $('#tasksuccess').modal('hide')
-                                    }, 1000)
-                                }
-                            },
-                            function(e) {});
-                    },
-                    function(e) {});
-                Result.GetTestResultInfo({
-                    "TestId": $scope.registerInfo.TestId3,
-                    "GetObjectNo": 1,
-                    "GetObjCompany": 1,
-                    "GetObjIncuSeq": 1,
-                    "GetTestType": 1,
-                    "GetTestStand": 1,
-                    "GetTestEquip": 1,
-                    "GetTestEquip2": 1,
-                    "GetDescription": 1,
-                    "GetProcessStart": 1,
-                    "GetProcessEnd": 1,
-                    "GetCollectStart": 1,
-                    "GetCollectEnd": 1,
-                    "GetTestTime": 1,
-                    "GetTestResult": 1,
-                    "GetTestPeople": 1,
-                    "GetTestPeople2": 1,
-                    "GetReStatus": 1,
-                    "GetRePeople": 1,
-                    "GetReTime": 1,
-                    "GetRevisionInfo": 1,
-                    "GetFormerStep": 1,
-                    "GetNowStep": 1,
-                    "GetLaterStep": 1
-                }).then(
-                    function(data) {
-                        result3 = data
-                        result3[0].NowStep = "正在加注中"
-                        result3[0].CollectStart = now
-                        result3[0].TestEquip3 = "Iso_Collect"
-                        result3[0].TestPeople3 = Storage.get('UID')
-                        Result.ResultSetData(result2[0]).then(
-                            function(data) {
-                                console.log(data)
-                                if (data.result == "插入成功") {
-                                    $('#new_posibacInjection').modal('hide')
-                                    $('#tasksuccess').modal('show')
-                                    $timeout(function() {
-                                        $('#tasksuccess').modal('hide')
-                                    }, 1000)
-                                }
-                            },
-                            function(e) {});
-                    },
-                    function(e) {});
-                Result.GetResultTubes({
-                    "TestId": $scope.registerInfo.TestId1,
-                    "TubeNo": null,
-                    "GetCultureId": 1,
-                    "GetBacterId": 1,
-                    "GetOtherRea": 1,
-                    "GetIncubatorId": 1,
-                    "GetPlace": 1,
-                    "GetStartTime": 1,
-                    "GetEndTime": 1,
-                    "GetAnalResult": 1
-                }).then(function(data) {
-                    console.log(data)
-                    tube1 = data
-                    tube1[4].BacterId = $scope.registerInfo.ReagentId
-                    tube1[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube1[4]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                    Result.IncubatorSetData(tube1[5]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                }, function(err) { console.log(err) })
-                Result.GetResultTubes({
-                    "TestId": $scope.registerInfo.TestId2,
-                    "TubeNo": null,
-                    "GetCultureId": 1,
-                    "GetBacterId": 1,
-                    "GetOtherRea": 1,
-                    "GetIncubatorId": 1,
-                    "GetPlace": 1,
-                    "GetStartTime": 1,
-                    "GetEndTime": 1,
-                    "GetAnalResult": 1
-                }).then(function(data) {
-                    console.log(data)
-                    tube2 = data
-                    tube2[4].BacterId = $scope.registerInfo.ReagentId
-                    tube2[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube2[4]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                    Result.IncubatorSetData(tube2[5]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                }, function(err) { console.log(err) })
-                Result.GetResultTubes({
-                    "TestId": $scope.registerInfo.TestId3,
-                    "TubeNo": null,
-                    "GetCultureId": 1,
-                    "GetBacterId": 1,
-                    "GetOtherRea": 1,
-                    "GetIncubatorId": 1,
-                    "GetPlace": 1,
-                    "GetStartTime": 1,
-                    "GetEndTime": 1,
-                    "GetAnalResult": 1
-                }).then(function(data) {
-                    console.log(data)
-                    tube3 = data
-                    tube3[4].BacterId = $scope.registerInfo.ReagentId
-                    tube3[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube3[4]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                    Result.IncubatorSetData(tube3[5]).then(
-                        function(data) {
-                            console.log(data)
-                        },
-                        function(e) {});
-                }, function(err) { console.log(err) })
-            }
-
-
-            // 隔离器复位 - 茹画
-            $scope.reset = function(_IsolatorId) {
-                // 获取当前日期
-                var myDate = new Date();
-                $scope.myDate = myDate
-                Operation.OpEquipmentSetData({
-                    "EquipmentId": _IsolatorId,
-                    "OperationTime": myDate,
-                    "OperationCode": "R0",
-                    "OperationValue": "R0",
-                    "OperationResult": "R0",
-                    "TerminalIP": Storage.get("cip"),
-                    "TerminalName": Storage.get("cname"),
-                    "revUserId": Storage.get("UID")
-                }).then(
-                    function(data) {
-                        if (data.result == "插入成功") {
-                            $('#ResetOrNot').modal('hide')
-
-                            // 提示成功
-                            $('#resetsuccess').modal('show')
-                            $timeout(function() {
-                                $('#resetsuccess').modal('hide')
-                            }, 1000)
-                        }
-
-                    },
-                    function(e) {});
-            }
-
+                },
+                function(e) {});
         }
-    ])
+
+    }])
 
 
-    // 数据管理
-    .controller('dataCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
+// 数据管理
+.controller('dataCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
         Storage.set('Tab', 0)
         $scope.tosampling = function() {
             $state.go('main.data.sampling')
