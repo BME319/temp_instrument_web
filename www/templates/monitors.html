@@ -119,11 +119,10 @@
             <span style="margin-right:20px;font-size:15px;color: Green;" ng-show="unconnected == 0">已连接</span>
             <span style="margin-right:20px;font-size:15px;color: Red" ng-show="unconnected == 1">未连接</span>
         </div>
-        <div class="col-md-12 col-md-offset-1">
+        <div class="col-md-12" style="margin-left: 30px">
             <!--             <!--<h2>实时监控 {{status}}</h2>-->
             <div class="row " style="font-size: 16px" ng-if="pro">
-                <!--                 <p>{{status}}</p>
- -->
+                <!--                 <p>{{status}}</p>-->
                 <div class="col-md-3 env-panel">
                     <h4>进料区</h4>
                     </br>
@@ -164,237 +163,236 @@
                     </div>
                 </div>
             </div>
+            <div id="video" style="width: 400px;height: 300px;"></div>
         </div>
-    </div>
-</div>
-<!-- 样品录入modal -->
-<div class="modal fade" id="new_sample" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#new_sample')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title">样品录入</h3>
-            </div>
-            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
-                <form id="sampleForm" name="sampleForm" class="form-horizontal" data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh">
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">供应商</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="ObjCompany" ng-model="sample.ObjCompany" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
+        <!-- 样品录入modal -->
+        <div class="modal fade" id="new_sample" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#new_sample')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">样品录入</h3>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">产品名字</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="ObjectName" ng-model="sample.ObjectName" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">产品类型</label>
-                        <div class="col-xs-9">
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="SOB" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" /> SOB
-                                </label>
+                    <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
+                        <form id="sampleForm" name="sampleForm" class="form-horizontal" data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh">
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">供应商</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="ObjCompany" ng-model="sample.ObjCompany" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
                             </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="SOS" /> SOS
-                                </label>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">产品名字</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="ObjectName" ng-model="sample.ObjectName" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
                             </div>
-                            <div class="radio">
-                                <label>
-                                    <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="WSP" /> WSP
-                                </label>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">产品类型</label>
+                                <div class="col-xs-9">
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="SOB" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" /> SOB
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="SOS" /> SOS
+                                        </label>
+                                    </div>
+                                    <div class="radio">
+                                        <label>
+                                            <input type="radio" name="ObjectType" ng-model="sample.ObjectType" value="WSP" /> WSP
+                                        </label>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">样品记录人员</label>
-                        <div class="col-xs-9" style="margin-top: 10px;">{{sampleuid}}</div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">样品记录时间</label>
-                        <div class="col-xs-9 date">
-                            <div class="input-group date datetimepicker" data-date="">
-                                <input type="text" class="form-control" name="SamplingTime" ng-model="sample.SamplingTime" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                                <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar" ></span></span>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">样品记录人员</label>
+                                <div class="col-xs-9" style="margin-top: 10px;">{{sampleuid}}</div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">注意事项</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="Warning" ng-model="sample.Warning" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">储存条件</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="SamSave" ng-model="sample.SamSave" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-9 col-xs-offset-3">
-                            <button type="submit" class="btn btn-primary" name="signup" value="Sign up" ng-click="newsample()">提交</button>
-                        </div>
-                    </div>
-                </form>
-            </div>>
-        </div>
-    </div>
-</div>
-<!-- 试剂录入modal -->
-<div class="modal fade" id="new_reagent" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#new_reagent')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title">试剂录入</h3>
-            </div>
-            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px;">
-                <form id="reagentForm" name="reagentForm" class="form-horizontal" data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh">
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">试剂批号</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="ReagentId" ng-model="reagent.ReagentId" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">试剂来源</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="ReagentSource" ng-model="reagent.ReagentSource" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">试剂名字</label>
-                        <div class="col-xs-9">
-                            <input type="text" class="form-control" name="SaveCondition" ng-model="reagent.ReagentName" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-9 col-xs-offset-3">
-                            <button type="submit" class="btn btn-primary" name="signup" value="Sign up" ng-click="newreagent()">提交</button>
-                        </div>
-                    </div>
-                </form>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">样品记录时间</label>
+                                <div class="col-xs-9 date">
+                                    <div class="input-group date datetimepicker" data-date="">
+                                        <input type="text" class="form-control" name="SamplingTime" ng-model="sample.SamplingTime" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                        <span class="input-group-addon add-on"><span class="glyphicon glyphicon-calendar" ></span></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">注意事项</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="Warning" ng-model="sample.Warning" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">储存条件</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="SamSave" ng-model="sample.SamSave" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-9 col-xs-offset-3">
+                                    <button type="submit" class="btn btn-primary" name="signup" value="Sign up" ng-click="newsample()">提交</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 添加任务modal -->
-<div class="modal fade" id="add_task" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="height: 550px">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#add_task')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title" style="padding-bottom: 10px">添加任务</h3>
-                <b>当前加工培养器隔离器：</b>Iso_Process
-            </div>
-            <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 350px">
-                <div class="row">
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>选择样品类型：</label>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task1.SampleType" ng-change="queryflow1()">
-                                <option selected value="">选择样品类型</option>
-                                <option selected value="SOB">SOB</option>
-                                <option selected value="SOS">SOS</option>
-                                <option selected value="WSP">WSP</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task2.SampleType" ng-change="queryflow2()" ng-show="iflarge">
-                                <option selected value="">选择样品类型</option>
-                                <option selected value="SOS">SOS</option>
-                                <option selected value="WSP">WSP</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task3.SampleType" ng-change="queryflow3()" ng-show="iflarge">
-                                <option selected value="">选择样品类型</option>
-                                <option selected value="SOS">SOS</option>
-                                <option selected value="WSP">WSP</option>
-                            </select>
-                        </div>
+        <!-- 试剂录入modal -->
+        <div class="modal fade" id="new_reagent" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#new_reagent')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">试剂录入</h3>
                     </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>选择样品：</label>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O1.ObjectName for O1 in Objects_1" ng-model="task1.Sample" style="width:40%">
-                                <option selected value="">选择样品</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O2.ObjectName for O2 in Objects_2" ng-model="task2.Sample" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择样品</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O3.ObjectName for O3 in Objects_3" ng-model="task3.Sample" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择样品</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>垛盘试剂1：</label>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent1" style="width:40%" ng-change="queryReagent1()">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p>编号：{{task1.Reagent1.ReagentId}}</p>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent1" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p ng-show="iflarge">编号：{{task2.Reagent1.ReagentId}}</p>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent1" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p ng-show="iflarge">编号：{{task3.Reagent1.ReagentId}}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="form-group">
-                            <label>垛盘试剂2：</label>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent2" style="width:40%">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p>编号：{{task1.Reagent2.ReagentId}}</p>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent2" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p ng-show="iflarge">编号：{{task2.Reagent2.ReagentId}}</p>
-                        </div>
-                        <div class="form-group">
-                            <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent2" style="width:40%" ng-show="iflarge">
-                                <option selected value="">选择试剂</option>
-                            </select>
-                            <p ng-show="iflarge">编号：{{task3.Reagent2.ReagentId}}</p>
-                        </div>
+                    <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px;">
+                        <form id="reagentForm" name="reagentForm" class="form-horizontal" data-fv-framework="bootstrap" data-fv-icon-valid="glyphicon glyphicon-ok" data-fv-icon-invalid="glyphicon glyphicon-remove" data-fv-icon-validating="glyphicon glyphicon-refresh">
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">试剂批号</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="ReagentId" ng-model="reagent.ReagentId" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">试剂来源</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="ReagentSource" ng-model="reagent.ReagentSource" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">试剂名字</label>
+                                <div class="col-xs-9">
+                                    <input type="text" class="form-control" name="SaveCondition" ng-model="reagent.ReagentName" data-fv-notempty="true" data-fv-notempty-message="该项为必填项" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-9 col-xs-offset-3">
+                                    <button type="submit" class="btn btn-primary" name="signup" value="Sign up" ng-click="newreagent()">提交</button>
+                                </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-            <!-- <div>
+        </div>
+        <!-- 添加任务modal -->
+        <div class="modal fade" id="add_task" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="height: 550px">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#add_task')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" style="padding-bottom: 10px">添加任务</h3>
+                        <b>当前加工培养器隔离器：</b>Iso_Process
+                    </div>
+                    <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 350px">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>选择样品类型：</label>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task1.SampleType" ng-change="queryflow1()">
+                                        <option selected value="">选择样品类型</option>
+                                        <option selected value="SOB">SOB</option>
+                                        <option selected value="SOS">SOS</option>
+                                        <option selected value="WSP">WSP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task2.SampleType" ng-change="queryflow2()" ng-show="iflarge">
+                                        <option selected value="">选择样品类型</option>
+                                        <option selected value="SOS">SOS</option>
+                                        <option selected value="WSP">WSP</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-model="task3.SampleType" ng-change="queryflow3()" ng-show="iflarge">
+                                        <option selected value="">选择样品类型</option>
+                                        <option selected value="SOS">SOS</option>
+                                        <option selected value="WSP">WSP</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>选择样品：</label>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O1.ObjectName for O1 in Objects_1" ng-model="task1.Sample" style="width:40%">
+                                        <option selected value="">选择样品</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O2.ObjectName for O2 in Objects_2" ng-model="task2.Sample" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择样品</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <select style="margin-top:16px;width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="O3.ObjectName for O3 in Objects_3" ng-model="task3.Sample" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择样品</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>垛盘试剂1：</label>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent1" style="width:40%" ng-change="queryReagent1()">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p>编号：{{task1.Reagent1.ReagentId}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent1" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p ng-show="iflarge">编号：{{task2.Reagent1.ReagentId}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent1" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p ng-show="iflarge">编号：{{task3.Reagent1.ReagentId}}</p>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>垛盘试剂2：</label>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task1.Reagent2" style="width:40%">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p>编号：{{task1.Reagent2.ReagentId}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task2.Reagent2" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p ng-show="iflarge">编号：{{task2.Reagent2.ReagentId}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-options="Reagent.ReagentName for Reagent in Reagents" ng-model="task3.Reagent2" style="width:40%" ng-show="iflarge">
+                                        <option selected value="">选择试剂</option>
+                                    </select>
+                                    <p ng-show="iflarge">编号：{{task3.Reagent2.ReagentId}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <div>
                     <table ng-table="flowtableParams" class="table table-condensed table-bordered table-striped" style="margin-top: 10px">
                         <tr ng-repeat="flow in $data" style="text-align: center;">
                             <td title="'步骤'" " sortable=" 'OrderId' ">{{flow.OrderId}}</td>
@@ -404,404 +402,404 @@
                         </tr>
                     </table>
                 </div> -->
-            <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="creattask()" id='confirm'>确认</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#add_task')">取消</button>
+                    <div class="modal-footer">
+                        <button type="button " class="btn btn-primary " ng-click="creattask()" id='confirm'>确认</button>
+                        <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#add_task')">取消</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 阳性菌加注modal -->
-<div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content" style="height: 500px">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#new_posibacInjection')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title" style="padding-bottom: 10px">阳性菌加注</h3>
-                <b>当前加注隔离器：Iso_Collect</b>
-            </div>
-            <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 300px;">
-                <div class="form-group">
-                    <label style="margin-left: 15%;">选择两个加注样品：</label>
+        <!-- 阳性菌加注modal -->
+        <div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content" style="height: 500px">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#new_posibacInjection')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title" style="padding-bottom: 10px">阳性菌加注</h3>
+                        <b>当前加注隔离器：Iso_Collect</b>
+                    </div>
+                    <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 300px;">
+                        <div class="form-group">
+                            <label style="margin-left: 15%;">选择两个加注样品：</label>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
+                                <option value="">请选择加注样品一</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId2" ng-options="Result2.TestId as ('样品名：'+Result2.ObjectName) for Result2 in Result_search">
+                                <option value="">请选择加注样品二</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId3" ng-options="Result3.TestId as ('样品名：'+Result3.ObjectName) for Result3 in Result_search">
+                                <option value="">请选择加注样品三</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="margin-left: 15%;">选择加注菌液：</label>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.ReagentId" ng-options="Reagent.ReagentId as ('菌液名：'+Reagent.ReagentName+'，'+'菌液Id：'+Reagent.ReagentId) for Reagent in Reagent_search">
+                                <option value="">请选择菌液</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button " class="btn btn-primary " ng-click="setposibacInjection()">确认</button>
+                        <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#new_posibacInjection')">取消</button>
+                    </div>
                 </div>
-                <div class="form-group" style="text-align: center;">
-                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
-                        <option value="">请选择加注样品一</option>
-                    </select>
-                </div>
-                <div class="form-group" style="text-align: center;">
-                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId2" ng-options="Result2.TestId as ('样品名：'+Result2.ObjectName) for Result2 in Result_search">
-                        <option value="">请选择加注样品二</option>
-                    </select>
-                </div>
-                <div class="form-group" style="text-align: center;">
-                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId3" ng-options="Result3.TestId as ('样品名：'+Result3.ObjectName) for Result3 in Result_search">
-                        <option value="">请选择加注样品三</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label style="margin-left: 15%;">选择加注菌液：</label>
-                </div>
-                <div class="form-group" style="text-align: center;">
-                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.ReagentId" ng-options="Reagent.ReagentId as ('菌液名：'+Reagent.ReagentName+'，'+'菌液Id：'+Reagent.ReagentId) for Reagent in Reagent_search">
-                        <option value="">请选择菌液</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="setposibacInjection()">确认</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#new_posibacInjection')">取消</button>
             </div>
         </div>
-    </div>
-</div>
-<!-- 录入成功modal -->
-<!-- <div class="modal fade " id="signupSuccess ">
+        <!-- 录入成功modal -->
+        <!-- <div class="modal fade " id="signupSuccess ">
     <div class="modal-dialog modal-sm " role="document ">
         <div class="modal-content " style="text-align: center; font-size: 20px ">
             提交成功！
         </div>
     </div>
 </div> -->
-<!-- 录入失败modal -->
-<div class="modal fade " id="signupFail">
-    <div class="modal-dialog modal-sm ">
-        <div class="modal-content " style="text-align: center; font-size: 20px ">
-            请确认信息填写完整！
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="nodata">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            暂无数据！
-        </div>
-    </div>
-</div>
-<!-- 是否复位modal -->
-<div class="modal fade" id="ResetOrNot" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-sm">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#ResetOrNot')">&times;</button>
-                <h3 class="modal-title" id="modal-title">警告</h3>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <div class="form-group">
-                    <label style="margin-left: 15%;">选择复位隔离器：</label>
-                </div>
-                <div class="form-group" style="text-align: center;">
-                    <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
-                        <option value="">请选择复位隔离器</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label style="margin-left: 15%;">确定复位该仪器？</label>
+        <!-- 录入失败modal -->
+        <div class="modal fade " id="signupFail">
+            <div class="modal-dialog modal-sm ">
+                <div class="modal-content " style="text-align: center; font-size: 20px ">
+                    请确认信息填写完整！
                 </div>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.IsolatorId)">确定</button>
-                <button class="btn btn-warning" type="button" ng-click="modal_close('#ResetOrNot')">取消</button>
+        </div>
+        <div class="modal fade" id="nodata">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    暂无数据！
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 培养-putin-modal -->
-<div class="modal fade" id="putin" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#putin')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title">放入培养器</h3>
-                 <h5 class="modal-title">目前未在培养箱的管数：{{sumtoputin}}</h5>
-            </div>
-            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
-                <form id="putincultureForm" name="putincultureForm" class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">选择培养箱</label>
-                        <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinIncubator.IncubatorId for putinIncubator in putinIncubators" ng-model="putincultureinfo.IncubatorId">
-                            <option selected value="">选择培养箱</option>
-                        </select>
+        <!-- 是否复位modal -->
+        <div class="modal fade" id="ResetOrNot" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-sm">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#ResetOrNot')">&times;</button>
+                        <h3 class="modal-title" id="modal-title">警告</h3>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">选择位置</label>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinclass.name for putinclass in putinclasses" ng-model="putinclass" ng-change="toputinclass(putinclass.id)">
-                            <option selected value="">选择轮层</option>
-                        </select>
-                        <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="number for number in numbers" ng-model="putinPlaceNo">
-                            <option selected value="">选择编号</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">选择培养器</label>
-                        <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube as (putintube.TestId+'_'+putintube.TubeNo) for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail(putintube.TestId,putintube.TubeNo)">
-                            <option selected value="">选择培养器</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">培养器参数</label>
-                        <div class="col-xs-9" style="margin-top: 7px">
-                            <div class="gridTex">
-                                <b>培养器ID： </b>{{putintempTube.TestId}}
-                                <div style="margin-top: 10px;"><b>样品管号： </b>{{putintempTube.TubeNo}}</div>
-                                <div style="margin-top: 10px;"><b>培养液ID： </b>{{putintempTube.CultureId}}</div>
-                                <div style="margin-top: 10px;"><b>菌液ID： </b>{{putintempTube.BacterId}}</div>
-                                <div style="margin-top: 10px;"><b>其他试剂： </b>{{putintempTube.OtherRea}}</div>
-                                <div style="margin-top: 10px;"><b>培养箱ID： </b>{{putintempTube.IncubatorId}}</div>
-                                <div style="margin-top: 10px;"><b>开始时间： </b>{{putintempTube.StartTime}}</div>
-                                <div style="margin-top: 10px;"><b>结束时间： </b>{{putintempTube.EndTime}}</div>
-                                <div style="margin-top: 10px;"><b>分析结果： </b>{{putintempTube.AnalResult}}</div>
-                            </div>
+                    <div class="modal-body" id="modal-body">
+                        <div class="form-group">
+                            <label style="margin-left: 15%;">选择复位隔离器：</label>
+                        </div>
+                        <div class="form-group" style="text-align: center;">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
+                                <option value="">请选择复位隔离器</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label style="margin-left: 15%;">确定复位该仪器？</label>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="toputin(putintempTube)">确认放入</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#putin')">取消</button>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.IsolatorId)">确定</button>
+                        <button class="btn btn-warning" type="button" ng-click="modal_close('#ResetOrNot')">取消</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 培养-takeout-modal -->
-<div class="modal fade" id="takeout" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" ng-click="modal_close('#takeout')" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h3 class="modal-title">取出培养器</h3>
-                 <h5 class="modal-title">目前仍在培养箱的管数：{{sumtotakeout}}</h5>
+        <!-- 培养-putin-modal -->
+        <div class="modal fade" id="putin" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#putin')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">放入培养器</h3>
+                        <h5 class="modal-title">目前未在培养箱的管数：{{sumtoputin}}</h5>
+                    </div>
+                    <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
+                        <form id="putincultureForm" name="putincultureForm" class="form-horizontal">
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">选择培养箱</label>
+                                <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinIncubator.IncubatorId for putinIncubator in putinIncubators" ng-model="putincultureinfo.IncubatorId">
+                                    <option selected value="">选择培养箱</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">选择位置</label>
+                                <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putinclass.name for putinclass in putinclasses" ng-model="putinclass" ng-change="toputinclass(putinclass.id)">
+                                    <option selected value="">选择轮层</option>
+                                </select>
+                                <select style="width:120px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="number for number in numbers" ng-model="putinPlaceNo">
+                                    <option selected value="">选择编号</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">选择培养器</label>
+                                <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube as (putintube.TestId+'_'+putintube.TubeNo) for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail(putintube.TestId,putintube.TubeNo)">
+                                    <option selected value="">选择培养器</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">培养器参数</label>
+                                <div class="col-xs-9" style="margin-top: 7px">
+                                    <div class="gridTex">
+                                        <b>培养器ID： </b>{{putintempTube.TestId}}
+                                        <div style="margin-top: 10px;"><b>样品管号： </b>{{putintempTube.TubeNo}}</div>
+                                        <div style="margin-top: 10px;"><b>培养液ID： </b>{{putintempTube.CultureId}}</div>
+                                        <div style="margin-top: 10px;"><b>菌液ID： </b>{{putintempTube.BacterId}}</div>
+                                        <div style="margin-top: 10px;"><b>其他试剂： </b>{{putintempTube.OtherRea}}</div>
+                                        <div style="margin-top: 10px;"><b>培养箱ID： </b>{{putintempTube.IncubatorId}}</div>
+                                        <div style="margin-top: 10px;"><b>开始时间： </b>{{putintempTube.StartTime}}</div>
+                                        <div style="margin-top: 10px;"><b>结束时间： </b>{{putintempTube.EndTime}}</div>
+                                        <div style="margin-top: 10px;"><b>分析结果： </b>{{putintempTube.AnalResult}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button " class="btn btn-primary " ng-click="toputin(putintempTube)">确认放入</button>
+                        <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#putin')">取消</button>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
-                <form id="cultureForm" name="cultureForm" class="form-horizontal">
-<!--                     <div class="form-group">
+        </div>
+        <!-- 培养-takeout-modal -->
+        <div class="modal fade" id="takeout" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" ng-click="modal_close('#takeout')" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h3 class="modal-title">取出培养器</h3>
+                        <h5 class="modal-title">目前仍在培养箱的管数：{{sumtotakeout}}</h5>
+                    </div>
+                    <div class="modal-body" style="margin-left: 15%;margin-right: 15%;margin-top: 15px">
+                        <form id="cultureForm" name="cultureForm" class="form-horizontal">
+                            <!--                     <div class="form-group">
                         <label class="col-xs-3 control-label">选择培养箱</label>
                         <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="takeoutIncubator.IncubatorId for takeoutIncubator in takeoutIncubators" ng-model="cultureinfo.IncubatorId" ng-change="tubeselect(cultureinfo.IncubatorId)">
                             <option selected value="">选择培养箱</option>
                         </select>
                     </div> -->
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">选择培养器</label>
-                        <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube as (tube.TestId+'_'+tube.TubeNo) for tube in tubes" ng-model="tube" ng-change="showtubedetail(tube.TestId,tube.TubeNo)">
-                            <option selected value="">选择培养器</option>
-                        </select>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">选择培养器</label>
+                                <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="tube as (tube.TestId+'_'+tube.TubeNo) for tube in tubes" ng-model="tube" ng-change="showtubedetail(tube.TestId,tube.TubeNo)">
+                                    <option selected value="">选择培养器</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-3 control-label">培养器参数</label>
+                                <div class="col-xs-9" style="margin-top: 7px">
+                                    <div class="gridTex">
+                                        <b>培养器ID： </b>{{tempTube.TestId}}
+                                        <div style="margin-top: 10px;"><b>样品管号： </b>{{tempTube.TubeNo}}</div>
+                                        <div style="margin-top: 10px;"><b>培养液ID： </b>{{tempTube.CultureId}}</div>
+                                        <div style="margin-top: 10px;"><b>菌液ID： </b>{{tempTube.BacterId}}</div>
+                                        <div style="margin-top: 10px;"><b>其他试剂： </b>{{tempTube.OtherRea}}</div>
+                                        <div style="margin-top: 10px;"><b>培养箱ID： </b>{{tempTube.IncubatorId}}</div>
+                                        <div style="margin-top: 10px;"><b>培养箱位置： </b>{{tempTube.Place}}</div>
+                                        <div style="margin-top: 10px;"><b>开始时间： </b>{{tempTube.StartTime}}</div>
+                                        <div style="margin-top: 10px;"><b>结束时间： </b>{{tempTube.EndTime}}</div>
+                                        <div style="margin-top: 10px;"><b>分析结果： </b>{{tempTube.AnalResult}}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
                     </div>
-                    <div class="form-group">
-                        <label class="col-xs-3 control-label">培养器参数</label>
-                        <div class="col-xs-9" style="margin-top: 7px">
-                            <div class="gridTex">
-                                <b>培养器ID： </b>{{tempTube.TestId}}
-                                <div style="margin-top: 10px;"><b>样品管号： </b>{{tempTube.TubeNo}}</div>
-                                <div style="margin-top: 10px;"><b>培养液ID： </b>{{tempTube.CultureId}}</div>
-                                <div style="margin-top: 10px;"><b>菌液ID： </b>{{tempTube.BacterId}}</div>
-                                <div style="margin-top: 10px;"><b>其他试剂： </b>{{tempTube.OtherRea}}</div>
-                                <div style="margin-top: 10px;"><b>培养箱ID： </b>{{tempTube.IncubatorId}}</div>
-                                <div style="margin-top: 10px;"><b>培养箱位置： </b>{{tempTube.Place}}</div>
-                                <div style="margin-top: 10px;"><b>开始时间： </b>{{tempTube.StartTime}}</div>
-                                <div style="margin-top: 10px;"><b>结束时间： </b>{{tempTube.EndTime}}</div>
-                                <div style="margin-top: 10px;"><b>分析结果： </b>{{tempTube.AnalResult}}</div>
+                    <div class="modal-footer">
+                        <button type="button " class="btn btn-primary " ng-click="totakeout(tempTube)">确认取出</button>
+                        <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#takeout')">取消</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 加工详情 -->
+        <div class="modal fade" id="detail_Pro" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="modal-title">流程详情</h3>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <table ng-table="tabledetail_pro" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
+                            <tr ng-repeat="dpro in $data" style="text-align: center;">
+                                <td title="'步骤'" sortable="'OrderId'">{{dpro.OrderId}}
+                                </td>
+                                <td title="'操作ID'" sortable="'OperationId'">{{dpro.OperationId}}
+                                </td>
+                                <td title="'操作说明'">{{dpro.OpDescription}}
+                                </td>
+                                <td title="'操作状态'">{{dpro.status|filterStatus}}
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="form-group">
+                            <div class="col-xs-offset-3">
+                                <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Pro')">关闭</button>
                             </div>
                         </div>
                     </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="totakeout(tempTube)">确认取出</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#takeout')">取消</button>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 加工详情 -->
-<div class="modal fade" id="detail_Pro" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">流程详情</h3>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <table ng-table="tabledetail_pro" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
-                    <tr ng-repeat="dpro in $data" style="text-align: center;">
-                        <td title="'步骤'" sortable="'OrderId'">{{dpro.OrderId}}
-                        </td>
-                        <td title="'操作ID'" sortable="'OperationId'">{{dpro.OperationId}}
-                        </td>
-                        <td title="'操作说明'">{{dpro.OpDescription}}
-                        </td>
-                        <td title="'操作状态'">{{dpro.status|filterStatus}}
-                        </td>
-                    </tr>
-                </table>
-                <div class="form-group">
-                    <div class="col-xs-offset-3">
-                        <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Pro')">关闭</button>
+        <!-- 加注详情 -->
+        <div class="modal fade" id="detail_Col" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="modal-title">流程详情</h3>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <table ng-table="tabledetail_col" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
+                            <tr ng-repeat="dcol in $data" style="text-align: center;">
+                                <td title="'步骤'" sortable="'OrderId'">{{dcol.OrderId}}
+                                </td>
+                                <td title="'操作ID'" sortable="'OperationId'">{{dcol.OperationId}}
+                                </td>
+                                <td title="'操作说明'">{{dcol.OpDescription}}
+                                </td>
+                                <td title="'操作状态'">{{dcol.status|filterStatus}}
+                                </td>
+                            </tr>
+                        </table>
+                        <div class="form-group">
+                            <div class="col-xs-offset-3">
+                                <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Col')">关闭</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 加注详情 -->
-<div class="modal fade" id="detail_Col" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">流程详情</h3>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <table ng-table="tabledetail_col" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;">
-                    <tr ng-repeat="dcol in $data" style="text-align: center;">
-                        <td title="'步骤'" sortable="'OrderId'">{{dcol.OrderId}}
-                        </td>
-                        <td title="'操作ID'" sortable="'OperationId'">{{dcol.OperationId}}
-                        </td>
-                        <td title="'操作说明'">{{dcol.OpDescription}}
-                        </td>
-                        <td title="'操作状态'">{{dcol.status|filterStatus}}
-                        </td>
-                    </tr>
-                </table>
-                <div class="form-group">
-                    <div class="col-xs-offset-3">
-                        <button type="button" class="btn btn-default" style="margin-left:87%;margin-top: 3%" ng-click="modal_close('#detail_Col')">关闭</button>
+        <!-- 培养详情 -->
+        <div class="modal fade" id="detail_Inc" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog" style="width: 900px;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3 class="modal-title" id="modal-title">任务</h3>
+                    </div>
+                    <div class="modal-body" id="modal-body">
+                        <div>
+                            <p>样品编号：{{Number}}</p>
+                            <p>样品名：{{Name}}</p>
+                        </div>
+                        <div style="text-align: left;margin-bottom: 15px">
+                            <select style="width:100px;height: 25px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-change="selectTubeNo()" ng-model="TubeNo">
+                                <option selected value="">选择样品管号</option>
+                                <option ng-repeat="selectInc in selectIncs">{{selectInc}}</option>
+                            </select>
+                        </div>
+                        <table ng-table="pictureTable" class="table table-condensed table-bordered table-striped">
+                            <tr ng-repeat="pic in $data" style="text-align: center;">
+                                <td title="'样品管号'" sortable="'TubeNo'">{{pic.TubeNo}}
+                                </td>
+                                <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
+                                </td>
+                                <td title="'机器视觉'">
+                                    <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
+                                </td>
+                                <td title="'顶空分析结果'">{{pic.TopResult}}
+                                </td>
+                                <td title="'分析结果'">{{pic.AnalResult}}
+                                    <br>
+                                    <button class="btn btn-primary" ng-click="setanalResult(pic)" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">有菌</button>
+                                    <br>
+                                    <button class="btn btn-primary" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button " class="btn btn-primary " ng-click="toculture()">确认</button>
+                        <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#detail_Inc')">取消</button>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-<!-- 培养详情 -->
-<div class="modal fade" id="detail_Inc" tabindex="-1" role="dialog" aria-hidden="true">
-    <div class="modal-dialog" style="width: 900px;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 class="modal-title" id="modal-title">任务</h3>
-            </div>
-            <div class="modal-body" id="modal-body">
-                <div>
-                    <p>样品编号：{{Number}}</p>
-                    <p>样品名：{{Name}}</p>
+        <div class="modal fade" id="resetsuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    复位成功！
                 </div>
-                <div style="text-align: left;margin-bottom: 15px">
-                    <select style="width:100px;height: 25px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-change="selectTubeNo()" ng-model="TubeNo">
-                        <option selected value="">选择样品管号</option>
-                        <option ng-repeat="selectInc in selectIncs">{{selectInc}}</option>
-                    </select>
+            </div>
+        </div>
+        <div class="modal fade" id="tasksuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    添加成功！
                 </div>
-                <table ng-table="pictureTable" class="table table-condensed table-bordered table-striped">
-                    <tr ng-repeat="pic in $data" style="text-align: center;">
-                        <td title="'样品管号'" sortable="'TubeNo'">{{pic.TubeNo}}
-                        </td>
-                        <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
-                        </td>
-                        <td title="'机器视觉'">
-                            <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
-                        </td>
-                        <td title="'顶空分析结果'">{{pic.TopResult}}
-                        </td>
-                        <td title="'分析结果'">{{pic.AnalResult}}
-                            <br>
-                            <button class="btn btn-primary" ng-click="setanalResult(pic)" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">有菌</button>
-                            <br>
-                            <button class="btn btn-primary" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="modal-footer">
-                <button type="button " class="btn btn-primary " ng-click="toculture()">确认</button>
-                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#detail_Inc')">取消</button>
             </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="resetsuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            复位成功！
+        <div class="modal fade" id="takeoutsuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    取出成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="tasksuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            添加成功！
+        <div class="modal fade" id="alltakeoutsuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    全部取出成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="takeoutsuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            取出成功！
+        <div class="modal fade" id="putinsuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    放入成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="alltakeoutsuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            全部取出成功！
+        <div class="modal fade" id="allputinsuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    全部放入成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="putinsuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            放入成功！
+        <div class="modal fade" id="setanalSuccess">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    修改成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="allputinsuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            全部放入成功！
+        <div class="modal fade" id="checkNo">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    请确认培养箱位置输入数字在正确范围内！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="setanalSuccess">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            修改成功！
+        <div class="modal fade" id="checkisNo">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    请确认培养箱位置输入为数字！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="checkNo">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            请确认培养箱位置输入数字在正确范围内！
+        <div class="modal fade" id="checkfull">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    请确认全部选择完毕！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="checkisNo">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            请确认培养箱位置输入为数字！
+        <div class="modal fade" id="occupied">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    选择的位置已有样品！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="checkfull">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            请确认全部选择完毕！
+        <div class="modal fade" id="setbreak">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    紧急停止成功！
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-<div class="modal fade" id="occupied">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            选择的位置已有样品！
-        </div>
-    </div>
-</div>
-<div class="modal fade" id="setbreak">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
-            紧急停止成功！
-        </div>
-    </div>
-</div>
