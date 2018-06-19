@@ -188,7 +188,6 @@
                 GetTestPictures: { method: 'POST', params: { route: 'ResTestPictureGetTestPicturesByAnyProperty' }, timeout: 10000, isArray: true },
                 GetTopAnalysis: { method: 'POST', params: { route: 'ResTopAnalysisGetTopAnalysisByAnyProperty' }, timeout: 10000, isArray: true },
                 ResultSetData: { method: 'POST', params: { route: 'ResTestResultSetData' }, timeout: 10000 },
-                IncubatorSetData: { method: 'POST', params: { route: 'ResIncubatorSetData' }, timeout: 10000 }
             })
         }
         // 仪器信息-张桠童
@@ -590,15 +589,6 @@
         self.ResultSetData = function(obj) {
             var deferred = $q.defer();
             Data.Result.ResultSetData(obj, function(data, headers) {
-                deferred.resolve(data);
-            }, function(err) {
-                deferred.reject(err);
-            });
-            return deferred.promise;
-        };
-        self.IncubatorSetData = function(obj) {
-            var deferred = $q.defer();
-            Data.Result.IncubatorSetData(obj, function(data, headers) {
                 deferred.resolve(data);
             }, function(err) {
                 deferred.reject(err);

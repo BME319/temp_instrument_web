@@ -61,6 +61,7 @@
                         }
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
                             if (data2.result.indexOf("登录成功") != -1) {
+
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
@@ -486,8 +487,11 @@
             var promise = UserService.GetUserInfo(userInfoQuery);
             promise.then(function(data) {
                 $scope.userInfo = data;
+                console.log(Storage.get('ROLE'))
+                Storage.set('ROLE', data.Role)
                 // console.log($scope.userInfo);
             }, function(err) {});
+
             $scope.toChangePW = function() {
                 $state.go('changePassword');
             };
@@ -512,10 +516,20 @@
                 $scope.myIndex = 3
             }
 
-            $scope.flagdata = true;
-            $scope.flagmonitors = true;
-            $scope.flagdictionaries = true;
-            $scope.flagusers = true;
+            if (Storage.get('ROLE') == '管理员') {
+                $scope.flagdata = true;
+                $scope.flagmonitors = false;
+                $scope.flagdictionaries = true;
+                $scope.flagusers = true;
+                $state.go('main.data.sampling')
+            } else if (Storage.get('ROLE') == '操作员') {
+                $scope.flagdata = true;
+                $scope.flagmonitors = true;
+                $scope.flagdictionaries = false;
+                $scope.flagusers = false;
+                $state.go('main.data.sampling')
+
+            }
 
             $scope.todata = function() {
                 $state.go('main.data.testResult')
@@ -536,6 +550,12 @@
     // 监控部分--阮卓欣
     .controller('monitorsCtrl', ['$interval', 'Operation', 'SocketService', '$timeout', 'UserService', '$scope', 'CONFIG', 'Storage', 'Data', 'ItemInfo', 'NgTableParams', '$state', 'extraInfo', 'Result',
         function($interval, Operation, SocketService, $timeout, UserService, $scope, CONFIG, Storage, Data, ItemInfo, NgTableParams, $state, extraInfo, Result) {
+
+
+            if (Storage.get('ROLE') == '管理员') {
+
+                $state.go('main.data.sampling')
+            }
 
             $('.datetimepicker').datetimepicker({
                 language: 'zh-CN',
@@ -2295,12 +2315,12 @@
                     tube1 = data
                     tube1[4].BacterId = $scope.registerInfo.ReagentId
                     tube1[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube1[4]).then(
+                    Result.SetResIncubator(tube1[4]).then(
                         function(data) {
                             console.log(data)
                         },
                         function(e) {});
-                    Result.IncubatorSetData(tube1[5]).then(
+                    Result.SetResIncubator(tube1[5]).then(
                         function(data) {
                             console.log(data)
                         },
@@ -2322,12 +2342,12 @@
                     tube2 = data
                     tube2[4].BacterId = $scope.registerInfo.ReagentId
                     tube2[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube2[4]).then(
+                    Result.SetResIncubator(tube2[4]).then(
                         function(data) {
                             console.log(data)
                         },
                         function(e) {});
-                    Result.IncubatorSetData(tube2[5]).then(
+                    Result.SetResIncubator(tube2[5]).then(
                         function(data) {
                             console.log(data)
                         },
@@ -2349,12 +2369,12 @@
                     tube3 = data
                     tube3[4].BacterId = $scope.registerInfo.ReagentId
                     tube3[5].BacterId = $scope.registerInfo.ReagentId
-                    Result.IncubatorSetData(tube3[4]).then(
+                    Result.SetResIncubator(tube3[4]).then(
                         function(data) {
                             console.log(data)
                         },
                         function(e) {});
-                    Result.IncubatorSetData(tube3[5]).then(
+                    Result.SetResIncubator(tube3[5]).then(
                         function(data) {
                             console.log(data)
                         },
@@ -2930,6 +2950,12 @@
     // 字典管理
     .controller('dictionariesCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
         Storage.set('Tab', 2)
+
+        if (Storage.get('ROLE') == '操作员') {
+
+            $state.go('main.data.sampling')
+        }
+
         $scope.tosamplingtype = function() {
             $state.go('main.dictionaries.samplingtype')
         }
@@ -3370,6 +3396,11 @@
     // 用户管理
     .controller('usersCtrl', ['$scope', '$state', 'Storage', function($scope, $state, Storage) {
         Storage.set('Tab', 3)
+
+        if (Storage.get('ROLE') == '操作员') {
+            $state.go('main.data.sampling')
+        }
+
         $scope.toallusers = function() {
             $state.go('main.users.allusers')
         }
