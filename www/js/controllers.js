@@ -3497,6 +3497,7 @@
                         break;
                         //阳性菌加注
                     case "3":
+                        var positive = new Array()
                         Result.GetTestResultInfo({
                             "GetCollectStart": 1,
                             "GetTestPeople2": 1,
@@ -3507,16 +3508,22 @@
                             $scope.oppro = false
                             $scope.oppos = true
                             $scope.opinout = false
+                            for (i = 0; i < data.length; i++) {
+                                if (data[i].TestPeople2 != null) {
+                                    positive.push(data[i])
+                                }
+                            }
                             $scope.oplog_positive = new NgTableParams({
                                 count: 10
                             }, {
                                 counts: [],
-                                dataset: data
+                                dataset: positive
                             });
                         }, function(err) {});
                         break;
                         //培养器的放入与取出
                     case "4":
+                        var notnull = new Array()
                         Result.GetResultTubes({
                             "GetStartTime": 1,
                             "GetPutinPeople": 1,
@@ -3529,11 +3536,16 @@
                             $scope.oppro = false
                             $scope.oppos = false
                             $scope.opinout = true
+                            for (i = 0; i < data.length; i++) {
+                                if (data[i].PutinPeople != null ) {
+                                    notnull.push(data[i])
+                                }
+                            }
                             $scope.oplog_inout = new NgTableParams({
                                 count: 10
                             }, {
                                 counts: [],
-                                dataset: data
+                                dataset: notnull
                             });
                         }, function(err) {});
                         break;
