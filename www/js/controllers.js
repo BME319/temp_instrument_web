@@ -2765,11 +2765,12 @@
             }
 
             $scope.tobreakdownIsolator = function(_Id) {
+                console.log(_Id)
                 $scope.breakdownIsolator = {
-                    "BreakId": _Id,
+                    "BreakId": null,
                     "BreakTimeS": null,
                     "BreakTimeE": null,
-                    "BreakEquip": null,
+                    "BreakEquip": _Id,
                     "BreakPara": null,
                     "BreakValue": null,
                     "BreakReason": null,
@@ -2784,6 +2785,7 @@
                 };
                 Result.GetBreakDowns($scope.breakdownIsolator).then(
                     function(data) {
+                        console.log(data)
                         if ((data == undefined) || (data.length == 0)) {
                             $('#nobreakdown').modal('show');
                             $timeout(function() {
@@ -2882,10 +2884,10 @@
 
             $scope.tobreakdownIncubator = function(_Id) {
                 $scope.breakdownIncubator = {
-                    "BreakId": _Id,
+                    "BreakId": null,
                     "BreakTimeS": null,
                     "BreakTimeE": null,
-                    "BreakEquip": null,
+                    "BreakEquip": _Id,
                     "BreakPara": null,
                     "BreakValue": null,
                     "BreakReason": null,
