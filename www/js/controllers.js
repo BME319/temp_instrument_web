@@ -62,6 +62,26 @@
                         UserService.Login(loginInfo2).then(function(data2) { //登陆
                             if (data2.result.indexOf("登录成功") != -1) {
 
+                                var userInfoQuery = {
+                                    "UserId": Storage.get('UID'),
+                                    "Identify": 0,
+                                    "PhoneNo": 0,
+                                    "UserName": 1,
+                                    "Role": 1,
+                                    "Password": 0,
+                                    "LastLoginTime": 1,
+                                    "RevisionInfo": 0,
+                                    "Token": 1,
+                                    "LastLogoutTime": 1,
+                                };
+                                var promise = UserService.GetUserInfo(userInfoQuery);
+                                promise.then(function(data3) {
+                                    $scope.userInfo = data;
+                                    console.log(Storage.get('ROLE'))
+                                    Storage.set('ROLE', data.Role)
+                                    // console.log($scope.userInfo);
+                                }, function(err) {});
+
                                 // console.log(data2.result)
                                 var token = data2.result.substring(5)
                                 Storage.set('TOKEN', token)
@@ -77,7 +97,7 @@
                                 //     console.log(data.result.split('|'))
                                 // });
                                 // 跳转到主页
-                                $timeout(function() { $state.go('main.data.sampling'); }, 500);
+                                $timeout(function() { $state.go('main.data.sampling'); }, 0);
 
                             } else {
                                 switch (data2.result) {
@@ -487,9 +507,25 @@
             var promise = UserService.GetUserInfo(userInfoQuery);
             promise.then(function(data) {
                 $scope.userInfo = data;
-                console.log(Storage.get('ROLE'))
+
                 Storage.set('ROLE', data.Role)
+                console.log(Storage.get('ROLE'))
                 // console.log($scope.userInfo);
+
+                if (Storage.get('ROLE') == '管理员') {
+                    $scope.flagdata = true;
+                    $scope.flagmonitors = false;
+                    $scope.flagdictionaries = true;
+                    $scope.flagusers = true;
+                    $state.go('main.data.sampling')
+                } else if (Storage.get('ROLE') == '操作员') {
+                    $scope.flagdata = true;
+                    $scope.flagmonitors = true;
+                    $scope.flagdictionaries = false;
+                    $scope.flagusers = false;
+                    $state.go('main.data.sampling')
+
+                }
             }, function(err) {});
 
             $scope.toChangePW = function() {
@@ -516,20 +552,7 @@
                 $scope.myIndex = 3
             }
 
-            if (Storage.get('ROLE') == '管理员') {
-                $scope.flagdata = true;
-                $scope.flagmonitors = false;
-                $scope.flagdictionaries = true;
-                $scope.flagusers = true;
-                $state.go('main.data.sampling')
-            } else if (Storage.get('ROLE') == '操作员') {
-                $scope.flagdata = true;
-                $scope.flagmonitors = true;
-                $scope.flagdictionaries = false;
-                $scope.flagusers = false;
-                $state.go('main.data.sampling')
 
-            }
 
             $scope.todata = function() {
                 $state.go('main.data.testResult')
@@ -788,6 +811,10 @@
                     "EndTimeS": null,
                     "EndTimeE": null,
                     "AnalResult": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -1463,6 +1490,10 @@
                     "EndTimeS": null,
                     "EndTimeE": null,
                     "AnalResult": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -1511,6 +1542,10 @@
                 Result.GetResultTubes({
                     "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -1532,6 +1567,8 @@
                         "StartTime": data[0].StartTime,
                         "EndTime": data[0].EndTime,
                         "AnalResult": "有菌",
+                        "PutoutPeople": Storage.get('UID'),
+                        "PutoutTime": now
                     }).then(function(data) {
                         console.log(data)
                         if (data.result == "插入成功") {
@@ -1684,6 +1721,10 @@
                     "EndTimeS": null,
                     "EndTimeE": null,
                     "AnalResult": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -1724,6 +1765,8 @@
                     "StartTime": index.StartTime,
                     "EndTime": index.EndTime,
                     "AnalResult": index.AnalResult,
+                    "PutoutPeople": Storage.get('UID'),
+                    "PutoutTime": now
                 }).then(function(data) {
                     if (data.result == "插入成功") {
                         // console.log($scope.tubes)
@@ -1832,6 +1875,10 @@
                     "EndTimeS": null,
                     "EndTimeE": null,
                     "AnalResult": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -1913,6 +1960,10 @@
                         "EndTimeS": null,
                         "EndTimeE": null,
                         "AnalResult": null,
+                        "PutoutTimeE": null,
+                        "PutoutTimeS": null,
+                        "PutinPeople": null,
+                        "PutoutPeople": null,
                         "GetCultureId": 1,
                         "GetBacterId": 1,
                         "GetOtherRea": 1,
@@ -1979,6 +2030,7 @@
                     "StartTime": now,
                     "EndTime": twoweekslater,
                     "AnalResult": index.AnalResult,
+                    "PutinPeople": Storage.get('UID'),
                 }).then(function(data) {
                         if (data.result == "插入成功") {
                             console.log($scope.putintubes)
@@ -2025,6 +2077,10 @@
                                 "EndTimeS": null,
                                 "EndTimeE": null,
                                 "AnalResult": null,
+                                "PutoutTimeE": null,
+                                "PutoutTimeS": null,
+                                "PutinPeople": null,
+                                "PutoutPeople": null,
                                 "GetCultureId": 1,
                                 "GetBacterId": 1,
                                 "GetOtherRea": 1,
@@ -2302,6 +2358,10 @@
                 Result.GetResultTubes({
                     "TestId": $scope.registerInfo.TestId1,
                     "TubeNo": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -2329,6 +2389,10 @@
                 Result.GetResultTubes({
                     "TestId": $scope.registerInfo.TestId2,
                     "TubeNo": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
@@ -2356,6 +2420,10 @@
                 Result.GetResultTubes({
                     "TestId": $scope.registerInfo.TestId3,
                     "TubeNo": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
                     "GetCultureId": 1,
                     "GetBacterId": 1,
                     "GetOtherRea": 1,
