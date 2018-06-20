@@ -907,7 +907,9 @@
                     for (i = 0; i < data.length; i++) {
                         endtime[i] = new Date(data[i].EndTime)
                         ms[i] = endtime[i] - myDate
-                        incuresult[i] = Object.assign(incuresult[i], { "Time": ms[i] }, { "now": now })
+                        endtime[i] = formatDate(endtime[i]);
+                        console.log(endtime[i] > now)
+                        incuresult[i] = Object.assign(incuresult[i], { "Time": ms[i] }, { "now": now }, { "endtime": endtime[i] })
                     }
                     console.log(incuresult)
                     $scope.IncuTable = new NgTableParams({
@@ -1743,16 +1745,44 @@
                                 "GetNowStep": 1,
                                 "GetLaterStep": 1
                             }).then(function(result) {
-                                var tempdata = result
-                                tempdata.status = 3
+                                var tempdata = {
+                                    "TestId": result[0].TestId,
+                                    "ObjectNo": result[0].ObjectNo,
+                                    "ObjCompany": result[0].ObjCompany,
+                                    "ObjIncuSeq": result[0].ObjIncuSeq,
+                                    "TestType": result[0].TestType,
+                                    "TestStand": result[0].TestStand,
+                                    "TestEquip": result[0].TestEquip,
+                                    "TestEquip2": result[0].TestEquip2,
+                                    "Description":result[0].Description,
+                                    "ProcessStart": result[0].ProcessStart,
+                                    "ProcessEnd": result[0].ProcessEnd,
+                                    "CollectStart": result[0].CollectStart,
+                                    "CollectEnd":result[0].CollectEnd,
+                                    "TestTime": result[0].TestTime,
+                                    "TestResult": result[0].TestResult,
+                                    "TestPeople": result[0].TestPeople,
+                                    "TestPeople2": result[0].TestPeople2,
+                                    "ReStatus": 3,
+                                    "RePeople": result[0].RePeople,
+                                    "ReTime": result[0].ReTime,
+                                    "TerminalIP": result[0].TerminalIP,
+                                    "TerminalName": result[0].TerminalName,
+                                    "revUserId": result[0].revUserId,
+                                    "FormerStep": result[0].FormerStep,
+                                    "NowStep": result[0].NowStep,
+                                    "LaterStep": result[0].LaterStep
+                                }
+                                console.log(tempdata)
                                 // 一个状态修改
                                 Result.ResultSetData(tempdata).then(function(data) {
+                                    console.log(data)
                                     if (data.result == "插入成功") {
                                         $('#alltakeoutsuccess').modal('show')
                                         $timeout(function() {
                                             $('#alltakeoutsuccess').modal('hide')
+                                            $('#takeout').modal('hide')
                                         }, 1000)
-                                        $('#takeout').modal('hide')
                                         window.location.reload();
                                     }
                                 }, function(err) {})
@@ -3537,7 +3567,7 @@
                             $scope.oppos = false
                             $scope.opinout = true
                             for (i = 0; i < data.length; i++) {
-                                if (data[i].PutinPeople != null ) {
+                                if (data[i].PutinPeople != null) {
                                     notnull.push(data[i])
                                 }
                             }

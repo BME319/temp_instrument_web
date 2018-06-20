@@ -104,9 +104,9 @@
                     <td title="'剩余培养时间'">{{i.Time|filterTimes}}
                     </td>
                     <td title="'培养阶段任务'">
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)" ng-show="i.EndTime >= i.now">详情</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="detail_inc(i.ObjectNo,i.ObjectName,i.TestId)" ng-show="i.endtime >= i.now">详情</button>
                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime == '0001-01-01T00:00:00'" ng-click="putinmodal(i.TestId)">放入</button>
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.EndTime < i.now && i.EndTime != '0001-01-01T00:00:00'" ng-click="takeoutmodal(i.TestId)">取出</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-show="i.endtime < i.now && i.EndTime != '0001-01-01T00:00:00'" ng-click="takeoutmodal(i.TestId)">取出</button>
                     </td>
                 </tr>
             </table>
