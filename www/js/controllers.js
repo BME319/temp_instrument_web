@@ -3127,22 +3127,37 @@
                 $('#DeleteOrNot').modal('show')
             }
 
-            // 删除
+                  // 删除
             $scope.delete = function() {
-                Operation.DeleteOperationOrder({ OrderId: tempOrderId }).then(function(data) {
+                console.log(tempOrderId)
+                var nowlength = nowdata.length
+                // console.log("删除", nowdata[nowlength - 1].OrderId)
+                Operation.DeleteOperationOrder({ OrderId: nowdata[nowlength - 1].OrderId }).then(function(data) {
                     if (data.result == "数据删除成功") {
-                        // 关闭是否删除modal
                         $('#DeleteOrNot').modal('hide')
+
                         // 提示新建成功
                         $('#deleteSuccess').modal('show')
                         $timeout(function() {
                             $('#deleteSuccess').modal('hide')
                         }, 1000)
+
                         // 刷新页面
                         $scope.SampleTypenow = tempSampleTypes[0]
                         getLists($scope.SampleTypenow);
                     }
                 }, function(err) {});
+
+                for (i = Number(tempOrderId.replace(/[^0-9]/ig, "")); i < nowdata.length; i++) {
+                    var datatoadd = nowdata[i]
+                    datatoadd.OrderId = tempOrderId.replace(/[^a-zA-Z]/ig, "") + (Array(3).join('0') + i)
+                    if (datatoadd.PreviousStep == undefined) { datatoadd.PreviousStep = '' }
+                    if (datatoadd.LaterStep == undefined) { datatoadd.LaterStep = '' }
+                    if (datatoadd.SampleType == undefined) { datatoadd.SampleType = tempOrderId.replace(/[^a-zA-Z]/ig, "") }
+                    // console.log("新增", datatoadd)
+                    // 新增
+                    Operation.SetOperationOrder(datatoadd).then(function(data) {}, function(err) {})
+                }
             }
 
             // 新增显示
@@ -3176,59 +3191,26 @@
 
             // 新增
             $scope.register = function(_registerInfo) {
-                // console.log(_registerInfo)
+                console.log(_registerInfo)
+                console.log(nowdata)
                 // 该条编号：_registerInfo.OrderId.replace(/[^a-zA-Z]/ig, "")
-                // 删除该条以后的全部信息
-                for (i = 0; i < nowdata.length; i++) {
-                    // 如果编号大于等于该条编号
-                    if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
-                        Operation.DeleteOperationOrder({ OrderId: nowdata[i].OrderId }).then(function(data) {
-                                // if (data.result == "数据删除成功") {
-                                //     // 关闭是否删除modal
-                                //     $('#DeleteOrNot').modal('hide')
-                                //     // 提示新建成功
-                                //     $('#deleteSuccess').modal('show')
-                                //     $timeout(function() {
-                                //         $('#deleteSuccess').modal('hide')
-                                //     }, 1000)
-                                //     // 刷新页面
-                                //     $scope.SampleTypenow = tempSampleTypes[0]
-                                //     getLists($scope.SampleTypenow);
-                                // }
-                            },
-                            function(err) {});
-                    }
-                }
 
-                // 新建该条后的全部信息
-                for (i = 0; i < nowdata.length; i++) {
-                    // 如果编号大于等于该条编号
-                    if (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) >= (_registerInfo.OrderId.replace(/[^0-9]/ig, ""))) {
-                        // 修改该条编号（+1）,并新建
-                        // console.log(nowdata[i].OrderId)
-                        // console.log(_registerInfo.SampleType+ (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, ""))+1)).slice(-3))
-                        nowdata[i].OrderId = _registerInfo.SampleType + (Array(3).join(0) + (Number(nowdata[i].OrderId.replace(/[^0-9]/ig, "")) + 1)).slice(-3)
-                        if (nowdata[i].PreviousStep == undefined) { nowdata[i].PreviousStep = '' }
-                        if (nowdata[i].LaterStep == undefined) { nowdata[i].LaterStep = '' }
-                        if (nowdata[i].SampleType == undefined) { nowdata[i].SampleType = nowdata[i].OrderId.replace(/[^a-zA-Z]/ig, "") }
-                        Operation.SetOperationOrder(nowdata[i]).then(function(data) {
-                            // NOTHING
-                            // 
-                            // if (data.result == "插入成功") {
-                            //     // 提示新建成功
-                            //     $('#setSuccess').modal('show')
-                            //     $timeout(function() {
-                            //         $('#setSuccess').modal('hide')
-                            //     }, 1000) 
-                            //     // 刷新页面
-                            //     $scope.SampleTypenow = tempSampleTypes[0]
-                            //     getLists($scope.SampleTypenow);
-                            // }
-                        }, function(err) {})
-                    }
+                console.log(_registerInfo.OrderId.replace(/[^0-9]/ig, ""))
+                for (i = nowdata.length + 1; i > _registerInfo.OrderId.replace(/[^0-9]/ig, ""); i--) {
+                    var datatoadd = nowdata[i - 2]
+                    datatoadd.OrderId = _registerInfo.SampleType + (Array(3).join(0) + i).slice(-3)
+                    if (datatoadd.PreviousStep == undefined) { datatoadd.PreviousStep = '' }
+                    if (datatoadd.LaterStep == undefined) { datatoadd.LaterStep = '' }
+                    if (datatoadd.SampleType == undefined) { datatoadd.SampleType = _registerInfo.SampleType }
+                    // console.log("新增", datatoadd)
+                    // 新增
+                    Operation.SetOperationOrder(datatoadd).then(function(data) {}, function(err) {})
+                    //删除
+                    // console.log("删除", _registerInfo.SampleType + (Array(3).join(0) + (i - 1)).slice(-3))
+                    // Operation.DeleteOperationOrder({ OrderId: _registerInfo.SampleType + (Array(3).join(0) + (i - 1)).slice(-3) }).then(function(data) {}, function(err) {});
                 }
-
-                // 新建该条
+                //增加该条
+                // console.log("这条", _registerInfo)
                 Operation.SetOperationOrder(_registerInfo).then(function(data) {
                     if (data.result == "插入成功") {
                         $('#new_operationorder').modal('hide')
@@ -3244,7 +3226,6 @@
                         getLists($scope.SampleTypenow);
                     }
                 }, function(err) {})
-
 
             }
 
