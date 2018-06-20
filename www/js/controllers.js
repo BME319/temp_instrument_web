@@ -2821,15 +2821,17 @@
                     "ReTerminalName": null,
                     "ReUserId": null,
                     "ReIdentify": null,
-                    "GetTemperature": 1,
+                    "GetTemperature1": 1,
+                    "GetTemperature2": 1,
+                    "GetTemperature3": 1,
                     "GetRevisionInfo": 1
                 }
                 ItemInfo.GetIncubatorEnv($scope.envincubator).then(
                     function(data) {
                         for (i = 0; i < data.length; i++) {
-                            data[i] = Object.assign(data[i], { "Temperature": (data[i].Temperature1+data[i].Temperature2+data[i].Temperature3)/3})
+                            data[i] = Object.assign(data[i], { "Temperature": (data[i].Temperature1 + data[i].Temperature2 + data[i].Temperature3) / 3 })
                         }
-                                                console.log(data)
+                        console.log(data)
 
                         $scope.envIncubatortableParams = new NgTableParams({
                             count: 10
