@@ -5,7 +5,7 @@ angular.module('filters', [])
         return function(date, format) {
             var d = new Date(date)
             var ret = ''
-            if (date == null) { return '-' }
+            if (date == null ||date == '0001-01-01T00:00:00') { return '-' }
             switch (format) {
                 case 'YYYY-MM-DD':
                     ret = d.getFullYear() + '-' + (Array(2).join('0') + (d.getMonth() + 1)).slice(-2) + '-' + (Array(2).join('0') + d.getDate()).slice(-2)
