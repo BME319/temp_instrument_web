@@ -2773,7 +2773,7 @@
             var promise2 = ItemInfo.GetIncubatorsInfo(IncubatorsQuery);
             promise2.then(function(data) {
                 var Incubators = data;
-                // console.log(Incubators);
+                console.log(Incubators);
                 $scope.tableParams2 = new NgTableParams({
                     count: 10
                 }, {
@@ -2912,6 +2912,11 @@
                 }
                 ItemInfo.GetIncubatorEnv($scope.envincubator).then(
                     function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            data[i] = Object.assign(data[i], { "Temperature": (data[i].Temperature1+data[i].Temperature2+data[i].Temperature3)/3})
+                        }
+                                                console.log(data)
+
                         $scope.envIncubatortableParams = new NgTableParams({
                             count: 10
                         }, {
@@ -3475,8 +3480,8 @@
 
     }])
     // 用户管理--所有用户
-    .controller('allusersCtrl', ['$scope', 'CONFIG', 'Storage', 'Data', 'UserService', 'NgTableParams',
-        function($scope, CONFIG, Storage, Data, UserService, NgTableParams) {
+    .controller('allusersCtrl', ['$scope', 'CONFIG', 'Storage', 'Data', 'UserService', 'NgTableParams', 'ItemInfo', 'Result',
+        function($scope, CONFIG, Storage, Data, UserService, NgTableParams, ItemInfo, Result) {
             var input = {
                 "UserId": null,
                 "Identify": null,
@@ -3510,6 +3515,125 @@
                 });
             }, function(err) {});
 
+            $scope.opsampling = true
+            ItemInfo.GetSamplesInfo({
+                "GetSamplingPeople": 1,
+                "GetSamplingTime": 1,
+            }).then(function(data) {
+                $scope.oplog_sampling = new NgTableParams({
+                    count: 10
+                }, {
+                    counts: [],
+                    dataset: data
+                });
+            }, function(err) {});
+            $scope.oplog = function() {
+                console.log($scope.op)
 
+                switch ($scope.op) {
+                    // 样品录入
+                    case "":
+                        ItemInfo.GetSamplesInfo({
+                            "GetSamplingPeople": 1,
+                            "GetSamplingTime": 1,
+                        }).then(function(data) {
+                            console.log(data)
+                            $scope.opsampling = true
+                            $scope.oprevision = false
+                            $scope.oppro = false
+                            $scope.oppos = false
+                            $scope.opinout = false
+                            $scope.oplog_sampling = new NgTableParams({
+                                count: 10
+                            }, {
+                                counts: [],
+                                dataset: data
+                            });
+                        }, function(err) {});
+                        break;
+                        // 试剂录入
+                    case "1":
+                        ItemInfo.GetReagentsInfo({
+                            "GetRevisionInfo": 1,
+                        }).then(function(data) {
+                            console.log(data)
+                            $scope.oprevision = true
+                            $scope.opsampling = false
+                            $scope.oppro = false
+                            $scope.oppos = false
+                            $scope.opinout = false
+                            $scope.oplog_revision = new NgTableParams({
+                                count: 10
+                            }, {
+                                counts: [],
+                                dataset: data
+                            });
+                        }, function(err) {});
+                        break;
+                        // 培养器加工
+                    case "2":
+                        Result.GetTestResultInfo({
+                            "GetProcessStart": 1,
+                            "GetTestPeople": 1,
+                        }).then(function(data) {
+                            console.log(data)
+                            $scope.oprevision = false
+                            $scope.opsampling = false
+                            $scope.oppro = true
+                            $scope.oppos = false
+                            $scope.opinout = false
+                            $scope.oplog_process = new NgTableParams({
+                                count: 10
+                            }, {
+                                counts: [],
+                                dataset: data
+                            });
+                        }, function(err) {});
+                        break;
+                        //阳性菌加注
+                    case "3":
+                        Result.GetTestResultInfo({
+                            "GetCollectStart": 1,
+                            "GetTestPeople2": 1,
+                        }).then(function(data) {
+                            console.log(data)
+                            $scope.oprevision = false
+                            $scope.opsampling = false
+                            $scope.oppro = false
+                            $scope.oppos = true
+                            $scope.opinout = false
+                            $scope.oplog_positive = new NgTableParams({
+                                count: 10
+                            }, {
+                                counts: [],
+                                dataset: data
+                            });
+                        }, function(err) {});
+                        break;
+                        //培养器的放入与取出
+                    case "4":
+                        Result.GetResultTubes({
+                            "GetStartTime": 1,
+                            "GetPutinPeople": 1,
+                            "GetPutoutPeople": 1,
+                            "GetPutoutTime": 1,
+                        }).then(function(data) {
+                            console.log(data)
+                            $scope.oprevision = false
+                            $scope.opsampling = false
+                            $scope.oppro = false
+                            $scope.oppos = false
+                            $scope.opinout = true
+                            $scope.oplog_inout = new NgTableParams({
+                                count: 10
+                            }, {
+                                counts: [],
+                                dataset: data
+                            });
+                        }, function(err) {});
+                        break;
+                }
+
+            }
         }
     ])

@@ -10,8 +10,79 @@
             {{user.Identify}}</td>
         <td title="'上次登录时间'" filter="{ LastLoginTime: 'text'}" sortable="'LastLoginTime'">
             {{user.LastLoginTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
-       <!--  <td title="'详情'">
+        <!--  <td title="'详情'">
             <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todetail(user.UserId)">编辑</button>
         </td> -->
+    </tr>
+</table>
+<div class="form-group">
+    <h4>操作日志</h4>
+    <select style="margin-top:2px;width:150px;height: 28px;font-size: 12px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" ng-model="op" ng-change="oplog()">
+        <!-- <option selected value="">操作日志</option> -->
+        <option selected value="">样品录入</option>
+        <option selected value="1">试剂录入</option>
+        <option selected value="2">培养器加工</option>
+        <option selected value="3">阳性菌加注</option>
+        <option selected value="4">培养器的放入与取出</option>
+    </select>
+</div>
+<table ng-table="oplog_sampling" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;" ng-show="opsampling">
+    <tr ng-repeat="ops in $data" style="text-align: center;">
+        <td title="'供应商'" sortable="'ObjCompany'">{{ops.ObjCompany}}
+        </td>
+        <td title="'产品编号'" sortable="'ObjectNo'">{{ops.ObjectNo}}
+        </td>
+        <td title="'重检标识'" sortable="'ObjIncuSeq'">{{ops.ObjIncuSeq}}
+        </td>
+        <td title="'操作人员'" sortable="'SamplingPeople'">{{ops.SamplingPeople}}
+        </td>
+        <td title="'操作时间'">{{ops.SamplingTime|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
+    </tr>
+</table>
+<table ng-table="oplog_revision" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;" ng-show="oprevision">
+    <tr ng-repeat="opr in $data" style="text-align: center;">
+        <td title="'试剂编号'" sortable="'ReagentId'">{{opr.ReagentId}}
+        </td>
+        <td title="'操作人员'" sortable="'revUserId'">{{opr.revUserId}}
+        </td>
+        <td title="'操作时间'">{{opr.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
+    </tr>
+</table>
+<table ng-table="oplog_process" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;" ng-show="oppro">
+    <tr ng-repeat="opp in $data" style="text-align: center;">
+        <td title="'TestId'" sortable="'TestId'">{{opp.TestId}}
+        </td>
+        <td title="'操作人员'" sortable="'TestPeople'">{{opp.TestPeople}}
+        </td>
+        <td title="'加工开始时间'">{{opp.ProcessStart|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
+    </tr>
+</table>
+<table ng-table="oplog_positive" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;" ng-show="oppos">
+    <tr ng-repeat="oppositive in $data" style="text-align: center;">
+        <td title="'TestId'" sortable="'TestId'">{{oppositive.TestId}}
+        </td>
+        <td title="'操作人员'" sortable="'TestPeople2'">{{oppositive.TestPeople2}}
+        </td>
+        <td title="'加注开始时间'">{{oppositive.CollectStart|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
+    </tr>
+</table>
+<table ng-table="oplog_inout" class="table table-condensed table-bordered table-striped" style="margin-top: 10px;" ng-show="opinout">
+    <tr ng-repeat="opio in $data" style="text-align: center;">
+        <td title="'TestId'" sortable="'TestId'">{{opio.TestId}}
+        </td>
+        <td title="'管号'" sortable="'TubeNo'">{{opio.TubeNo}}
+        </td>
+        <td title="'放入人员'" sortable="'PutinPeople'">{{opio.PutinPeople}}
+        </td>
+        <td title="'放入时间'">{{opio.StartTime|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
+        <td title="'取出人员'" sortable="'PutoutPeople'">{{opio.PutoutPeople}}
+        </td>
+        <td title="'取出时间'">{{opio.PutoutTime|timeFormat:'YYYY-MM-DD h:m'}}
+        </td>
     </tr>
 </table>
