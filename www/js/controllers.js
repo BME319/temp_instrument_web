@@ -1,4 +1,4 @@
-﻿angular.module('controllers', ['ngResource', 'services'])
+angular.module('controllers', ['ngResource', 'services'])
 
     .controller('LoginCtrl', ['UserService', '$scope', '$state', 'Storage', '$timeout', function(UserService, $scope, $state, Storage, $timeout) {
 
@@ -1817,11 +1817,11 @@
                                     "TestStand": result[0].TestStand,
                                     "TestEquip": result[0].TestEquip,
                                     "TestEquip2": result[0].TestEquip2,
-                                    "Description":result[0].Description,
+                                    "Description": result[0].Description,
                                     "ProcessStart": result[0].ProcessStart,
                                     "ProcessEnd": result[0].ProcessEnd,
                                     "CollectStart": result[0].CollectStart,
-                                    "CollectEnd":result[0].CollectEnd,
+                                    "CollectEnd": result[0].CollectEnd,
                                     "TestTime": result[0].TestTime,
                                     "TestResult": result[0].TestResult,
                                     "TestPeople": result[0].TestPeople,
@@ -2692,6 +2692,22 @@
 
             $scope.todetail = function(tempID) {
                 testResultQuery.TestId = tempID
+                testResultQuery.GetTestEquip2 = 1
+                testResultQuery.GetProcessStart = 1
+                testResultQuery.GetProcessEnd = 1
+                testResultQuery.GetCollectStart = 1
+                testResultQuery.GetCollectEnd = 1
+                testResultQuery.GetTestTime = 1
+                testResultQuery.GetTestResult = 1
+                testResultQuery.GetTestPeople = 1
+                testResultQuery.GetTestPeople2 = 1
+                testResultQuery.GetReStatus = 1
+                testResultQuery.GetRePeople = 1
+                testResultQuery.GetRevisionInfo = 1
+                testResultQuery.GetFormerStep = 1
+                testResultQuery.GetNowStep = 1
+                testResultQuery.GetLaterStep = 1
+                console.log(testResultQuery)
                 var promise = Result.GetTestResultInfo(testResultQuery);
                 promise.then(function(data) {
                     console.log(data)
@@ -2705,7 +2721,110 @@
             // 关闭modal控制
             $scope.modal_close = function(target) {
                 $(target).modal('hide')
+                $scope.TubeNo = 1
+            }
 
+            var selectIncs = new Array()
+            var topanalysis = new Array()
+            $scope.selectIncs = selectIncs
+            var getimages = function(topInfo, incInfo) {
+                Result.GetTopAnalysis(topInfo).then(function(data) {
+                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        topanalysis[i] = data[i].AnalResult
+                    }
+                    Result.GetTestPictures(incInfo).then(function(data) {
+                        for (i = 0; i < data.length; i++) {
+                            data[i].TopResult = topanalysis[i]
+                        }
+                        console.log(data)
+                        $scope.pictureTable = new NgTableParams({
+                            count: 3
+                        }, {
+                            counts: [],
+                            dataset: data
+                        })
+                    }, function(err) {});
+                }, function(err) {})
+            }
+            //培养详情--下拉选择
+            $scope.selectTubeNo = function(TubeNo) {
+                var topInfo = {
+                    "TestId": $scope.Id,
+                    "TubeNo": $scope.TubeNo,
+                    "PictureId": null,
+                    "CameraTimeS": null,
+                    "CameraTimeE": null,
+                    "AnalResult": null,
+                    "GetCameraTime": 1,
+                    "GetAnalResult": 1
+                }
+                var incInfo = {
+                    "TubeNo": $scope.TubeNo,
+                    "GetCameraTime": 1,
+                    "GetImageAddress": 1,
+                    "GetAnalResult": 1,
+                    "TestId": $scope.Id
+                }
+                getimages(topInfo, incInfo)
+            }
+            $scope.vision = function(ObjectNo, ObjectName, TestId) {
+                $scope.Number = ObjectNo
+                $scope.Name = ObjectName
+                $scope.Id = TestId
+                var topInfo = {
+                    "TestId": $scope.Id,
+                    "TubeNo": null,
+                    "PictureId": null,
+                    "CameraTimeS": null,
+                    "CameraTimeE": null,
+                    "AnalResult": null,
+                    "GetCameraTime": 1,
+                    "GetAnalResult": 1
+                }
+                var incInfo = {
+                    "TubeNo": 1,
+                    "GetCameraTime": 1,
+                    "GetImageAddress": 1,
+                    "GetAnalResult": 1,
+                    "TestId": $scope.Id
+                }
+                $('#detail_vision').modal('show')
+                Result.GetResultTubes({
+                    "TestId": $scope.Id,
+                    "TubeNo": null,
+                    "CultureId": null,
+                    "BacterId": null,
+                    "OtherRea": null,
+                    "IncubatorId": null,
+                    "Place": null,
+                    "StartTimeS": null,
+                    "StartTimeE": null,
+                    "EndTimeS": null,
+                    "EndTimeE": null,
+                    "AnalResult": null,
+                    "PutoutTimeE": null,
+                    "PutoutTimeS": null,
+                    "PutinPeople": null,
+                    "PutoutPeople": null,
+                    "GetCultureId": 1,
+                    "GetBacterId": 1,
+                    "GetOtherRea": 1,
+                    "GetIncubatorId": 1,
+                    "GetStartTime": 1,
+                    "GetEndTime": 1,
+                    "GetAnalResult": 1
+                }).then(function(data) {
+                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        $scope.selectIncs[i] = data[i].TubeNo
+                    }
+                    // console.log(selectIncs)
+                }, function(err) {})
+                getimages(topInfo, incInfo)
+                // cal_detailIncu = $interval(function() {
+                //     getimages(topInfo, incInfo)
+                // }, 30000)
             }
         }
     ])
@@ -3127,7 +3246,7 @@
                 $('#DeleteOrNot').modal('show')
             }
 
-                  // 删除
+            // 删除
             $scope.delete = function() {
                 console.log(tempOrderId)
                 var nowlength = nowdata.length

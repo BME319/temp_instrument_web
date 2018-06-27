@@ -1,84 +1,137 @@
 <div class="tab-pane fade in active" id="testResult">
     <table ng-table="tableParams" class="table table-condensed" show-filter="true">
-      <tr ng-repeat="user in $data" style="text-align: center;">
-        <td title="'检测编号'" filter="{ TestId: 'text'}" sortable="'TestId'">
-            {{user.TestId}}</td>
-        <td title="'产品编号'" filter="{ ObjectNo: 'text'}" sortable="'ObjectNo'">
-            {{user.ObjectNo}}</td>
-        <td title="'供应商'" filter="{ ObjCompany: 'text'}" >
-            {{user.ObjCompany}}</td>
-        <td title="'培养批次'" filter="{ ObjIncuSeq: 'text'}" sortable="'ObjIncuSeq'">
-            {{user.ObjIncuSeq}}</td>
-        <td title="'样品名称'" filter="{ ObjectName: 'text'}" sortable="'ObjectName'">
-            {{user.ObjectName}}</td>
-        <td title="'检测类型'" filter="{ TestType: 'text'}" sortable="'TestType'">
-            {{user.TestType}}</td>
-        <td title="'检测标准'" filter="{ TestStand: 'text'}" sortable="'TestStand'">
-            {{user.TestStand}}</td>
-        <td title="'加工人员'" filter="{ TestPeople: 'text'}" >
-            {{user.TestPeople}}</td>
-        <td title="'加注人员'" filter="{ TestPeople2: 'text'}" >
-            {{user.TestPeople2}}</td>
-<!--         <td title="'使用仪器'" filter="{ TestEquip: 'text'}" sortable="'TestEquip'">
+        <tr ng-repeat="user in $data" style="text-align: center;">
+            <td title="'检测编号'" filter="{ TestId: 'text'}" sortable="'TestId'">
+                {{user.TestId}}</td>
+            <td title="'产品编号'" filter="{ ObjectNo: 'text'}" sortable="'ObjectNo'">
+                {{user.ObjectNo}}</td>
+            <td title="'供应商'" filter="{ ObjCompany: 'text'}">
+                {{user.ObjCompany}}</td>
+            <td title="'培养批次'" filter="{ ObjIncuSeq: 'text'}" sortable="'ObjIncuSeq'">
+                {{user.ObjIncuSeq}}</td>
+            <td title="'样品名称'" filter="{ ObjectName: 'text'}" sortable="'ObjectName'">
+                {{user.ObjectName}}</td>
+            <td title="'检测类型'" filter="{ TestType: 'text'}" sortable="'TestType'">
+                {{user.TestType}}</td>
+            <td title="'检测标准'" filter="{ TestStand: 'text'}" sortable="'TestStand'">
+                {{user.TestStand}}</td>
+            <td title="'加工人员'" filter="{ TestPeople: 'text'}">
+                {{user.TestPeople}}</td>
+            <td title="'加注人员'" filter="{ TestPeople2: 'text'}">
+                {{user.TestPeople2}}</td>
+            <!--         <td title="'使用仪器'" filter="{ TestEquip: 'text'}" sortable="'TestEquip'">
             {{user.TestEquip}}</td> -->
-      <!--   <td title="'检测过程'" filter="{ Description: 'text'}" >
+            <!--   <td title="'检测过程'" filter="{ Description: 'text'}" >
             {{user.Description}}</td> -->
-<!--         <td title="'集菌开始'" filter="{ CollectStart: 'text'}" sortable="'CollectStart'">
+            <!--         <td title="'集菌开始'" filter="{ CollectStart: 'text'}" sortable="'CollectStart'">
             {{user.CollectStart|timeFormat:'YYYY-MM-DD h:m'}}</td> -->
-<!--         <td title="'集菌结束'" filter="{ CollectEnd: 'text'}" sortable="'CollectEnd'">
+            <!--         <td title="'集菌结束'" filter="{ CollectEnd: 'text'}" sortable="'CollectEnd'">
             {{user.CollectEnd|timeFormat:'YYYY-MM-DD h:m'}}</td> -->
-        <td title="'检测时间'" filter="{ TestTime: 'text'}" sortable="'TestTime'">
-            {{user.TestTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
-        <td title="'检测结果'" filter="{ TestResult: 'text'}" sortable="'TestResult'">
-            {{user.TestResult}}</td>
-       <!--  <td title="'检测人员'" filter="{ TestPeople: 'text'}" sortable="'TestPeople'">
+            <td title="'检测时间'" filter="{ TestTime: 'text'}" sortable="'TestTime'">
+                {{user.TestTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
+            <td title="'检测结果'" filter="{ TestResult: 'text'}" sortable="'TestResult'">
+                {{user.TestResult}}</td>
+            <!--  <td title="'检测人员'" filter="{ TestPeople: 'text'}" sortable="'TestPeople'">
             {{user.TestPeople}}</td>
         <td title="'是否复核'" filter="{ ReStatus: 'text'}" >
             {{user.ReStatus}}</td> -->
-        <td title="'复核人员'" filter="{ RePeople: 'text'}" >
-            {{user.RePeople}}</td>
-        <td title="'复核时间'" filter="{ ReTime: 'text'}">
-            {{user.ReTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
-        <td title="'更新记录'" filter="{ revDateTime: 'text'}" sortable="'revDateTime'">
-          <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none" popover id="popover1" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="更新记录" data-content="更新时间：{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}<br>终端IP：{{user.TerminalIP}}<br>终端名字：{{user.TerminalName}}<br>用户名：{{user.revUserId}}<br>身份证：{{user.revIdentify}}">{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}</button></td>
-      <td title="'详情'">
-            <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todetail(user.TestId)">详情</button>
-                    </td>
-      </tr>
-       
+            <td title="'复核人员'" filter="{ RePeople: 'text'}">
+                {{user.RePeople}}</td>
+            <td title="'复核时间'" filter="{ ReTime: 'text'}">
+                {{user.ReTime|timeFormat:'YYYY-MM-DD h:m'}}</td>
+            <td title="'更新记录'" filter="{ revDateTime: 'text'}" sortable="'revDateTime'">
+                <button type="button" class="btn btn-link" style="font-size:10px;text-decoration:none" popover id="popover1" data-toggle="popover" data-placement="bottom" data-trigger="hover" data-html="true" data-title="更新记录" data-content="更新时间：{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}<br>终端IP：{{user.TerminalIP}}<br>终端名字：{{user.TerminalName}}<br>用户名：{{user.revUserId}}<br>身份证：{{user.revIdentify}}">{{user.revDateTime|timeFormat:'YYYY-MM-DD h:m'}}</button>
+            </td>
+            <td title="'详情'">
+                <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="todetail(user.TestId)">详情</button>
+            </td>
+        </tr>
     </table>
     <!-- <pre>{{tableParams.data}}</pre> -->
 </div>
-
 <div class="modal fade" id="detailObject" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" ng-click="modal_close('#detailObject')">&times;</button>
-        <h3 class="modal-title" id="modal-title">检测产品信息</h3>
+                <h3 class="modal-title" id="modal-title">检测产品信息</h3>
             </div>
             <div class="modal-body">
                 <ul class="list-group">
-            <li class="list-group-item">检测编号：{{userInfo.TestId}}</li>
-            <li class="list-group-item">产品编号：{{userInfo.ObjectNo}}</li>
-            <li class="list-group-item">供应商：{{userInfo.ObjCompany}}</li>
-            <li class="list-group-item">培养批次：{{userInfo.ObjIncuSeq}}</li>
-            <li class="list-group-item">样品名称：{{userInfo.ObjectName}}</li>
-            <li class="list-group-item">检测类型：{{userInfo.TestType}}</li>
-            <li class="list-group-item">检测标准：{{userInfo.TestStand}}</li>
-            <li class="list-group-item">加工人员：{{userInfo.TestPeople}}</li>
-            <li class="list-group-item">加注人员：{{userInfo.TestPeople2}}</li>
-            <li class="list-group-item">检测时间：{{userInfo.TestTime|timeFormat:'YYYY-MM-DD h:m'}}</li>
-            <li class="list-group-item">检测结果：{{userInfo.TestResult}}</li>
-            <li class="list-group-item">复核人员：{{userInfo.RePeople}}</li>
-            <li class="list-group-item">复核时间：{{userInfo.ReTime|timeFormat:'YYYY-MM-DD h:m'}}</li>
-        </ul>
+                    <li class="list-group-item">检测编号：{{userInfo.TestId}}</li>
+                    <li class="list-group-item">产品编号：{{userInfo.ObjectNo}}</li>
+                    <li class="list-group-item">供应商：{{userInfo.ObjCompany}}</li>
+                    <li class="list-group-item">培养批次：{{userInfo.ObjIncuSeq}}</li>
+                    <li class="list-group-item">样品名称：{{userInfo.ObjectName}}</li>
+                    <li class="list-group-item">检测类型：{{userInfo.TestType}}</li>
+                    <li class="list-group-item">检测标准：{{userInfo.TestStand}}</li>
+                    <li class="list-group-item">加工人员：{{userInfo.TestPeople}}</li>
+                    <li class="list-group-item">加工仪器：{{userInfo.TestEquip}}</li>
+                    <li class="list-group-item">加工开始：{{userInfo.ProcessStart|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">加工结束：{{userInfo.ProcessEnd|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">加注人员：{{userInfo.TestPeople2}}</li>
+                    <li class="list-group-item">加注仪器：{{userInfo.TestEquip2}}</li>
+                    <li class="list-group-item">加注开始：{{userInfo.CollectStart|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">加注结束：{{userInfo.CollectEnd|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">描述：{{userInfo.Description}}</li>
+                    <li class="list-group-item">检测时间：{{userInfo.TestTime|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">检测结果：{{userInfo.TestResult}}</li>
+                    <li class="list-group-item">复核人员：{{userInfo.RePeople}}</li>
+                    <li class="list-group-item">复核时间：{{userInfo.ReTime|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                    <li class="list-group-item">培养结束时间：{{userInfo.EndTime|timeFormat:'YYYY-MM-DD h:m'}}</li>
+                </ul>
             </div>
             <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" ng-click="modal_close('#detailObject')">关闭</button>
-
+                <button class="btn btn-primary" type="button" ng-click="vision(userInfo.ObjectNo,userInfo.ObjectName,userInfo.TestId)">机器视觉</button>
+                <button class="btn btn-primary" type="button" ng-click="modal_close('#detailObject')">关闭</button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal -->
-</div>    
-
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal -->
+</div>
+<!-- 培养详情 -->
+<div class="modal fade" id="detail_vision" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" style="width: 900px;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modal-title">任务</h3>
+            </div>
+            <div class="modal-body" id="modal-body">
+                <div>
+                    <p>样品编号：{{Number}}</p>
+                    <p>样品名：{{Name}}</p>
+                </div>
+                <div style="text-align: left;margin-bottom: 15px">
+                    <select style="width:100px;height: 25px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-change="selectTubeNo()" ng-model="TubeNo">
+                        <option selected value="">选择样品管号</option>
+                        <option ng-repeat="selectInc in selectIncs">{{selectInc}}</option>
+                    </select>
+                </div>
+                <table ng-table="pictureTable" class="table table-condensed table-bordered table-striped">
+                    <tr ng-repeat="pic in $data" style="text-align: center;">
+                        <td title="'样品管号'" sortable="'TubeNo'">{{pic.TubeNo}}
+                        </td>
+                        <td title="'拍摄时间'" sortable="'CameraTime'">{{pic.CameraTime|timeFormat:'YYYY-MM-DD h:m'}}
+                        </td>
+                        <td title="'机器视觉'">
+                            <img src=http://121.43.107.106:8063{{pic.ImageAddress}} alt="" style="width:500px;height: 250px">
+                        </td>
+                        <td title="'顶空分析结果'">{{pic.TopResult}}
+                        </td>
+                        <td title="'分析结果'">{{pic.AnalResult}}
+ <!--                            <br>
+                            <button class="btn btn-primary" ng-click="setanalResult(pic)" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">有菌</button>
+                            <br>
+                            <button class="btn btn-primary" style="font-size: 10px;margin-top: 5px" ng-show="pic.AnalResult =='有菌'|| pic.TopResult =='有菌'">无菌</button> -->
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button " class="btn btn-primary " ng-click="modal_close('#detail_vision')">确认</button>
+                <button type="button " style="margin-left: 20px" class="btn btn-default " ng-click="modal_close('#detail_vision')">取消</button>
+            </div>
+        </div>
+    </div>
+</div>
