@@ -1,4 +1,4 @@
-angular.module('controllers', ['ngResource', 'services'])
+﻿angular.module('controllers', ['ngResource', 'services'])
 
     .controller('LoginCtrl', ['UserService', '$scope', '$state', 'Storage', '$timeout', function(UserService, $scope, $state, Storage, $timeout) {
 
@@ -851,7 +851,8 @@ angular.module('controllers', ['ngResource', 'services'])
 
             //主界面--rzx
             // 获取当前日期
-            var myDate = new Date();
+            var myDate = null
+            var now = null
             var formatDate = function(date) {
                 var y = date.getFullYear();
                 var m = date.getMonth() + 1;
@@ -863,7 +864,13 @@ angular.module('controllers', ['ngResource', 'services'])
                 var s = date.getSeconds()
                 return y + '-' + m + '-' + d + ' ' + h + ':' + mm + ':' + s;
             };
-            var now = formatDate(myDate);
+            var newdate = function() {
+                myDate = new Date();
+                // console.log(myDate)
+                now = formatDate(myDate);
+                // console.log(now)
+            }
+            // newdate()
             //加工表
             var realInfo_1 = {
                 "ReStatus": 0,
@@ -888,6 +895,33 @@ angular.module('controllers', ['ngResource', 'services'])
                         dataset: data
                     })
                 }, function(err) {})
+                $scope.remove_tray = function() {
+                    // 获取当前日期
+                    newdate()
+                    Operation.OpEquipmentSetData({
+                        "EquipmentId": 'Iso_Process',
+                        "OperationTime": now,
+                        "OperationCode": "OP018",
+                        "OperationValue": "1",
+                        "OperationResult": "",
+                        "TerminalIP": Storage.get("cip"),
+                        "TerminalName": Storage.get("cname"),
+                        "revUserId": Storage.get("UID")
+                    }).then(function(data) {
+                        console.log(data)
+                        if (data.result == "插入成功") {
+                            // 提示成功
+                            $('#removetray').modal('show')
+                            $timeout(function() {
+                                $('#removetray').modal('hide')
+                            }, 1000)
+                        }
+
+                    }, function(e) {})
+                }
+
+
+
             }
             // Result.GetBreakDowns(TestEquip).then(
             //     function(data) {
@@ -951,6 +985,7 @@ angular.module('controllers', ['ngResource', 'services'])
                 Result.GetTestResultInfo(realInfo_3).then(function(data) {
                     incuresult = data
                     console.log(data)
+                    newdate()
                     for (i = 0; i < data.length; i++) {
                         endtime[i] = new Date(data[i].EndTime)
                         ms[i] = endtime[i] - myDate
@@ -1013,6 +1048,7 @@ angular.module('controllers', ['ngResource', 'services'])
             }
             $scope.setbreakData = function(equip) {
                 console.log(equip)
+                newdate()
                 Operation.OpEquipmentSetData({
                     "EquipmentId": equip,
                     "OperationTime": now,
@@ -1240,6 +1276,7 @@ angular.module('controllers', ['ngResource', 'services'])
             var player = new ckplayer(videoObject);
             //添加任务
             $scope.creattask = function() {
+                newdate()
                 if ($scope.task1.Sample == undefined || $scope.task1.Reagent1 == undefined || $scope.task1.Reagent2 == undefined) {
                     $('#signupFail').modal('show')
                     $timeout(function() {
@@ -1558,6 +1595,7 @@ angular.module('controllers', ['ngResource', 'services'])
                     "GetAnalResult": 1
 
                 }).then(function(data) {
+                    newdate()
                     Result.SetResIncubator({
                         "TestId": data[0].TestId,
                         "TubeNo": data[0].TubeNo,
@@ -1755,7 +1793,7 @@ angular.module('controllers', ['ngResource', 'services'])
 
             // 取出培养-rh
             $scope.totakeout = function(index) {
-
+                newdate()
                 Result.SetResIncubator({
                     "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
@@ -2047,8 +2085,7 @@ angular.module('controllers', ['ngResource', 'services'])
                         }, 1000)
                     }
                 }
-
-
+                newdate()
                 Result.SetResIncubator({
                     "TestId": index.TestId,
                     "TubeNo": index.TubeNo.replace(/[^0-9]/ig, ""),
@@ -2280,6 +2317,7 @@ angular.module('controllers', ['ngResource', 'services'])
                 }).then(
                     function(data) {
                         // console.log(data)
+                        newdate()
                         result1 = data
                         result1[0].NowStep = "正在加注中"
                         result1[0].CollectStart = now
@@ -2321,6 +2359,7 @@ angular.module('controllers', ['ngResource', 'services'])
                 }).then(
                     function(data) {
                         result2 = data
+                        newdate()
                         result2[0].NowStep = "正在加注中"
                         result2[0].CollectStart = now
                         result2[0].TestEquip2 = "Iso_Collect"
@@ -2367,6 +2406,7 @@ angular.module('controllers', ['ngResource', 'services'])
                 }).then(
                     function(data) {
                         result3 = data
+                        newdate()
                         result3[0].NowStep = "正在加注中"
                         result3[0].CollectStart = now
                         result3[0].TestEquip3 = "Iso_Collect"
