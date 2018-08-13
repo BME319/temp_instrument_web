@@ -49,6 +49,7 @@
                     <td title="'样品'" sortable="'ObjectName'">{{g.ObjectName}}
                     </td>
                     <td title="'正在执行的步骤'">{{g.NowStep}}
+                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="remove_tray()" ng-show="g.NowStep == ‘SOB020’||'SOS016||‘WSP016’">确认取出托盘</button>
                     </td>
                     <td title="'上一步骤'">{{g.FormerStep}}
                     </td>
@@ -800,6 +801,13 @@
             <div class="modal-dialog modal-sm" role="document">
                 <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
                     紧急停止成功！
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="removetray">
+            <div class="modal-dialog modal-sm" role="document">
+                <div class="modal-content" style="width:400px;text-align: center; font-size: 20px">
+                    托盘已取出！
                 </div>
             </div>
         </div>

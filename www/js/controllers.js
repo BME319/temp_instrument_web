@@ -1,4 +1,4 @@
-angular.module('controllers', ['ngResource', 'services'])
+﻿angular.module('controllers', ['ngResource', 'services'])
 
     .controller('LoginCtrl', ['UserService', '$scope', '$state', 'Storage', '$timeout', function(UserService, $scope, $state, Storage, $timeout) {
 
@@ -888,6 +888,33 @@ angular.module('controllers', ['ngResource', 'services'])
                         dataset: data
                     })
                 }, function(err) {})
+                $scope.remove_tray = function() {
+                    // 获取当前日期
+                    var myDate = new Date();
+                    Operation.OpEquipmentSetData({
+                        "EquipmentId": 'Iso_Process',
+                        "OperationTime": myDate,
+                        "OperationCode": "OP018",
+                        "OperationValue": "1",
+                        "OperationResult": "",
+                        "TerminalIP": Storage.get("cip"),
+                        "TerminalName": Storage.get("cname"),
+                        "revUserId": Storage.get("UID")
+                    }).then(function(data) {
+                            console.log(data)
+                            if (data.result == "插入成功") {
+                                // 提示成功
+                                $('#removetray').modal('show')
+                                $timeout(function() {
+                                    $('#removetray').modal('hide')
+                                }, 1000)
+                            }
+
+                        },function(e) {})
+                }
+
+
+
             }
             // Result.GetBreakDowns(TestEquip).then(
             //     function(data) {
