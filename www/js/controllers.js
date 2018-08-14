@@ -2184,7 +2184,7 @@
                     function(err) {})
             }
 
-
+var tempResult_search = []
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
                 $('#new_posibacInjection').modal('show');
@@ -2272,10 +2272,54 @@
                     "GetLaterStep": 1
                 }).then(
                     function(data) {
+                        console.log(data)
                         $scope.Result_search = data
+                        tempResult_search = data
                     },
                     function(e) {});
             }
+
+                       $scope.registerInfo={}
+            // 培养器扫描
+            $scope.tubeScan = function(index) {
+                console.log(index)
+                $.ajax({
+                    method: 'get',
+                    url: 'http://localhost:8077/Api/v1/readFromCom',
+                    data: {},
+                    success: function(res) {
+                        console.log(res)
+                        var findflag = false
+                        if ((res.charAt(res.length - 1)) != "2") {
+                            alert("该培养器不是阳性对照")
+                        } else {
+                            console.log(tempResult_search)
+                            console.log(res.substr(0, res.length - 2));
+                            for (i = 0; i < tempResult_search.length; i++) {
+                                if (res.substr(0, res.length - 2) == tempResult_search[i].TestId) {
+                                    switch (index) {
+                                        case 1:
+                                            $scope.registerInfo.TestId1 = tempResult_search[i].TestId
+                                            break;
+                                        case 2:
+                                            $scope.registerInfo.TestId2 = tempResult_search[i].TestId
+                                            break;
+                                        case 3:
+                                            $scope.registerInfo.TestId3 = tempResult_search[i].TestId
+                                            break;
+                                    }
+                                    findflag = true
+                                }
+                            }
+                            if (findflag==false) {
+                                alert("培养器错误")
+                            }
+                        }
+                        
+                    }
+                })
+            }
+
             $scope.setposibacInjection = function() {
                 var result1 = new Array()
                 var result2 = new Array()
@@ -3682,7 +3726,7 @@
 
             UserService.GetAllUserInfo(input).then(function(data) {
                 $scope.tableParams = new NgTableParams({
-                    count: 10
+                    count: 5
                 }, {
                     counts: [],
                     dataset: data
