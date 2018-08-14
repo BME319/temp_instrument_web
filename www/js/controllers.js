@@ -2184,7 +2184,7 @@
                     function(err) {})
             }
 
-var tempResult_search = []
+            var tempResult_search = []
             // 阳性菌加注-茹画
             $scope.posibacInjection = function() {
                 $('#new_posibacInjection').modal('show');
@@ -2279,7 +2279,7 @@ var tempResult_search = []
                     function(e) {});
             }
 
-                       $scope.registerInfo={}
+            $scope.registerInfo = {}
             // 培养器扫描
             $scope.tubeScan = function(index) {
                 console.log(index)
@@ -2290,6 +2290,7 @@ var tempResult_search = []
                     success: function(res) {
                         console.log(res)
                         var findflag = false
+                        var temptestid = ''
                         if ((res.charAt(res.length - 1)) != "2") {
                             alert("该培养器不是阳性对照")
                         } else {
@@ -2297,25 +2298,29 @@ var tempResult_search = []
                             console.log(res.substr(0, res.length - 2));
                             for (i = 0; i < tempResult_search.length; i++) {
                                 if (res.substr(0, res.length - 2) == tempResult_search[i].TestId) {
-                                    switch (index) {
-                                        case 1:
-                                            $scope.registerInfo.TestId1 = tempResult_search[i].TestId
-                                            break;
-                                        case 2:
-                                            $scope.registerInfo.TestId2 = tempResult_search[i].TestId
-                                            break;
-                                        case 3:
-                                            $scope.registerInfo.TestId3 = tempResult_search[i].TestId
-                                            break;
-                                    }
+                                    temptestid = tempResult_search[i].TestId
                                     findflag = true
                                 }
                             }
-                            if (findflag==false) {
+                            if (findflag == false) {
                                 alert("培养器错误")
+                            } else
+
+                                switch (index) {
+                                    case 1:
+                                        $scope.registerInfo.TestId1 = temptestid
+                                        break;
+                                    case 2:
+                                        $scope.registerInfo.TestId2 = temptestid
+                                        break;
+                                    case 3:
+                                        $scope.registerInfo.TestId3 = temptestid
+                                        break;
+                                }
+                                alert("扫描成功")
                             }
-                        }
                         
+
                     }
                 })
             }
