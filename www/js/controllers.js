@@ -1161,7 +1161,7 @@
                 } else {
                     realtime()
                 }
-            }, 30000)
+            }, 5000)
             $scope.selectInstrument = function() {
                 // console.log($scope.envins)
                 if ($scope.envins.indexOf("Iso_Collect") != -1) {
@@ -1249,14 +1249,14 @@
             incu()
             breakdowns()
             realtime()
-            var cal_handling = $interval(handling, 30000)
-            var cal_collect = $interval(collect, 30000)
-            var cal_incu = $interval(incu, 30000)
-            var cal_breakdowns = $interval(breakdowns, 30000)
-            // var cal_realtime = $interval(realtime, 30000)
+            var cal_handling = $interval(handling, 5000)
+            var cal_collect = $interval(collect, 5000)
+            var cal_incu = $interval(incu, 5000)
+            var cal_breakdowns = $interval(breakdowns, 5000)
+            // var cal_realtime = $interval(realtime, 5000)
             // var cal_realtime = $interval(function() {
             //     realtime();
-            // }, 30000)
+            // }, 5000)
             $scope.$on("$destroy", function() {
                 $interval.cancel(cal_handling)
                 $interval.cancel(cal_collect)
@@ -1439,7 +1439,7 @@
                 getflow(SampleType, NowStep)
                 cal_pro = $interval(function() {
                     getflow(SampleType, NowStep)
-                }, 30000)
+                }, 5000)
             }
 
             $scope.detail_col = function(SampleType, NowStep) {
@@ -1550,7 +1550,7 @@
                 getimages(topInfo, incInfo)
                 // cal_detailIncu = $interval(function() {
                 //     getimages(topInfo, incInfo)
-                // }, 30000)
+                // }, 5000)
             }
             //培养详情--下拉选择
             $scope.selectTubeNo = function(TubeNo) {
@@ -1574,7 +1574,7 @@
                 getimages(topInfo, incInfo)
                 cal_detailIncu = $interval(function() {
                     getimages(topInfo, incInfo)
-                }, 30000)
+                }, 5000)
             }
             $scope.setanalResult = function(index) {
                 console.log(index)
@@ -2913,7 +2913,7 @@
                 getimages(topInfo, incInfo)
                 // cal_detailIncu = $interval(function() {
                 //     getimages(topInfo, incInfo)
-                // }, 30000)
+                // }, 5000)
             }
         }
     ])
