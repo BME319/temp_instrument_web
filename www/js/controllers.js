@@ -2304,7 +2304,7 @@
                             }
                             if (findflag == false) {
                                 alert("培养器错误")
-                            } else
+                            } else {
 
                                 switch (index) {
                                     case 1:
@@ -2317,10 +2317,10 @@
                                         $scope.registerInfo.TestId3 = temptestid
                                         break;
                                 }
+
                                 alert("扫描成功")
                             }
-                        
-
+                        }
                     }
                 })
             }
