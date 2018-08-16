@@ -1902,11 +1902,13 @@
 
             // 放入培养-rh
             var finalplace = ""
+            var _putintemptubeslist = new Array()
             $scope.putinmodal = function(tempTestId) {
+                console.log(tempTestId)
                 // 放入培养modal的初始化-rh
                 var putintubeslist = new Array()
 
-                var _putintemptubeslist = new Array()
+                
                 console.log(tempTestId)
                 //培养箱列表
                 ItemInfo.GetIncubatorsInfo({
@@ -2052,15 +2054,41 @@
             }
 
 
-            // 显示培养器具体信息-rh
-            $scope.putinshowtubedetail = function(TestIdindex, TubeNoindex) {
+            $scope.tubeScanSelect = function() {
+                $.ajax({
+                    method: 'get',
+                    url: 'http://localhost:8077/Api/v1/readFromCom',
+                    data: {},
+                    success: function(res) {
+                        console.log(res)
+                        console.log($scope.putintubes)
+                        var findflag = false
+                        var _temptestid = ""
+                        var TubeNoindex=""
+                        var TestIdindex=""
+                        for (i = 0; i < _putintemptubeslist.length; i++) {
+                            _temptestid = _putintemptubeslist[i].TestId + '_' + _putintemptubeslist[i].TubeNo
+                            if (res == _temptestid) {
+                                findflag = true
+                                TestIdindex=_putintemptubeslist[i].TestId
+                                TubeNoindex=_putintemptubeslist[i].TubeNo
+                                $scope.putintube=_putintemptubeslist[i]
 
-                if ((TestIdindex == null) || (TubeNoindex == null)) { $scope.putintempTube = {} }
-                for (i = 0; i < $scope.putintubes.length; i++) {
-                    if (($scope.putintubes[i].TubeNo == TubeNoindex) && (($scope.putintubes[i].TestId == TestIdindex))) {
-                        $scope.putintempTube = $scope.putintubes[i]
+                                // $scope.
+                            }
+                        }
+                        if (findflag == false) {
+                            alert("培养器错误")
+                        } else {
+                            alert("扫描成功")
+                            for (i = 0; i < $scope.putintubes.length; i++) {
+                                if (($scope.putintubes[i].TubeNo == TubeNoindex) && (($scope.putintubes[i].TestId == TestIdindex))) {
+                                    $scope.putintempTube = $scope.putintubes[i]
+                                }
+                            }
+                        }
                     }
-                }
+                })
             }
 
             // 确认放入培养

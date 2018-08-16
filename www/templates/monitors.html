@@ -12,7 +12,7 @@
                             <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="instrumentreset()">隔离器复位</button>
                             <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="posibacInjection()">阳性菌加注</button>
                         </div>
-                        <div class="form-group">
+<!--                         <div class="form-group">
                             <div class="dropdown" style="margin-right:20px">
                                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" style="background:#347ab6;">培养<b class="caret"></b>
                                 </button>
@@ -25,7 +25,7 @@
                                     </li>
                                 </ul>
                             </div>
-                        </div>
+                        </div> -->
                         <div class="form-group">
                             <!-- <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="culture()">培养</button> -->
                             <button type="button" class="btn btn-primary" style="margin-right:20px" ng-click="sampleEntry()">样品录入</button>
@@ -49,7 +49,7 @@
                     <td title="'样品'" sortable="'ObjectName'">{{g.ObjectName}}
                     </td>
                     <td title="'正在执行的步骤'">{{g.NowStep}}
-                         <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="remove_tray()" ng-show="g.NowStep == ‘SOB020’||'SOS016||‘WSP016’">确认取出托盘</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="remove_tray()" ng-show="g.NowStep == ‘SOB020’||'SOS016||‘WSP016’">确认取出托盘</button>
                     </td>
                     <td title="'上一步骤'">{{g.FormerStep}}
                     </td>
@@ -411,7 +411,7 @@
             </div>
         </div>
         <!-- 阳性菌加注modal -->
-         <!-- 阳性菌加注modal -->
+        <!-- 阳性菌加注modal -->
         <div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" style="height: 500px">
@@ -423,29 +423,29 @@
                         <b>当前加注隔离器：Iso_Collect</b>
                     </div>
                     <div class="modal-body" style="margin-left: 5%;margin-right: 5%;margin-top: 15px;height: 300px;">
-                        <form id="sampleForm" name="sampleForm" class="form-horizontal" >
-                        <div class="form-group">
-                            <label style="margin-left: 15%;">选择加注样品：</label>
-                        </div>
-                        <div class="form-group" style="text-align: center;">
-                            <div class="col-xs-6">
-                                <button type="button " class=" btn btn-primary " ng-click="tubeScan(1)">扫描培养器-1</button>
+                        <form id="sampleForm" name="sampleForm" class="form-horizontal">
+                            <div class="form-group">
+                                <label style="margin-left: 15%;">选择加注样品：</label>
                             </div>
-                            <label class=" control-label">{{registerInfo.TestId1}}</label>
-                        </div>
-                        <div class="form-group" style="text-align: center;">
-                            <div class="col-xs-6">
-                                <button type="button " class="btn btn-primary " ng-click="tubeScan(2)">扫描培养器-2</button>
+                            <div class="form-group" style="text-align: center;">
+                                <div class="col-xs-6">
+                                    <button type="button " class=" btn btn-primary " ng-click="tubeScan(1)">扫描培养器-1</button>
+                                </div>
+                                <label class=" control-label">{{registerInfo.TestId1}}</label>
                             </div>
-                            <label class=" control-label">{{registerInfo.TestId2}}</label>
-                        </div>
-                        <div class="form-group" style="text-align: center;">
-                            <div class="col-xs-6">
-                                <button type="button " class=" btn btn-primary " ng-click="tubeScan(3)">扫描培养器-3</button>
+                            <div class="form-group" style="text-align: center;">
+                                <div class="col-xs-6">
+                                    <button type="button " class="btn btn-primary " ng-click="tubeScan(2)">扫描培养器-2</button>
+                                </div>
+                                <label class=" control-label">{{registerInfo.TestId2}}</label>
                             </div>
-                            <label class=" control-label">{{registerInfo.TestId3}}</label>
-                        </div>
-                    </form>
+                            <div class="form-group" style="text-align: center;">
+                                <div class="col-xs-6">
+                                    <button type="button " class=" btn btn-primary " ng-click="tubeScan(3)">扫描培养器-3</button>
+                                </div>
+                                <label class=" control-label">{{registerInfo.TestId3}}</label>
+                            </div>
+                        </form>
                         <!-- <div class="form-group" style="text-align: center;">
                             <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.TestId1" ng-options="Result1.TestId as ('样品名：'+Result1.ObjectName) for Result1 in Result_search">
                                 <option value="">请选择加注样品一</option>
@@ -461,16 +461,16 @@
                                 <option value="">请选择加注样品三</option>
                             </select>
                         </div> -->
-                        <form id="sampleForm" name="sampleForm" class="form-horizontal" >
-                        <div class="form-group">
-                            <label style="margin-left: 15%;">选择加注菌液：</label>
-                        </div>
-                        <div class="form-group" style="text-align: center;">
-                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.ReagentId" ng-options="Reagent.ReagentId as ('菌液名：'+Reagent.ReagentName+'，'+'菌液Id：'+Reagent.ReagentId) for Reagent in Reagent_search">
-                                <option value="">请选择菌液</option>
-                            </select>
-                        </div>
-                    </form>
+                        <form id="sampleForm" name="sampleForm" class="form-horizontal">
+                            <div class="form-group">
+                                <label style="margin-left: 15%;">选择加注菌液：</label>
+                            </div>
+                            <div class="form-group" style="text-align: center;">
+                                <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="registerInfo.ReagentId" ng-options="Reagent.ReagentId as ('菌液名：'+Reagent.ReagentName+'，'+'菌液Id：'+Reagent.ReagentId) for Reagent in Reagent_search">
+                                    <option value="">请选择菌液</option>
+                                </select>
+                            </div>
+                        </form>
                     </div>
                     <div class="modal-footer">
                         <button type="button " class="btn btn-primary " ng-click="setposibacInjection()">确认</button>
@@ -479,7 +479,7 @@
                 </div>
             </div>
         </div>
-<!--         <div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
+        <!--         <div class="modal fade" id="new_posibacInjection" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content" style="height: 500px">
                     <div class="modal-header">
@@ -604,10 +604,16 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="col-xs-3 control-label">选择培养器</label>
+                                <div class="col-xs-3">
+                                </div>
+                                <div class="col-xs-9">
+                                    <button type="button " class=" btn btn-primary " ng-click="tubeScanSelect()">扫描选择培养器</button>
+                                </div>
+                                <!--                                 <label class="col-xs-3 control-label">选择培养器</label>
                                 <select style="width:180px;height: 34px;font-size: 14px;border: 1px solid #ccc;border-radius: 4px;background-color: white;" style="width:40%" ng-options="putintube as (putintube.TestId+'_'+putintube.TubeNo) for putintube in putintubes" ng-model="putintube" ng-change="putinshowtubedetail(putintube.TestId,putintube.TubeNo)">
                                     <option selected value="">选择培养器</option>
                                 </select>
+ -->
                             </div>
                             <div class="form-group">
                                 <label class="col-xs-3 control-label">培养器参数</label>
