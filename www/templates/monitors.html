@@ -560,7 +560,7 @@
                             <label style="margin-left: 15%;">选择复位隔离器：</label>
                         </div>
                         <div class="form-group" style="text-align: center;">
-                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.IsolatorId" ng-options="Isolator.IsolatorId as (Isolator.IsolatorId+'，'+Isolator.InsDescription) for Isolator in Isolator_search">
+                            <select style="margin-left: 15%;width: 70%" class="form-control" ng-model="resetInfo.ItemId" ng-options="Item.ItemId as (Item.ItemId+'，'+Item.InsDescription) for Item in Isolator_search">
                                 <option value="">请选择复位隔离器</option>
                             </select>
                         </div>
@@ -569,7 +569,7 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.IsolatorId)">确定</button>
+                        <button class="btn btn-primary" type="button" ng-click="reset(resetInfo.ItemId)">确定</button>
                         <button class="btn btn-warning" type="button" ng-click="modal_close('#ResetOrNot')">取消</button>
                     </div>
                 </div>

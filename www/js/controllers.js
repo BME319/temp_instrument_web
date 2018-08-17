@@ -770,6 +770,7 @@
 
             // 是否复位确认
             $scope.instrumentreset = function() {
+                var arr = new Array()
                 var promise4 = ItemInfo.GetIsolatorsInfo({
                     "IsolatorId": null,
                     "ProductDayS": null,
@@ -787,10 +788,43 @@
                     "GetInsDescription": 1,
                     "GetRevisionInfo": 1
                 });
+                var promise5 = ItemInfo.GetIncubatorsInfo({
+                    "IncubatorId": null,
+                    "ProductDayS": null,
+                    "ProductDayE": null,
+                    "EquipPro": null,
+                    "InsDescription": null,
+                    "ReDateTimeS": null,
+                    "ReDateTimeE": null,
+                    "ReTerminalIP": null,
+                    "ReTerminalName": null,
+                    "ReUserId": null,
+                    "ReIdentify": null,
+                    "GetProductDay": 1,
+                    "GetEquipPro": 1,
+                    "GetInsDescription": 1,
+                    "GetRevisionInfo": 1
+                });
                 promise4.then(function(data) {
-                    console.log(data)
-                    $scope.Isolator_search = data
+                    for (i = 0; i < data.length; i++) {
+                        arr.push({
+                            "ItemId": data[i].IsolatorId,
+                            "InsDescription": data[i].InsDescription
+                        })
+                    }
                 }, function(err) {});
+                promise5.then(function(data) {
+                    console.log(data)
+                    for (i = 0; i < data.length; i++) {
+                        arr.push({
+                            "ItemId": data[i].IncubatorId,
+                            "InsDescription": data[i].InsDescription
+                        })
+                    }
+                    $scope.Isolator_search = arr
+                    console.log($scope.Isolator_search)
+                }, function(err) {});
+
 
                 $('#ResetOrNot').modal('show');
             }
@@ -1908,7 +1942,7 @@
                 // 放入培养modal的初始化-rh
                 var putintubeslist = new Array()
 
-                
+
                 console.log(tempTestId)
                 //培养箱列表
                 ItemInfo.GetIncubatorsInfo({
@@ -2064,15 +2098,15 @@
                         console.log($scope.putintubes)
                         var findflag = false
                         var _temptestid = ""
-                        var TubeNoindex=""
-                        var TestIdindex=""
+                        var TubeNoindex = ""
+                        var TestIdindex = ""
                         for (i = 0; i < _putintemptubeslist.length; i++) {
                             _temptestid = _putintemptubeslist[i].TestId + '_' + _putintemptubeslist[i].TubeNo
                             if (res == _temptestid) {
                                 findflag = true
-                                TestIdindex=_putintemptubeslist[i].TestId
-                                TubeNoindex=_putintemptubeslist[i].TubeNo
-                                $scope.putintube=_putintemptubeslist[i]
+                                TestIdindex = _putintemptubeslist[i].TestId
+                                TubeNoindex = _putintemptubeslist[i].TubeNo
+                                $scope.putintube = _putintemptubeslist[i]
 
                                 // $scope.
                             }
@@ -2601,14 +2635,23 @@
             // 隔离器复位 - 茹画
             $scope.reset = function(_IsolatorId) {
                 // 获取当前日期
-                var myDate = new Date();
-                $scope.myDate = myDate
+                // var myDate = new Date();
+                // $scope.myDate = myDate
+                newdate()
+                var Code = null
+                if (_IsolatorId == 'Iso_Process') {
+                    Code = "OP200"
+                } else if (_IsolatorId == 'Iso_Collect') {
+                    Code = "OP201"
+                } else {
+                    Code = "OP202"
+                }
                 Operation.OpEquipmentSetData({
                     "EquipmentId": _IsolatorId,
-                    "OperationTime": myDate,
-                    "OperationCode": "R0",
-                    "OperationValue": "R0",
-                    "OperationResult": "R0",
+                    "OperationTime": now,
+                    "OperationCode": Code,
+                    "OperationValue": "1",
+                    "OperationResult": "",
                     "TerminalIP": Storage.get("cip"),
                     "TerminalName": Storage.get("cname"),
                     "revUserId": Storage.get("UID")
@@ -2627,7 +2670,6 @@
                     },
                     function(e) {});
             }
-
         }
     ])
 
