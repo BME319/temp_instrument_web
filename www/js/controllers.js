@@ -1606,9 +1606,10 @@
                     "TestId": $scope.Id
                 }
                 getimages(topInfo, incInfo)
-                cal_detailIncu = $interval(function() {
-                    getimages(topInfo, incInfo)
-                }, 5000)
+                // cal_detailIncu = $interval(function() {
+                //     console.log($scope.TubeNo)
+                //     getimages(topInfo, incInfo)
+                // }, 5000)
             }
             $scope.setanalResult = function(index) {
                 console.log(index)
