@@ -49,7 +49,7 @@
                     <td title="'样品'" sortable="'ObjectName'">{{g.ObjectName}}
                     </td>
                     <td title="'正在执行的步骤'">{{g.NowStep}}
-                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="remove_tray()" ng-show="g.NowStep == ‘SOB020’||'SOS016||‘WSP016’">确认取出托盘</button>
+                        <button class="btn btn-link" style="text-decoration:none; outline:none; padding:0px; border:0px; font-size:10px;" ng-click="remove_tray()" ng-show="g.NowStep == 'SOB020'|| g.NowStep == 'SOS016'|| g.NowStep == 'WSP016'">确认取出托盘</button>
                     </td>
                     <td title="'上一步骤'">{{g.FormerStep}}
                     </td>
