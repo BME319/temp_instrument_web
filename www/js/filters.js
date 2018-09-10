@@ -16,6 +16,10 @@ angular.module('filters', [])
                 case 'YYYY-MM-DD h:m':
                     ret = d.getFullYear() + '-' + (Array(2).join('0') + (d.getMonth() + 1)).slice(-2) + '-' + (Array(2).join('0') + d.getDate()).slice(-2) + ' ' + (Array(2).join('0') + d.getHours()).slice(-2) + ':' + (Array(2).join('0') + d.getMinutes()).slice(-2)
                     break
+                case 'YYYY-MM-DD h:m:s':
+                    ret = d.getFullYear() + '-' + (Array(2).join('0') + (d.getMonth() + 1)).slice(-2) + '-' + (Array(2).join('0') + d.getDate()).slice(-2) + ' ' + (Array(2).join('0') + d.getHours()).slice(-2) + ':' + (Array(2).join('0') + d.getMinutes()).slice(-2)+ ':' + (Array(2).join('0') + d.getSeconds()).slice(-2)
+                    break
+                
             }
             return ret
         }
